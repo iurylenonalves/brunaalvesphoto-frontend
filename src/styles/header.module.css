@@ -1,0 +1,175 @@
+/* General Styles */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo styles */
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+.logoImg {
+  width: 150px;
+  height: 75px; 
+}
+
+.logoImgDark {
+  display: none;
+}
+
+/* Menu */
+.nav {
+  display: flex;
+  gap: 24px;
+}
+
+.nav a {
+  color: black;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.nav a:hover {
+  color: gray;
+}
+
+/* Buttons */
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.whatsapp {
+  background-color: #43A047;
+}
+
+.whatsapp:hover {
+  background-color: #388E3C;
+}
+
+.instagram {
+  background-color: #db3082;
+}
+
+.instagram:hover {
+  background-color: #9C225d;
+}
+
+/* Menu Mobile */
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Menu mobile */
+.mobileMenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.languageButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #333;
+}
+
+.languageButton:hover {
+  color: #0070f3;
+}
+
+/* Mobile controls */
+.mobileControls {
+  display: none;
+  align-items: center;
+  gap: 16px;
+}
+
+.mobileLanguage {
+  margin-right: 8px;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .nav,
+  .buttonGroup {
+    display: none;
+  }
+
+  .menuButton {
+    display: block;
+  }
+
+  .mobileControls {
+    display: flex;
+  }
+}
+
+@media (max-width: 460px) {
+  .container {
+    padding: 12px;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .mobileLanguage {
+    transform: scale(0.85);
+    margin-right: 4px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .logoImg {
+    display: none;
+  }
+
+  .logoImgDark {
+    display: block;
+    width: 150px;
+    height: 75px;
+  }
+}

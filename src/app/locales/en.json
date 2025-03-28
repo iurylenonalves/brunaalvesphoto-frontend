@@ -1,0 +1,121 @@
+{
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu",
+  "about": "About",
+  "portfolio": "Portfolio",
+  "contact": "Contact",
+  "whatsappMessage": "Hello, I would like to know more about your services",
+
+  
+  "heroTitle": "Photos that tell your story",
+  "heroSubtitle": "Photography for travel, business, and unforgettable moments.",
+  "contactButton": "Contact Us",
+
+
+  "aboutTitle": "Bruna Alves",
+  "aboutText1": "Hi! I'm Bruna, but you can also call me Bru (that's a thing from São Paulo, right?!). London has always been my dream as a teenager, and in 2018, I was fortunate enough to make it come true. I moved here with my husband and daughter, and it was here that our family grew even more with the arrival of two more kids.",
+  "aboutText2": "Since then, I've been looking for new experiences, and it was in this amazing city that I found the perfect setting to turn my passion into a profession. Photography has always been my great love, and my biggest wish is to capture special moments — just as my mother always did — because I believe everyone deserves to preserve unforgettable memories!",
+  "whatsappButton": "Contact me on WhatsApp",
+
+  
+  "portfolioTitle": "My Portfolio",
+  "portfolioImagesDetails": "See details",
+
+
+  "categoryAll": "All",
+  "categoryTourist": "Tourist",
+  "categoryProfessional": "Professional",
+  "categoryStudio": "Studio",
+
+  "modalArialLabelClose": "Close",
+  "modalArialLabelPrevious": "Previous Image",
+  "modalArialLabelNext": "Next Image",
+
+
+  "paginationPrevious": "Previous",
+  "paginationNext": "Next",
+  "paginatonAriaLabel": "Previousp Page",
+  "paginationAriaLabe2": "Next Page",
+
+
+  "contactNameRequired": "Name is required",
+  "contactEmailRequired": "Email is required",
+  "contactInvalidEmail": "Invalid email",  
+  "contactMessageRequired": "Message is required",
+  "contactTitle": "Bruna Alves",
+  "contactImageAlt": "Photographer Bruna Alves",
+  "contactSubtitle": "Contact me",
+  "contactText1": "Do you want to transform your moments into unforgettable photos? Whether it's for your trip, your brand or a special portrait, I'm here to capture your essence in every click.",
+  "contactText2": "Send me a message and let's talk about the perfect session for you!",
+  "namePlaceholder": "Name",
+  "emailPlaceholder": "Email",
+  "messagePlaceholder": "Message",
+  "sendingMessageButton": "Sending Message...",
+  "sendMessageButton": "Send Message",
+  "contactSuccess": "Your message has been sent successfully!",
+  "contactError": "An error occurred while sending your message. Please try again later.",
+  "nameLabel": "Name",
+  "emailLabel": "Email",
+  "messageLabel": "Message",
+  "nameMinLength": "Name must have at least 3 characters",
+  "emailInvalid": "Invalid email",
+  "messageMinLength": "Message must have at least 10 characters",
+  "validationSubjectForm": "New message from contact form",
+  "errorMessage": "An error occurred while sending your message. Please try again later.",
+  "networkError": "Network error. Please check your connection and try again.",
+  "loadingMessage": "Sending your message...",
+  "successMessage": "Your message has been sent successfully!",
+  "tooManyRequests": "Too many requests. Please try again later.",
+  "loading": "Sending...",
+
+
+  "footerAbout": "About",
+  "footerContact": "Contact",
+  "footerPrivacyPolicy": "Privacy Policy",
+  "footerRights": "2025 Bruna Alves. All rights reserved.",
+
+
+  "privacyPolicyTitle": "Privacy Policy",
+  "section1Title": "1. Introduction",
+
+  "section1Content1": "Welcome to the website of ",
+  "section1Content2": "! We respect your privacy and are committed to protecting your personal data. This policy explains how we collect, use, and protect your information, in accordance with the ",
+  "section1Content3": "General Data Protection Law (LGPD) - Brazil",
+  "section1Content4": " and the ",
+  "section1Content5": "General Data Protection Regulation (GDPR) - United Kingdom",
+  "section1Content6": ".",
+
+  "section2Title": "2. Data Collected",
+  "section2Content": "We may collect the following data when you use our website or get in touch:",
+  "section2List1": "Informations about your browsing on the website (cookies and similar technologies).",
+
+  "section3Title": "3. Use of Information",
+  "section3Content": "Your data may be used for:",
+  "section3List1": "Respond to questions and requests;",
+  "section3List2": "Schedule sessions;",
+  "section3List3": "Improve the user experience on the website;",
+  "section3List4": "Comply with legal and regulatory obligations.",
+
+  "section4Title": "4. Data Sharing",
+  "section4Content": "We do not sell or share your data with third parties, except when necessary to comply with legal obligations or when there is explicit consent.",
+  
+  "section5Title": "5. Storage and Security",
+  "section5Content": "Your data is stored securely and protected against unauthorized access. We implement technical and organizational measures to ensure the security of your information.",
+  
+  "section6Title": "6. Your Rights",
+  "section6Content": "You have the right to:",
+  "section6List1": "Request access to your data;",
+  "section6List2": "Correct incorrect information;",
+  "section6List3": "Request the deletion of your data (except when there is a legal need for retention);",
+  "section6List4": "Retire your consent for the use of data.",
+  "section6Contact": "If you wish to exercise any of these rights, please contact us by email:",
+
+  "section7Title": "7. Cookies",
+  "section7Content": "Our website may use cookies to improve your experience. You can disable them in your browser settings, but this may affect some site functionality.",
+  
+  "section8Title": "8. Policy Changes",
+  "section8Content": "This policy may be updated at any time to ensure compliance with applicable laws. We recommend that you review this page periodically.",
+  
+  "section9Title": "9. Contact",
+  "privacyPolicyCloseButton": "Close"
+}

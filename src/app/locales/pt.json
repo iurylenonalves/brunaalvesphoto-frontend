@@ -1,0 +1,121 @@
+{
+  "openMenu": "Abrir menu",
+  "closeMenu": "Fechar menu",
+  "about": "Sobre",
+  "portfolio": "Portfólio",
+  "contact": "Contato",
+  "whatsappMessage": "Olá, gostaria de saber mais sobre seus serviços",
+
+
+  "heroTitle": "Registros que contam sua história",
+  "heroSubtitle": "Fotografia para viagens, negócios e momentos inesquecíveis.",
+  "contactButton": "Entre em contato",
+
+
+  "aboutTitle": "Bruna Alves",
+  "aboutText1": "Oi! Eu sou a Bruna, mas você também pode me chamar de Bru (coisa de paulistana, né?!). Londres sempre foi o meu sonho de adolescente, e em 2018 tive a felicidade de realizá-lo. Me mudei para cá com meu marido e minha filha, e foi aqui que nossa família cresceu ainda mais, com a chegada de mais dois filhos.",
+  "aboutText2": "Desde então, estive em busca de novas experiências, e foi nessa cidade incrível que encontrei o cenário perfeito para transformar minha paixão em profissão. A fotografia sempre foi meu grande amor, e meu maior desejo é eternizar momentos especiais — assim como minha mãe sempre fez — porque acredito que todos merecem guardar lembranças inesquecíveis!",
+  "whatsappButton": "Fale comigo no WhatsApp",
+
+  
+  "portfolioTitle": "Meu Portfólio",
+  "portfolioImagesDetails": "Ver detalhes",
+
+
+  "categoryAll": "Todos",
+  "categoryTourist": "Turístico",
+  "categoryProfessional": "Profissional",
+  "categoryStudio": "Estúdio",
+
+  "modalArialLabelClose": "Fechar",
+  "modalArialLabelPrevious": "Imagem Anterior",
+  "modalArialLabelNext": "Próxima Imagem",
+
+
+  "paginationPrevious": "Anterior",
+  "paginationNext": "Próximo",
+  "paginatonAriaLabel": "Página Anterior",
+  "paginationAriaLabe2": "Próxima Página",
+
+  
+  "contactNameRequired": "Nome é obrigatório",
+  "contactEmailRequired": "Email é obrigatório",
+  "contactInvalidEmail": "Email inválido",
+  "contactMessageRequired": "Mensagem é obrigatória",
+  "contactTitle": "Bruna Alves",
+  "contactImageAlt": "Fotógrafa Bruna Alves",
+  "contactSubtitle": "Entre em Contato",
+  "contactText1": "Quer transformar seus momentos em registros inesquecíveis? Seja para sua viagem, sua marca ou um retrato especial, estou aqui para capturar sua essência em cada clique.",
+  "contactText2": "Me mande uma mensagem e vamos conversar sobre o ensaio perfeito para você!",
+  "namePlaceholder": "Nome",
+  "emailPlaceholder": "Email",
+  "messagePlaceholder": "Mensagem",
+  "sendingMessageButton": "Enviando Mensagem...",
+  "sendMessageButton": "Enviar Mensagem",
+  "contactSuccess": "Sua mensagem foi enviada com sucesso!",
+  "contactError": "Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente mais tarde.",
+  "nameLabel": "Nome",
+  "emailLabel": "Email",
+  "messageLabel": "Mensagem",
+  "nameMinLength": "Nome deve ter no mínimo 3 caracteres",
+  "emailInvalid": "Email inválido",
+  "messageMinLength": "Mensagem deve ter no mínimo 10 caracteres",
+  "validationSubjectForm": "Nova mensagem do formulário de contato",
+  "errorMessage": "Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente mais tarde.",
+  "networkError": "Erro de rede. Por favor, verifique sua conexão e tente novamente.",
+  "loadingMessage": "Enviando sua mensagem...",
+  "successMessage": "Sua mensagem foi enviada com sucesso!",
+  "tooManyRequests": "Muitas solicitações. Por favor, tente novamente mais tarde.",
+  "loading": "Enviando...",
+
+
+  "footerAbout": "Sobre",
+  "footerContact": "Contato",
+  "footerPrivacyPolicy": "Política de Privacidade",
+  "footerRights": "2025 Bruna Alves. Todos os direitos reservados..",
+
+
+  "privacyPolicyTitle": "Política de Privacidade",
+  "section1Title": "1. Introdução",
+
+  "section1Content1": "Bem-vindo(a) ao site da ",
+  "section1Content2": "! Respeitamos sua privacidade e estamos comprometidos em proteger seus dados pessoais. Esta política explica como coletamos, usamos e protegemos suas informações, de acordo com a ",
+  "section1Content3": "Lei Geral de Proteção de Dados (LGPD) - Brasil",
+  "section1Content4": " e o ",
+  "section1Content5": "Regulamento Geral de Proteção de Dados (GDPR) - Reino Unido",
+  "section1Content6": ".",
+
+  "section2Title": "2. Dados Coletados",
+  "section2Content": "Podemos coletar os seguintes dados quando você utiliza nosso site ou entra em contato:",
+  "section2List1": "Informações sobre sua navegação no site (cookies e tecnologias semelhantes).",
+
+  "section3Title": "3. Uso das Informações",
+  "section3Content": "Seus dados podem ser utilizados para:",
+  "section3List1": "Responder a dúvidas e solicitações;",
+  "section3List2": "Agendar sessões fotográficas;",
+  "section3List3": "Melhorar a experiência do usuário no site;",
+  "section3List4": "Cumprir obrigações legais e regulatórias.",
+
+  "section4Title": "4. Compartilhamento de Dados",
+  "section4Content": "Não vendemos nem compartilhamos seus dados com terceiros, exceto quando necessário para cumprir obrigações legais ou quando houver consentimento explícito.",
+  
+  "section5Title": "5. Armazenamento e Segurança",
+  "section5Content": "Seus dados são armazenados de maneira segura e protegidos contra acessos não autorizados. Implementamos medidas técnicas e organizacionais para garantir a segurança das suas informações.",
+  
+  "section6Title": "6. Seus Direitos",
+  "section6Content": "Você tem o direito de:",
+  "section6List1": "Solicitar acesso aos seus dados;",
+  "section6List2": "Corrigir informações incorretas;",
+  "section6List3": "Pedir a exclusão dos seus dados (salvo quando houver necessidade legal de retenção);",
+  "section6List4": "Retirar seu consentimento para o uso dos dados.",
+  "section6Contact": "Se desejar exercer algum desses direitos, entre em contato pelo e-mail:",
+  
+  "section7Title": "7. Cookies",
+  "section7Content": "Nosso site pode usar cookies para melhorar sua experiência. Você pode desativá-los nas configurações do seu navegador, mas isso pode afetar algumas funcionalidades do site.",
+  
+  "section8Title": "8. Alterações na Política",
+  "section8Content": "Esta política pode ser atualizada a qualquer momento para garantir conformidade com as leis aplicáveis. Recomendamos que você consulte esta página periodicamente.",
+  
+  "section9Title": "9. Contato",
+  "privacyPolicyCloseButton": "Fechar"
+}

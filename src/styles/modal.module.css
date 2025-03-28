@@ -1,0 +1,109 @@
+.modalWrapper {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.closeButton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: white;
+  font-size: 2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 60;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 2rem;
+  /* background: rgba(128, 128, 128, 0.5); */
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 60;
+  width: 40px; 
+  height: 40px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navButtonLeft {
+  left: 10px;
+}
+
+.navButtonRight {
+  right: 10px;
+}
+
+.imageWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+}
+
+.imageWrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modalTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.modalBody {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
