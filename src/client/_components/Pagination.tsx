@@ -19,7 +19,7 @@ const Pagination = ({ totalItems, itemsPerPage, currentPage, onPageChange }: Pag
     if (isDisabled) return "px-4 py-2 rounded bg-gray-200 text-gray-400 cursor-not-allowed";
     return isActive
       ? "px-4 py-2 rounded bg-gray-400 text-white shadow-md"
-      : "px-4 py-2 rounded bg-gray-300 text-gray-800 hover:bg-gray-400";
+      : "px-4 py-2 rounded bg-gray-300 text-gray-800 hover:bg-gray-400 cursor-pointer";
   };
 
   return (
