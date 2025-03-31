@@ -52,7 +52,7 @@ export const useContactForm = (locale: string, translations: Translations) => {
 
     if (!validateForm()) return;
 
-    const VERCEL_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://default-api-url.com';
+    const VERCEL_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api-brunaphoto-vercel.vercel.app/api/contacts';
 
     setStatus(translations.loading || 'loading');
 

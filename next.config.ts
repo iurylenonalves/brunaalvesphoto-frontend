@@ -4,15 +4,8 @@ const nextConfig = {
   images: {
     unoptimized: true, // Permite imagens sem otimização
   },
-  trailingSlash: true,
-  reactStrictMode: true,
-  
-  // Configurações para rotas estáticas
-  exportPathMap: async function () {
-    return {
-      '/': { page: '/' },
-    };
-  },
-};
+  trailingSlash: true, // Adiciona uma barra no final das URLs
+  reactStrictMode: true, // Habilita o modo estrito do React
+  };
 
 module.exports = nextConfig;
