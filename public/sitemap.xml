@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Página inicial (Inglês) -->
+  <url>
+    <loc>https://www.brunaalvesphoto.com/</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/hero-image-large.webp</image:loc>
+      <image:caption>Photo session Bruna Alves Photography at London Eye, London</image:caption>
+      <image:title>Photo London Eye</image:title>
+    </image:image>
+  </url>
+
+  <!-- Página inicial (Português) -->
+  <url>
+    <loc>https://www.brunaalvesphoto.com/pt/</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/hero-image-large.webp</image:loc>
+      <image:caption>Sessão de foto Bruna Alves Fotografia na London Eye, Londres</image:caption>
+      <image:title>Foto London Eye</image:title>
+    </image:image>
+  </url>
+
+  <!-- Seção "Portfólio" (Inglês) -->
+  <url>
+    <loc>https://www.brunaalvesphoto.com/#portfolio</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <!-- Imagens do portfólio -->
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour01-large.webp</image:loc>
+      <image:caption>Scenic landscape from an exclusive photo tour London</image:caption>
+      <image:title>Tour Photography London</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour02-large.webp</image:loc>
+      <image:caption>A tourist’s dream: London Eye and red phone booth in one perfect frame</image:caption>
+      <image:title>London Landmarks – Phone Booth and London Eye Together</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour04-large.webp</image:loc>
+      <image:caption>Tourist photo session at Big Ben, London</image:caption>
+      <image:title>Tourist Photography - Big Ben</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour07-large.webp</image:loc>
+      <image:caption>Breathtaking moment captured during a trip London</image:caption>
+      <image:title>Travel Photography</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour08-large.webp</image:loc>
+      <image:caption>A classic view of Tower Bridge</image:caption>
+      <image:title>Tower Bridge photoshoot</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour11-large.webp</image:loc>
+      <image:caption>The majestic Tower Bridge rising over the River Thames at dawn</image:caption>
+      <image:title>Tower Bridge – A Timeless London Landmark</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour12-large.webp</image:loc>
+      <image:caption>A close-up of Big Ben’s clock face in the morning light</image:caption>
+      <image:title>Big Ben, Iconic Timepiece of London</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour17-large.webp</image:loc>
+      <image:caption>A stunning view of the London Eye</image:caption>
+      <image:title>London Eye, The Iconic Ferris Wheel of London</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour18-large.webp</image:loc>
+      <image:caption>Walking along Tower Bridge</image:caption>
+      <image:title>Tower Bridge – A Street-Level Experience on London’s Landmark</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour19-large.webp</image:loc>
+      <image:caption>A vintage red phone booth with Big Ben in the background</image:caption>
+      <image:title>London’s Red Phone Booth – Timeless British Charm</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/studio01-large.webp</image:loc>
+      <image:caption>Elegant studio portrait with controlled lighting and clean background</image:caption>
+      <image:title>Studio Portrait – Minimalist and Elegant</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/studio04-large.webp</image:loc>
+      <image:caption>Studio photo session highlighting soft shadows and expressive pose</image:caption>
+      <image:title>Fine Art Studio Photography – Expressive Portrait</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/studio05-large.webp</image:loc>
+      <image:caption>Professional studio lighting emphasizing facial features</image:caption>
+      <image:title>Beauty Portrait – Studio Light Perfection</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/studio09-large.webp</image:loc>
+      <image:caption> High-end fashion portrait captured in a professional studio</image:caption>
+      <image:title>Fashion Studio Portrait – Editorial Look</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/work01-large.webp</image:loc>
+      <image:caption>Corporate headshot for business professionals</image:caption>
+      <image:title>Corporate Headshot Photography</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/work03-large.webp</image:loc>
+      <image:caption>Creative corporate photography for marketing and branding campaigns</image:caption>
+      <image:title>Corporate Photography – Visual Identity for Professionals</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/work09-large.webp</image:loc>
+      <image:caption>Branding photo session for a female entrepreneur</image:caption>
+      <image:title>Personal Brand Photography – Women in Business</image:title>
+    </image:image>    
+    <!-- Adicione mais imagens conforme necessário -->
+  </url>
+
+  <!-- Seção "Portfólio" (Português) -->
+  <url>
+    <loc>https://www.brunaalvesphoto.com/pt/#portfolio</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <!-- Imagens do portfólio -->
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour01-large.webp</image:loc>
+      <image:caption>Tour fotográfico exclusivo em Londres</image:caption>
+      <image:title>Fotografia de turismo em Londres</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour02-large.webp</image:loc>
+      <image:caption>Um cenário perfeito para turistas: London Eye e cabine vermelha juntas</image:caption>
+      <image:title>Ponto Turístico de Londres – Cabine e Roda-Gigante no Mesmo Quadro</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour04-large.webp</image:loc>
+      <image:caption>Sessão de fotos turísticas na Big ben, Londres</image:caption>
+      <image:title>Fotografia Turística - Tower Bridge</image:title>
+    </image:image>    
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour07-large.webp</image:loc>
+      <image:caption>Momento capturado durante uma viagem em Londres</image:caption>
+      <image:title>Fotografia de Viagem</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour08-large.webp</image:loc>
+      <image:caption>A clássica vista da Tower Bridge</image:caption>
+      <image:title>Sessão de foto Tower Bridge</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour11-large.webp</image:loc>
+      <image:caption>A majestosa Tower Bridge sobre o Rio Tâmisa ao amanhecer</image:caption>
+      <image:title>Tower Bridge – Um Marco Atemporal de Londres</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour12-large.webp</image:loc>
+      <image:caption>Close no mostrador do Big Ben ao amanhecer</image:caption>
+      <image:title>Big Ben, O Relógio Icônico de Londres</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour17-large.webp</image:loc>
+      <image:caption>Uma vista deslumbrante da London Eye</image:caption>
+      <image:title>London Eye, A Icônica Roda-Gigante de Londres</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour18-large.webp</image:loc>
+      <image:caption>Caminhando pela Tower Bridge</image:caption>
+      <image:title>Tower Bridge – Uma Experiência Fotográfica</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/tour19-large.webp</image:loc>
+      <image:caption>Uma cabine telefônica vermelha com o Big Ben ao fundo</image:caption>
+      <image:title>Cabine Telefônica de Londres – O Charme Britânico Atemporal</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/studio01-large.webp</image:loc>
+      <image:caption>Retrato elegante em estúdio com luz controlada e fundo limpo</image:caption>
+      <image:title>Retrato em Estúdio – Minimalista e Elegante</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/studio04-large.webp</image:loc>
+      <image:caption>Sessão em estúdio com sombras suaves e pose expressiva</image:caption>
+      <image:title>Fotografia Fine Art em Estúdio – Retrato Expressivo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/studio05-large.webp</image:loc>
+      <image:caption>Iluminação profissional de estúdio realçando traços do rosto</image:caption>
+      <image:title>Beauty Retrato de Beleza – Perfeição com Luz de Estúdio</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/studio09-large.webp</image:loc>
+      <image:caption> Retrato de moda em estúdio com estilo editorial</image:caption>
+      <image:title>Retrato de Moda em Estúdio – Visual Editorial</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/work01-large.webp</image:loc>
+      <image:caption>Foto corporativa para profissionais de negócios</image:caption>
+      <image:title>Fotografia Corporativa</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/work03-large.webp</image:loc>
+      <image:caption>Fotografia corporativa criativa para campanhas de marketing e branding</image:caption>
+      <image:title>Fotografia Corporativa – Identidade Visual para Profissionais</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/work09-large.webp</image:loc>
+      <image:caption>Sessão de fotos de branding para empreendedora</image:caption>
+      <image:title>Fotografia de Branding Pessoal – Mulheres nos Negócios</image:title>
+    </image:image>
+    <!-- Adicione mais imagens conforme necessário -->
+  </url>
+
+  <!-- Seção "Contato" (Inglês) -->
+  <url>
+    <loc>https://www.brunaalvesphoto.com/#contact</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/contact-image-large.webp</image:loc>
+      <image:caption>Portrait of Bruna Alves, the photographer behind brunaalvesphoto.com</image:caption>
+      <image:title>Bruna Alves – London-Based Photographer</image:title>
+    </image:image>
+  </url>
+
+  <!-- Seção "Contato" (Português) -->
+  <url>
+    <loc>https://www.brunaalvesphoto.com/pt/#contact</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/contact-image-large.webp</image:loc>
+      <image:caption>Retrato de Bruna Alves, fotógrafa do site brunaalvesphoto.com</image:caption>
+      <image:title>Bruna Alves – Fotógrafa em Londres</image:title>
+    </image:image>
+  </url>
+
+  <!-- Seção "Sobre" (Inglês) -->
+  <url>
+    <loc>https://www.brunaalvesphoto.com/#about</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/about-image-large.webp</image:loc>
+      <image:caption>Behind the lens – Bruna Alves, London photographer</image:caption>
+      <image:title>Bruna Alves Portrait – About the Photographer</image:title>
+    </image:image>
+  </url>
+
+  <!-- Seção "Sobre" (Português) -->
+  <url>
+    <loc>https://www.brunaalvesphoto.com/pt/#about</loc>
+    <lastmod>2025-04-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.brunaalvesphoto.com/images/about-image-large.webp</image:loc>
+      <image:caption>Por trás da lente – Bruna Alves, fotógrafa em Londres</image:caption>
+      <image:title>Retrato de Bruna Alves – Sobre a Fotógrafa</image:title>
+    </image:image>
+  </url>
+</urlset>
