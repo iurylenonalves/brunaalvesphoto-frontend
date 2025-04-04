@@ -13,7 +13,7 @@ import MobileMenu from './MobileMenu';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { translations } = useTranslations();
+  const { translations, locale } = useTranslations();
 
   const toggleMenu = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -23,7 +23,7 @@ const Header = () => {
     <header className={styles.header}>
       <div className={styles.container}>
         {/* Logo */}
-        <Link href="/" className={styles.logoImg}>
+        <Link href={locale === "pt" ? "/pt" : "/"} className={styles.logoImg}>
         <Image 
           src="/images/bruna-logo-white.svg" 
           alt="Logo" 

@@ -17,25 +17,26 @@ interface TranslationContextType {
 // Set the type for the component's children
 interface TranslationProviderProps {
   children: React.ReactNode;
+  initialLocale: string;
 }
 
 // Create the TranslationContext with an initial undefined value
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
 
 // Add the type to the props component
-export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children }) => {
-  const [locale, setLocaleState] = useState<string>("en");
-  const [translations, setTranslations] = useState<Translations>(en)
+export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children, initialLocale }) => {
+  const [locale, setLocaleState] = useState<string>(initialLocale);
+  const [translations, setTranslations] = useState<Translations>(initialLocale === "pt" ? pt : en);
   const [isHydrated, setIsHydrated] = useState(false);
   
   // useEffect to sync the locale and translations with the localStorage
   useEffect(() => {
-    const savedLocale = localStorage.getItem("locale") || "en";
+    const savedLocale = localStorage.getItem("locale") || initialLocale;
     console.log("Saved locale:", savedLocale);
     setLocaleState(savedLocale);
     setTranslations(savedLocale === "pt" ? pt : en);
     setIsHydrated(true);
-  }, []);
+  }, [initialLocale]);
 
   // Function to set the locale and translations
   const setLocale = (newLocale: string) => {

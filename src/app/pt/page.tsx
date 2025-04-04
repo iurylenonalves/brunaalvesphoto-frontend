@@ -6,9 +6,9 @@ import Hero from "@/client/_components/Hero";
 import Portfolio from "@/client/_components/Portfolio";
 import { TranslationProvider } from "@/context/TranslationContext";
 
-export default function Home() {
+export default function HomePT() {
   return (
-    <TranslationProvider initialLocale="en">
+    <TranslationProvider initialLocale="pt">
       <main>
         <Header />
         <Hero />

@@ -1,11 +1,13 @@
 'use client'
 
+import { useRouter } from "next/navigation";
 import { useTranslations } from "@/context/TranslationContext";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "../../styles/toggleLanguageButton.module.css";
 
 const ToggleLanguageButton = () => {
+  const router = useRouter();
   const { locale, setLocale } = useTranslations();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -39,7 +41,9 @@ const ToggleLanguageButton = () => {
 
   // Toggle the language between English and Portuguese
   const toggleLanguage = () => {
-    setLocale(locale === "en" ? "pt" : "en");
+    const newLocale = locale === "en" ? "pt" : "en";
+    setLocale(newLocale);
+    router.push(newLocale === "en" ? "/" : "/pt/");
   };
   
   // Determine which flag to show based on the current locale
