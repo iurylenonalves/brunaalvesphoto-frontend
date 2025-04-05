@@ -56,10 +56,7 @@ const metadataPt: Metadata = {
 };
 
 // Exporta os metadados com base na rota
-export const metadata: Metadata = {
-  title: "Default Title", // Será sobrescrito dinamicamente
-  description: "Default Description", // Será sobrescrito dinamicamente
-};
+export const metadata: Metadata = {};
 
 export default function RootLayout({
   children,
@@ -90,7 +87,7 @@ export default function RootLayout({
               : (metadataEn.openGraph?.images as { url: string })?.url || ""
             : Array.isArray(metadataPt.openGraph?.images)
               ? (metadataPt.openGraph?.images[0] as { url: string })?.url || ""
-              : (metadataPt.openGraph?.images as { url: string })?.url || ""
+            : (metadataPt.openGraph?.images as { url: string })?.url || ""
         )}
       />
       <meta property="og:locale" content={String(isEnglish ? metadataEn.openGraph?.locale || "" : metadataPt.openGraph?.locale || "")} />
