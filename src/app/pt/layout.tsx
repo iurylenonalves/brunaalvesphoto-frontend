@@ -5,7 +5,14 @@ export const metadata: Metadata = {
   title: "Fotógrafa Brasileira em Londres",
   description:
     "Quer transformar seus momentos em registros inesquecíveis? Seja para sua viagem, sua marca ou um retrato especial, estou aqui para capturar sua essência em cada clique.",
-  metadataBase: new URL("https://www.brunaalvesphoto.com"),  // Removido o /pt do metadataBase
+  metadataBase: new URL("https://www.brunaalvesphoto.com"),
+  alternates: {
+    canonical: "/pt",
+    languages: {
+      "pt": "/pt",
+      "en": "/",
+    },
+  },  // Removido o /pt do metadataBase
   openGraph: {
     title: "Fotógrafa Brasileira em Londres",
     description:

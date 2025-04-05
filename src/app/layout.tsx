@@ -104,6 +104,7 @@ export default function RootLayout({
         <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="en" />
         <link rel="alternate" href="https://www.brunaalvesphoto.com/pt/" hrefLang="pt" />
         <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="x-default" />
+        <link rel="canonical" href="https://www.brunaalvesphoto.com/" />
         
         {/* Script para detecção de idioma no cliente */}
         <script dangerouslySetInnerHTML={{ __html: scriptContent }} />
