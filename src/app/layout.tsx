@@ -33,7 +33,14 @@ export const metadata: Metadata = {
     locale: "en_GB",
     url: "https://www.brunaalvesphoto.com",
     siteName: "Brazilian Photographer in London",
-    images: [{ url: "/images/hero-image-large.webp" }],
+    images: [
+      { 
+        url: "https://www.brunaalvesphoto.com/images/hero-image-large.webp",  // URL absoluta
+        width: 1200,
+        height: 630,
+        alt: "Brazilian Photographer in London"
+      }
+    ],
   },
 };
 
