@@ -19,8 +19,8 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
-// Metadados estáticos para rotas em inglês
-const metadataEn: Metadata = {
+// Metadados estáticos para inglês (padrão)
+export const metadata: Metadata = {
   title: "Brazilian Photographer in London",
   description:
     "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
@@ -37,69 +37,73 @@ const metadataEn: Metadata = {
   },
 };
 
-// Metadados estáticos para rotas em português
-const metadataPt: Metadata = {
-  title: "Fotógrafa Brasileira em Londres",
-  description:
-    "Quer transformar seus momentos em registros inesquecíveis? Seja para sua viagem, sua marca ou um retrato especial, estou aqui para capturar sua essência em cada clique.",
-  metadataBase: new URL("https://www.brunaalvesphoto.com/pt"),
-  openGraph: {
-    title: "Fotógrafa Brasileira em Londres",
-    description:
-      "Quer transformar seus momentos em registros inesquecíveis? Seja para sua viagem, sua marca ou um retrato especial, estou aqui para capturar sua essência em cada clique.",
-    type: "website",
-    locale: "pt_BR",
-    url: "https://www.brunaalvesphoto.com/pt",
-    siteName: "Fotógrafa Brasileira em Londres",
-    images: [{ url: "/images/hero-image-large.webp" }],
-  },
-};
-
-// Exporta os metadados com base na rota
-export const metadata: Metadata = {};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+  // Script para detecção de idioma
+  const scriptContent = `
+    (function() {
+      const pathname = window.location.pathname;
+      const isPt = pathname.startsWith('/pt');
+      
+      // Define o atributo lang no elemento html
+      document.documentElement.lang = isPt ? 'pt' : 'en';
+      
+      // Atualiza os metadados dinamicamente se estiver na versão PT
+      if (isPt) {
+        document.title = "Fotógrafa Brasileira em Londres";
+        
+        // Verifica se os elementos existem antes de tentar modificá-los
+        const descriptionTag = document.querySelector('meta[name="description"]');
+        if (descriptionTag) {
+          descriptionTag.setAttribute('content', "Quer transformar seus momentos em registros inesquecíveis? Seja para sua viagem, sua marca ou um retrato especial, estou aqui para capturar sua essência em cada clique.");
+        }
+        
+        const ogTitleTag = document.querySelector('meta[property="og:title"]');
+        if (ogTitleTag) {
+          ogTitleTag.setAttribute('content', "Fotógrafa Brasileira em Londres");
+        }
+        
+        const ogDescTag = document.querySelector('meta[property="og:description"]');
+        if (ogDescTag) {
+          ogDescTag.setAttribute('content', "Quer transformar seus momentos em registros inesquecíveis? Seja para sua viagem, sua marca ou um retrato especial, estou aqui para capturar sua essência em cada clique.");
+        }
+        
+        const ogUrlTag = document.querySelector('meta[property="og:url"]');
+        if (ogUrlTag) {
+          ogUrlTag.setAttribute('content', "https://www.brunaalvesphoto.com/pt");
+        }
+        
+        const ogLocaleTag = document.querySelector('meta[property="og:locale"]');
+        if (ogLocaleTag) {
+          ogLocaleTag.setAttribute('content', "pt_BR");
+        }
+        
+        const ogSiteNameTag = document.querySelector('meta[property="og:site_name"]');
+        if (ogSiteNameTag) {
+          ogSiteNameTag.setAttribute('content', "Fotógrafa Brasileira em Londres");
+        }
+      }
+    })();
+  `;
 
-  const isEnglish = pathname === "/" || pathname.startsWith("/en");
-  
   return (
-    <html lang={isEnglish ? "en" : "pt"}>
+    <html>
       <head>
-      <title>{String(isEnglish ? metadataEn.title : metadataPt.title)}</title>
-      <meta name="description" content={String(isEnglish ? metadataEn.description : metadataPt.description)} />
-
-      <meta property="og:title" content={String(isEnglish ? metadataEn.openGraph?.title || "" : metadataPt.openGraph?.title || "")} />
-      <meta property="og:description" content={String(isEnglish ? metadataEn.openGraph?.description || "" : metadataPt.openGraph?.description || "")} />
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={String(isEnglish ? metadataEn.openGraph?.url || "" : metadataPt.openGraph?.url || "")} />
-      <meta property="og:site_name" content={String(isEnglish ? metadataEn.openGraph?.siteName || "" : metadataPt.openGraph?.siteName || "")} />
-      <meta
-        property="og:image"
-        content={String(
-          isEnglish
-            ? Array.isArray(metadataEn.openGraph?.images)
-              ? (metadataEn.openGraph?.images[0] as { url: string })?.url || ""
-              : (metadataEn.openGraph?.images as { url: string })?.url || ""
-            : Array.isArray(metadataPt.openGraph?.images)
-              ? (metadataPt.openGraph?.images[0] as { url: string })?.url || ""
-            : (metadataPt.openGraph?.images as { url: string })?.url || ""
-        )}
-      />
-      <meta property="og:locale" content={String(isEnglish ? metadataEn.openGraph?.locale || "" : metadataPt.openGraph?.locale || "")} />
-
+        {/* Metadados serão injetados pelo Next.js usando o objeto metadata exportado */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="en" />
         <link rel="alternate" href="https://www.brunaalvesphoto.com/pt/" hrefLang="pt" />
         <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="x-default" />
+        
+        {/* Script para detecção de idioma no cliente */}
+        <script dangerouslySetInnerHTML={{ __html: scriptContent }} />
       </head>
-      <body className={`${questrial.variable} ${raleway.variable} antialiased`}
-      >
+      <body className={`${questrial.variable} ${raleway.variable} antialiased`}>
         {children}
-        <AosInit/>        
+        <AosInit />
       </body>
     </html>
   );
