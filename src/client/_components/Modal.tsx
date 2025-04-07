@@ -70,12 +70,12 @@ const Modal = ({ images, selectedIndex, onClose }: ModalProps) => {
       <div className={`${styles.imageWrapper}`}>
         <Image
           src={images[currentIndex]}
-          alt={`Imagem ${currentIndex + 1}`}
-          layout="intrinsic"  
+          alt={`Imagem ${currentIndex + 1}`}          
           width={1200}
           height={800}
+          sizes="(max-width: 1140px) 90vw, 1140px"         
           objectFit="contain"
-          className="rounded-lg"
+          className={`${styles.modalImage} rounded-lg`}
         />
       </div>
 
