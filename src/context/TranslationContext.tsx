@@ -27,30 +27,27 @@ const TranslationContext = createContext<TranslationContextType | undefined>(und
 export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children, initialLocale }) => {
   const [locale, setLocaleState] = useState<string>(initialLocale);
   const [translations, setTranslations] = useState<Translations>(initialLocale === "pt" ? pt : en);
-  const [isHydrated, setIsHydrated] = useState(false);
+  //const [isHydrated, setIsHydrated] = useState(false);
   
   // useEffect to sync the locale and translations with the localStorage
   useEffect(() => {
-    const savedLocale = localStorage.getItem("locale") || initialLocale;
-    console.log("Saved locale:", savedLocale);
-    setLocaleState(savedLocale);
-    setTranslations(savedLocale === "pt" ? pt : en);
-    setIsHydrated(true);
-  }, [initialLocale]);
+    const savedLocale = localStorage.getItem("locale");
+    if (savedLocale && savedLocale !== locale) {
+      setLocale(savedLocale);
+    }
+  }, []);
 
   // Function to set the locale and translations
   const setLocale = (newLocale: string) => {
     setLocaleState(newLocale);
     setTranslations(newLocale === "pt" ? pt : en);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("locale", newLocale);
-    }
+    localStorage.setItem("locale", newLocale);
   };
 
   // Prevent rendering until the client-side hydration is complete
-  if (!isHydrated) {
-    return null;
-  }
+  // if (!isHydrated) {
+  //   return null;
+  // }
 
   // Return the provider with the translations and locale
   return (
