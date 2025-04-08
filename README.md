@@ -57,6 +57,7 @@ The project is currently in MVP phase with core functionality implemented. We're
 - **Backend**: Node.js, Express
 - **Database**: Prisma, PostgreSQL
 - **Authentication**: NextAuth.js
+- **Validation**: Zod
 - **Hosting/Deployment**: Vercel
 - **CI/CD**: GitHub Actions
 
@@ -67,10 +68,6 @@ The project is currently in MVP phase with core functionality implemented. We're
 - Tailwind CSS
 - Node.js version 18.x or higher
 - npm version 9.x or higher
-- Express
-- Prisma ORM
-- PostgreSQL instance (local or cloud)
-- NextAuth.js
 - Zod (for schema validation)
 
 ### Installation
@@ -208,7 +205,7 @@ We welcome contributions to this project. Please follow these steps:
 1. Fork the repository: [brunaalvesphoto-frontend](https://github.com/iurylenonalves/brunaalvesphoto-frontend.git)
 2. Clone your fork:
    ```bash
-   git clone https://github.com/your-username/photohub.git
+   git clone https://github.com/your-username/brunaalvesphoto-frontend.git
    cd brunaalvesphoto-frontend
    ```
 3. Create a feature branch (`git checkout -b feature/amazing-feature`)
