@@ -1,5 +1,7 @@
 # PhotoHub
 
+![Imagem do site](public/images/home-brunaphoto.PNG)
+
 ## Overview
 This project is a software solution that began as an MVP (Minimum Viable Product) and is evolving toward a SaaS (Software as a Service) model. This README documents the current state of the project, its architecture, setup instructions, and future development plans.
 
@@ -67,12 +69,13 @@ The project is currently in MVP phase with core functionality implemented. We're
 - Prisma ORM
 - PostgreSQL instance (local or cloud)
 - NextAuth.js
+- Zod (for schema validation)
 
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/iurylenonalves/photohub.git
-cd photohub
+git clone git@github.com:iurylenonalves/brunaalvesphoto-frontend.git
+cd brunaalvesphoto-frontend
 
 # Install dependencies
 npm install
@@ -90,19 +93,27 @@ npm run dev
 The project follows a modern architecture separating frontend and backend concerns while facilitating communication between them.
 
 ### Frontend Architecture
-The frontend is built with Next.js following the App Router pattern:
+The frontend is built with Next.js:
 ```bash
 photoapp/
+├── original-photos
 ├── public/
 │   └── images/
 │       ├── en.svg
 │       ├── pt.svg
+│       ├── sitemap.xml
 │       └── (other images)
+├── scripts/
+│       ├── optimize-images.js
+│       └── optimize-images.ts
 ├── src/
 │   ├── app/
 │   │   │── locales/
 │   │   │   ├── en.json
 │   │   │   └── pt.json
+│   │   │── pt/
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
 │   │   │── favivon.ico
 │   │   │── global.css
 │   │   │── layout.tsx
@@ -123,10 +134,19 @@ photoapp/
 │   │   │   ├── PrivacyPolicyModal.tsx
 │   │   │   ├── Testimonial.tsx
 │   │   │   └── ToggleLanguageButton.tsx
-│   ├── components
 │   ├── context/
 │   │   └── TranslationContext.tsx
+│   ├── hooks/
+│   │   └── useContactForm.ts
 │   ├── lib/
+│   │   │── errors/
+│   │   │   └── HttpsError.ts
+│   │   │── translations/
+│   │   │   ├── getTranslations.ts
+│   │   │   └── translations.ts
+│   │   └── utils.ts
+│   ├── schemas/
+│   │   └── ContactSchema.ts
 │   ├── styles/
 │   │   ├── footer.module.css
 │   │   ├── header.module.css
@@ -135,63 +155,35 @@ photoapp/
 │   │   ├── privacypolicymodal.module.css
 │   │   └── toggleLanguageButton.module.css
 ├── .gitignore
+├── components.json
+├── eslint.config.mjs
+├── LICENSE.md
 ├── next.config.ts
 ├── package.json
-└── README.md
+├── README.md
+├── tailwind.config.js
+└── tsconfig.json
 ```
 
 ### Backend Architecture
-The backend follows a layered architecture pattern:
-```bash
-photoapp/
-├── src/
-│   ├── server/
-│   │   │── controllers/
-│   │   │── middlewares/
-│   │   │── model/
-│   │   └── routes/
-├── .gitignore
-```
+The backend for this project has been moved to a separate repository. You can find it here:
 
-### Screen Flow
-Screen Flow Diagram
-
-### Architecture Diagram
-Architecture Diagram
-
-
-## API Documentation
-The API endpoints follow RESTful conventions. Here are the key endpoints:
-
-### Authentication and Users
-- `POST /api/auth/register`: Register new user
-- `POST /api/auth/login`: Sign in user
-- `GET /api/auth/profile`: Get current session
-
-### Photo Packages
-- `GET /api/packages`: Get photo Packages
-
-### Bookings
-- `POST /api/bookings`: Create booking
-- `GET /api/bookings`: Get user bookins
-
-### Photos
-- `GET /api/photos/pre-edited/1`: Get pre-edited photos
-- `GET /api/photos/select`: Select photos
-- `GET /api/photos/final/1/download`: Download final photos
-
-### Payments
-- `GET /api/payments`: Make payment
+[Backend Repository - API for Bruna Photo](https://github.com/iurylenonalves/api-brunaphoto-vercel)
 
 
 ## Roadmap
 ### Phase 1: MVP (Completed)
 - [x] Implement core functionality
-- [ ] Basic authentication
 - [x] Minimal viable UI/UX
-- [x] Initial deployment
+- [x] Integration with WhatsApp and Social Media
+- [x] Contact Form
+- [x] Consume backend API hosted on Vercel
+- [x] SEO optimization (metadata, OpenGraph, and sitemap.xml)
+- [x] Initial deployment (Vercel)
+- [x] Domain and hosting setup with Hostinger
 
 ### Phase 2: SaaS Transition (In Progress)
+- [ ] Basic authentication
 - [ ] Refactor for multi-tenancy
 - [ ] Authentication
 - [ ] Photo Packages
@@ -211,11 +203,11 @@ The API endpoints follow RESTful conventions. Here are the key endpoints:
 ## Contributing
 We welcome contributions to this project. Please follow these steps:
 
-1. Fork the repository: [Photohub](https://github.com/iurylenonalves/photohub)
+1. Fork the repository: [brunaalvesphoto-frontend](https://github.com/iurylenonalves/brunaalvesphoto-frontend.git)
 2. Clone your fork:
    ```bash
    git clone https://github.com/your-username/photohub.git
-   cd photohub
+   cd brunaalvesphoto-frontend
    ```
 3. Create a feature branch (`git checkout -b feature/amazing-feature`)
 4. Commit your changes (`git commit -m 'Add some amazing feature'`)
