@@ -63,6 +63,12 @@ const Header = () => {
             {translations.portfolio}
           </Link>
           <Link
+            href={locale === "pt" ? "/pt/blog" : "/blog"}
+            className={styles.navLink}
+          >
+            Blog
+          </Link>
+          <Link
             href={isHome ? "#contact" : locale === "pt" ? "/pt/contact" : "/contact"}
             className={styles.navLink}
             scroll={isHome}

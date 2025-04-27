@@ -2,7 +2,7 @@ import { Questrial, Raleway } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
 import { AosInit } from "@/client/_components/aos-init";
-
+import { TranslationProvider } from "@/context/TranslationContext";
 
 
 const questrial = Questrial({
@@ -59,7 +59,9 @@ export default function RootLayout({
         <link rel="canonical" href="https://www.brunaalvesphoto.com/" />        
       </head>
       <body className={`${questrial.variable} ${raleway.variable} antialiased`}>
-        {children}
+        <TranslationProvider initialLocale="en">
+          {children}
+        </TranslationProvider>
         <AosInit />
       </body>
     </html>

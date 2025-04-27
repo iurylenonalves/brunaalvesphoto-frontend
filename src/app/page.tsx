@@ -4,19 +4,16 @@ import Footer from "@/client/_components/Footer";
 import Header from "@/client/_components/Header";
 import Hero from "@/client/_components/Hero";
 import Portfolio from "@/client/_components/Portfolio";
-import { TranslationProvider } from "@/context/TranslationContext";
 
 export default function Home() {
   return (
-    <TranslationProvider initialLocale="en">
-      <main>
-        <Header />
-        <Hero />
-        <About />
-        <Portfolio />
-        <Contact />
-        <Footer />
-      </main>
-    </TranslationProvider>
+    <main>
+      <Header />
+      <Hero />
+      <About />
+      <Portfolio />
+      <Contact />
+      <Footer />
+    </main>
   );
 }

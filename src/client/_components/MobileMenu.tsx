@@ -37,6 +37,12 @@ const MobileMenu = ({ translations, setIsOpen, locale= "en" }: MobileMenuProps) 
         {translations.portfolio}
       </Link>
       <Link
+        href={locale === "pt" ? "/pt/blog" : "/blog"}
+        className={styles.navLink}
+      >
+        Blog
+      </Link>
+      <Link
         href={isHome ? "#contact" : locale === "pt" ? "/pt/contact" : "/contact"}
         onClick={() => setIsOpen(false)}
         scroll={isHome}
