@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createPost } from "@/lib/api";
+import { useAuth } from "@/client/_components/AuthContext";
 
 interface Block {
   type: "text" | "image";
@@ -16,6 +17,9 @@ export default function AdminPostForm({ onSuccess }: { onSuccess: () => void }) 
   const [locale, setLocale] = useState("en");
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { token } = useAuth();
 
   const addTextBlock = () => setBlocks([...blocks, { type: "text", content: "" }]);
   const addImageBlock = () => setBlocks([...blocks, { type: "image", file: null, alt: "" }]);
@@ -35,33 +39,43 @@ export default function AdminPostForm({ onSuccess }: { onSuccess: () => void }) 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("subtitle", subtitle);
-    formData.append("locale", locale);
-
-    // Serializa os blocos de texto e adiciona imagens ao FormData
-    const serializedBlocks = blocks.map((block, idx) => {
-      if (block.type === "text") {
-        return { type: "text", content: block.content };
-      } else if (block.type === "image" && block.file) {
-        formData.append(`image_${idx}`, block.file);
-        return { type: "image", src: `image_${idx}`, alt: block.alt || "" };
+    try {
+      if (!token) {
+        setError("You must be logged in to create a post.");
+        return;
       }
-      return null;
-    }).filter(Boolean);
 
-    formData.append("blocks", JSON.stringify(serializedBlocks));
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("subtitle", subtitle);
+      formData.append("locale", locale);
 
-    await createPost(formData);
+      const serializedBlocks = blocks.map((block, idx) => {
+        if (block.type === "text") {
+          return { type: "text", content: block.content };
+        } else if (block.type === "image" && block.file) {
+          formData.append(`image_${idx}`, block.file);
+          return { type: "image", src: `image_${idx}`, alt: block.alt || "" };
+        }
+        return null;
+      }).filter(Boolean);
 
-    setLoading(false);
-    setTitle("");
-    setSubtitle("");
-    setLocale("en");
-    setBlocks([]);
-    onSuccess();
+      formData.append("blocks", JSON.stringify(serializedBlocks));
+
+      await createPost(formData, token);
+
+      setTitle("");
+      setSubtitle("");
+      setLocale("en");
+      setBlocks([]);
+      onSuccess();
+    } catch (err) {
+      setError("Failed to create post. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -131,6 +145,8 @@ export default function AdminPostForm({ onSuccess }: { onSuccess: () => void }) 
           + Image
         </button>
       </div>
+
+      {error && <div className="text-red-600">{error}</div>}
 
       <button
         type="submit"

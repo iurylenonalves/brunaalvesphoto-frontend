@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { AosInit } from "@/client/_components/aos-init";
 import { TranslationProvider } from "@/context/TranslationContext";
+import { AuthProvider } from "@/client/_components/AuthContext";
 
 
 const questrial = Questrial({
@@ -59,9 +60,11 @@ export default function RootLayout({
         <link rel="canonical" href="https://www.brunaalvesphoto.com/" />        
       </head>
       <body className={`${questrial.variable} ${raleway.variable} antialiased`}>
-        <TranslationProvider initialLocale="en">
-          {children}
-        </TranslationProvider>
+        <AuthProvider>
+          <TranslationProvider initialLocale="en">
+            {children}
+          </TranslationProvider>
+        </AuthProvider>
         <AosInit />
       </body>
     </html>
