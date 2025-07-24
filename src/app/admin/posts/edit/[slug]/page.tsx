@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { getPostBySlug, updatePost } from "@/lib/api";
 import { useAuth } from "@/client/_components/AuthContext";
+import PostEditorForm from "@/client/_components/PostEditorForm";
+import Link from "next/link";
 
 interface Block {
   type: "text" | "image";
@@ -15,186 +17,156 @@ interface Block {
 
 export default function EditPostPage() {
   const { slug } = useParams() as { slug: string };
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  
+  // Get locale from query string or default to "en"
+  const [locale, setLocale] = useState<"en" | "pt">((searchParams.get("locale") as "en" | "pt") || "en");
+  
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
-  const [locale, setLocale] = useState<"en" | "pt">("en");
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [publishedAt, setPublishedAt] = useState("");
 
-  // Carrega o post existente
+  // Load post data
   useEffect(() => {
     if (!token) {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("redirectAfterLogin", window.location.pathname + window.location.search);
+      }
       router.push("/login");
       return;
     }
+    
+    setLoading(true);
+    setSaveSuccess(false);
+    setError(null);
+    
     getPostBySlug(slug, locale)
       .then(post => {
         setTitle(post.title);
         setSubtitle(post.subtitle);
-        setLocale(post.locale || "en");
-        // Remove src das imagens para edição
+        setLocale((post.locale as "en" | "pt") || "en");
+        setPublishedAt(post.publishedAt || "");
         setBlocks(
-          (post.blocks || []).map((block: Block) =>
+          (post.blocks || []).map((block: any) =>
             block.type === "image"
               ? { ...block, file: null }
               : block
-          )
+          ) as Block[]
         );
       })
-      //.catch(() => setError("Failed to load post"))
+      .catch((err) => {
+        console.error("Error fetching post:", err);
+        setError("Failed to load post. It may have been deleted or you don't have permission to view it.");
+        setTitle("Post not found");
+        setSubtitle("");
+        setLocale(locale);
+        setBlocks([]);
+      })
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, token, locale]);
+  }, [slug, token, locale, router]);
 
-  const handleBlockChange = (idx: number, value: any, field: string) => {
-    setBlocks(blocks.map((block, i) =>
-      i === idx ? { ...block, [field]: value } : block
-    ));
+  // Function to switch language
+  const handleLocaleChange = (newLocale: "en" | "pt") => {
+    router.push(`/admin/posts/edit/${slug}?locale=${newLocale}`);
   };
 
-  const handleImageChange = (idx: number, file: File | null) => {
-    setBlocks(blocks.map((block, i) =>
-      i === idx ? { ...block, file } : block
-    ));
-  };
-
-  const addTextBlock = () => setBlocks([...blocks, { type: "text", content: "" }]);
-  const addImageBlock = () => setBlocks([...blocks, { type: "image", file: null, alt: "" }]);
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Function to update the post
+  const handleUpdate = async (formData: FormData) => {
     setSaving(true);
     setError(null);
-
+    setSaveSuccess(false);
+    
     try {
-      if (!token) {
-        setError("You must be logged in.");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("subtitle", subtitle);
-      formData.append("locale", locale);
-
-      const serializedBlocks = blocks.map((block, idx) => {
-        if (block.type === "text") {
-          return { type: "text", content: block.content };
-        } else if (block.type === "image") {
-          if (block.file) {
-            formData.append(`image_${idx}`, block.file);
-            return { type: "image", src: `image_${idx}`, alt: block.alt || "" };
-          } else if (block.src) {
-            // Mantém a imagem antiga se não foi alterada
-            return { type: "image", src: block.src, alt: block.alt || "" };
-          }
-        }
-        return null;
-      }).filter(Boolean);
-
-      formData.append("blocks", JSON.stringify(serializedBlocks));
-
-      await updatePost(slug, formData, token, locale);
-
-      router.push("/admin/posts");
+      await updatePost(slug, formData, token!);
+      setSaveSuccess(true);
+      
+      // Wait a bit to show the success message before redirecting
+      setTimeout(() => {
+        router.push(`/admin/posts?locale=${locale}`);
+      }, 1500);
+      
     } catch (err) {
-      setError("Failed to update post.");
+      console.error("Error updating post:", err);
+      setError("Failed to update post. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-600">{error}</div>;
+  if (loading) return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+    </div>
+  );
 
   return (
     <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Edit Post</h1>
-      <form onSubmit={onSubmit} className="space-y-4">
-        <input
-          type="text"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          placeholder="Title"
-          className="w-full p-2 border rounded"
-          required
-        />
-        <input
-          type="text"
-          value={subtitle}
-          onChange={e => setSubtitle(e.target.value)}
-          placeholder="Subtitle"
-          className="w-full p-2 border rounded"
-          required
-        />
-        <select
-          value={locale}
-          onChange={e => setLocale(e.target.value as "en" | "pt")}
-          className="w-full p-2 border rounded"
-        >
-          <option value="en">English</option>
-          <option value="pt">Português</option>
-        </select>
-
-        <div className="space-y-4">
-          {blocks.map((block, idx) =>
-            block.type === "text" ? (
-              <textarea
-                key={idx}
-                value={block.content}
-                onChange={e => handleBlockChange(idx, e.target.value, "content")}
-                placeholder={`Text block #${idx + 1}`}
-                className="w-full p-2 border rounded h-32"
-                required
-              />
-            ) : (
-              <div key={idx} className="space-y-2">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={e => handleImageChange(idx, e.target.files?.[0] || null)}
-                  className="w-full p-2"
-                />
-                <input
-                  type="text"
-                  value={block.alt}
-                  onChange={e => handleBlockChange(idx, e.target.value, "alt")}
-                  placeholder="Alt text"
-                  className="w-full p-2 border rounded"
-                />
-                {/* Mostra imagem atual se não foi alterada */}
-                {block.src && !block.file && (
-                  <img src={block.src} alt={block.alt} className="max-h-32" />
-                )}
-              </div>
-            )
-          )}
+      {/* Header with navigation and action buttons */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-2">
+          <Link 
+            href="/admin/posts"
+            className="px-3 py-1 bg-gray-200 rounded-lg shadow text-gray-700 hover:bg-gray-300 transition-colors"
+          >
+            ← Back to posts
+          </Link>
+          <h1 className="text-3xl font-bold">Edit Post</h1>
         </div>
-
-        <div className="flex gap-2">
-          <button type="button" onClick={addTextBlock} className="bg-gray-200 px-3 py-1 rounded">
-            + Text
+        
+        <div className="flex items-center gap-2">
+          {/* Language selection */}
+          <button 
+            onClick={() => handleLocaleChange('en')} 
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${locale === 'en' ? 'bg-yellow-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+          >
+            English
           </button>
-          <button type="button" onClick={addImageBlock} className="bg-gray-200 px-3 py-1 rounded">
-            + Image
+          <button 
+            onClick={() => handleLocaleChange('pt')} 
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${locale === 'pt' ? 'bg-yellow-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+          >
+            Português
+          </button>
+          
+          {/* Logout button */}
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded-lg shadow cursor-pointer transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+            onClick={logout}
+          >
+            Logout
           </button>
         </div>
+      </div>
 
-        {error && <div className="text-red-600">{error}</div>}
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          disabled={saving}
-        >
-          {saving ? "Saving..." : "Save Changes"}
-        </button>
-      </form>
+      {/* Feedback messages */}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
+      
+      {saveSuccess && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+          Post updated successfully! Redirecting...
+        </div>
+      )}
+      
+      {/* Edit form */}
+      <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+        <PostEditorForm
+          initialData={{ title, subtitle, locale, blocks, publishedAt }}
+          onSubmit={handleUpdate}
+          loading={saving}
+          onSuccess={() => {}}
+        />
+      </div>
     </main>
   );
 }

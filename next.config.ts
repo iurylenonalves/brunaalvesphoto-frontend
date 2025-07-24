@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // Habilita exportação estática
+  //output: 'export', // Enables static export
   images: {
-    unoptimized: true, // Permite imagens sem otimização
+    unoptimized: true, // Allows unoptimized images
   },
-  trailingSlash: true, // Adiciona uma barra no final das URLs
-  reactStrictMode: true, // Habilita o modo estrito do React
+  trailingSlash: true, // Adds a trailing slash to URLs
+  reactStrictMode: true, // Enables React strict mode
   };
 
 module.exports = nextConfig;
