@@ -1,47 +1,275 @@
+// let mockPosts = [
+//   {
+//     slug: "exemplo-post",
+//     title: "Post de Exemplo",
+//     subtitle: "Este é um post de exemplo para visualização.",
+//     locale: "en",
+//     publishedAt: "2024-06-01",
+//     blocks: [
+//       { type: "text" as "text", content: "Conteúdo de exemplo." },
+//       { type: "image" as "image", src: "https://placekitten.com/400/200", alt: "Gatinho de exemplo" }
+//     ]
+//   },
+//   {
+//     slug: "exemplo-post-pt",
+//     title: "Post de Exemplo PT",
+//     subtitle: "Este é um post de exemplo para visualização em português.",
+//     locale: "pt",
+//     publishedAt: "2024-06-02",
+//     blocks: [
+//       { type: "text" as "text", content: "Conteúdo de exemplo em português." },
+//       { type: "image" as "image", src: "https://placekitten.com/400/200", alt: "Gatinho de exemplo" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-1",
+//     title: "Bride Portrait",
+//     subtitle: "By Bruna Alves",
+//     locale: "en",
+//     publishedAt: "2024-06-03",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Primeiro texto do post...</p>" },
+//       { type: "image" as "image", src: "/images/posts/studio09-large.webp", alt: "Bride Portrait" },
+//       { type: "text" as "text", content: "<p>Segundo texto do post...</p>" },
+//       { type: "image" as "image", src: "/images/posts/studio10-large.webp", alt: "Another photo" },
+//       { type: "text" as "text", content: "<p>Terceiro texto do post...</p>" },
+//       { type: "image" as "image", src: "/images/posts/studio11-large.webp", alt: "Last photo" },
+//       { type: "text" as "text", content: "<p>Texto final do post...</p>" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-2",
+//     title: "English Post 2",
+//     subtitle: "Subtitle EN 2",
+//     locale: "en",
+//     publishedAt: "2024-06-10",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 2.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en2.jpg", alt: "Image for English Post 2" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-3",
+//     title: "English Post 3",
+//     subtitle: "Subtitle EN 3",
+//     locale: "en",
+//     publishedAt: "2024-06-15",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 3.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en3.jpg", alt: "Image for English Post 3" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-4",
+//     title: "English Post 4",
+//     subtitle: "Subtitle EN 4",
+//     locale: "en",
+//     publishedAt: "2024-06-20",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 4.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en4.jpg", alt: "Image for English Post 4" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-5",
+//     title: "English Post 5",
+//     subtitle: "Subtitle EN 5",
+//     locale: "en",
+//     publishedAt: "2024-06-25",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 5.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en5.jpg", alt: "Image for English Post 5" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-6",
+//     title: "English Post 6",
+//     subtitle: "Subtitle EN 6",
+//     locale: "en",
+//     publishedAt: "2024-06-30",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 6.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en6.jpg", alt: "Image for English Post 6" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-7",
+//     title: "English Post 7",
+//     subtitle: "Subtitle EN 7",
+//     locale: "en",
+//     publishedAt: "2024-07-05",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 7.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en7.jpg", alt: "Image for English Post 7" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-8",
+//     title: "English Post 8",
+//     subtitle: "Subtitle EN 8",
+//     locale: "en",
+//     publishedAt: "2024-07-10",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 8.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en8.jpg", alt: "Image for English Post 8" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-9",
+//     title: "English Post 9",
+//     subtitle: "Subtitle EN 9",
+//     locale: "en",
+//     publishedAt: "2024-07-15",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 9.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en9.jpg", alt: "Image for English Post 9" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-10",
+//     title: "English Post 10",
+//     subtitle: "Subtitle EN 10",
+//     locale: "en",
+//     publishedAt: "2024-07-20",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 10.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en10.jpg", alt: "Image for English Post 10" }
+//     ]
+//   },
+//   {
+//     slug: "english-post-11",
+//     title: "English Post 11",
+//     subtitle: "Subtitle EN 11",
+//     locale: "en",
+//     publishedAt: "2024-07-25",
+//     blocks: [
+//       { type: "text" as "text", content: "<p>Content for English Post 11.</p>" },
+//       { type: "image" as "image", src: "/images/posts/en11.jpg", alt: "Image for English Post 11" }
+//     ]
+//   }
+// ];
+
+
+
+// export async function getPosts(locale: string) {
+//   // Retorna todos os posts do idioma selecionado
+//   return mockPosts.filter(post => post.locale === locale);
+// }
+
+// export async function getPostBySlug(slug: string, locale: string) {
+//   return mockPosts.find(post => post.slug === slug && post.locale === locale) || mockPosts[0];
+// }
+
+// export async function createPost(formData: FormData, token: string) {
+//   const title = formData.get("title") as string;
+//   const subtitle = formData.get("subtitle") as string;
+//   const locale = formData.get("locale") as string;
+//   const publishedAt = formData.get("publishedAt") as string; // <-- Adicione esta linha
+//   const blocks = JSON.parse(formData.get("blocks") as string);
+
+//   const slug = title
+//     .toLowerCase()
+//     .replace(/\s+/g, "-")
+//     .replace(/[^\w-]+/g, "")
+//     + "-" + Math.random().toString(36).substring(2, 6);
+
+//   // Inclua publishedAt no objeto
+//   const newPost = { slug, title, subtitle, locale, publishedAt, blocks };
+//   mockPosts = [newPost, ...mockPosts];
+//   return newPost;
+// }
+
+
+
+// export async function updatePost(slug: string, formData: FormData, token: string, locale: string) {
+//   const title = formData.get("title") as string;
+//   const subtitle = formData.get("subtitle") as string;
+//   const publishedAt = formData.get("publishedAt") as string; // <-- Adicione esta linha
+//   const blocks = JSON.parse(formData.get("blocks") as string);
+
+//   mockPosts = mockPosts.map(post =>
+//     post.slug === slug && post.locale === locale
+//       ? { ...post, title, subtitle, publishedAt, blocks }
+//       : post
+//   );
+//   return mockPosts.find(post => post.slug === slug && post.locale === locale);
+// }
+
+// export async function deletePost(slug: string, token: string, locale: string) {
+//   mockPosts = mockPosts.filter(post => !(post.slug === slug && post.locale === locale));
+//   return true;
+// }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined in your environment variables.");
+}
+
 export async function getPosts(locale: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts?locale=${locale}`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch posts");
-  return res.json();
+  const response = await fetch(`${API_URL}/api/posts?locale=${locale}`,{
+    cache: 'no-store',
+  });
+  if (!response.ok) {   
+    const errorBody = await response.text(); 
+    console.error("API Error Response:", errorBody);    
+    throw new Error(`Failed to fetch posts. Status: ${response.status}. Body: ${errorBody}`);
+  }
+  return response.json();
 }
 
 export async function getPostBySlug(slug: string, locale: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}?locale=${locale}`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch post");
-  return res.json();
+  const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`);
+  if (!response.ok) {    
+    return null; 
+  }
+  return response.json();
 }
 
 export async function createPost(formData: FormData, token: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
-    method: "POST",
+  const response = await fetch(`${API_URL}/api/posts`, {
+    method: 'POST',
     headers: {
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
     body: formData,
   });
 
-  if (!res.ok) throw new Error("Failed to create post");
-  return res.json();
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to create post');
+  }
+
+  return response.json();
 }
 
-export async function updatePost(slug: string, formData: FormData, token: string, locale: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}?locale=${locale}`, {
-    method: "PUT",
+export async function updatePost(slug: string, formData: FormData, token: string) {
+  const response = await fetch(`${API_URL}/api/posts/${slug}`, {
+    method: 'PUT',
     headers: {
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
     body: formData,
   });
-  if (!res.ok) throw new Error("Failed to update post");
-  return res.json();
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to update post');
+  }
+  return response.json();
 }
 
 export async function deletePost(slug: string, token: string, locale: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${slug}?locale=${locale}`, {
-    method: "DELETE",
+  const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`, {
+    method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`,
     },
   });
-  if (!res.ok) throw new Error("Failed to delete post");
-  return res.json();
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to delete post');
+  }  
+  return { success: true };
 }
