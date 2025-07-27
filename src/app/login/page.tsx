@@ -10,10 +10,12 @@ export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     setError(""); // clear any previous error
+    setLoading(true);
     try {
       // 1. Send the Google token to your backend for validation
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -39,10 +41,11 @@ export default function LoginPage() {
       } else {
         router.push("/admin/posts");
       }
-
     } catch (err) {
       console.error(err);
-      setError("Falha no login. Tente novamente.");
+      setError("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,14 +62,20 @@ export default function LoginPage() {
         <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-200 w-full max-w-sm flex flex-col items-center">
           <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">Login</h1>
           {error && <p className="text-red-600 mb-4 text-center">{error}</p>}
-
+          {loading && (
+            <div className="mb-4 flex justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-yellow-500"></div>
+            </div>
+          )}
           {/* Google OAuth Provider and Login Button */}
           <GoogleOAuthProvider clientId={clientId}>
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError("Google login failed")}
-              useOneTap // Enables one-tap sign-in
-            />
+            {!loading && (
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError("Google login failed")}
+                useOneTap // Enables one-tap sign-in
+              />
+            )}
           </GoogleOAuthProvider>
         </div>
       </main>
