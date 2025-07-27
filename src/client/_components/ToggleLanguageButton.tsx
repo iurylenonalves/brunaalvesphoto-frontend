@@ -57,21 +57,27 @@ const ToggleLanguageButton = ({ slug, relatedSlug }: ToggleLanguageButtonProps) 
       const targetPath = newLocale === "pt"
         ? `/pt/blog/${relatedSlug}`
         : `/blog/${relatedSlug}`;
-      router.push(targetPath);
-      window.location.reload();
+      window.location.href = targetPath;
       return;
     }
 
-    // Redirect to the appropriate blog page based on the current locale
-    // This logic assumes that the blog pages are structured as /blog for English and /pt
+    // If on blog page, redirect to the correct locale
     if (pathname.startsWith("/pt/blog")) {
-      router.push("/blog")
+      window.location.href = "/blog";
+      return;
     } else if (pathname.startsWith("/blog")) {
-      router.push("/pt/blog");
-    } else {
-      // Redirect to the home page in the new locale
-      router.push(newLocale === "en" ? "/" : "/pt/");
+      window.location.href = "/pt/blog";
+      return;
     }
+
+    // For home and static pages:
+    if (pathname === "/" || pathname === "/pt") {
+      router.push(newLocale === "en" ? "/" : "/pt/");
+      return;
+    }
+
+    // Fallback: smooth navigation
+    router.push(newLocale === "en" ? "/" : "/pt/");
   };
   
   // Determine which flag to show based on the current locale
