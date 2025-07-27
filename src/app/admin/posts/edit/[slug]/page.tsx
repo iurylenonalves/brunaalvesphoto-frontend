@@ -32,6 +32,7 @@ export default function EditPostPage() {
   const [error, setError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [publishedAt, setPublishedAt] = useState("");
+  const [relatedSlug, setRelatedSlug] = useState("");
 
   // Load post data
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function EditPostPage() {
               : block
           ) as Block[]
         );
+        setRelatedSlug(post.relatedSlug || "");
       })
       .catch((err) => {
         console.error("Error fetching post:", err);
@@ -161,7 +163,7 @@ export default function EditPostPage() {
       {/* Edit form */}
       <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
         <PostEditorForm
-          initialData={{ title, subtitle, locale, blocks, publishedAt }}
+          initialData={{ title, subtitle, locale, blocks, publishedAt, relatedSlug }}
           onSubmit={handleUpdate}
           loading={saving}
           onSuccess={() => {}}

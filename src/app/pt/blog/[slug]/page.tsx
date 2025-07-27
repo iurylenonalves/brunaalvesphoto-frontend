@@ -8,38 +8,6 @@ interface BlogPostPageProps {
   params: { slug: string };
 }
 
-// const posts = [
-//   {
-//     slug: "retrato-de-noiva",
-//     title: "Retrato de Noiva",
-//     subtitle: "Por Bruna Alves",
-//     blocks: [
-//       { type: "text", content: "<p>Primeiro texto do post...</p>" },
-//       { type: "image", src: "/images/posts/studio09-large.webp", alt: "Bride Portrait" },
-//       { type: "text", content: "<p>Segundo texto do post...</p>" },
-//       { type: "image", src: "/images/posts/studio10-large.webp", alt: "Another photo" },
-//       { type: "text", content: "<p>Terceiro texto do post...</p>" },
-//       { type: "image", src: "/images/posts/studio11-large.webp", alt: "Last photo" },
-//       { type: "text", content: "<p>Texto final do post...</p>" }
-//     ]
-//   },
-//   {
-//     slug: "post-exemplo-02",
-//     title: "Post Exemplo 02",
-//     subtitle: "Subtítulo do post 2",
-//     imageUrl: "/images/posts/exemplo.jpg",
-//     content: "<p>Conteúdo do post exemplo 02.</p>"
-//   },
-//   {
-//     slug: "post-exemplo-03",
-//     title: "Post Exemplo 03",
-//     subtitle: "Subtítulo do post 3",
-//     imageUrl: "/images/posts/exemplo.jpg",
-//     content: "<p>Conteúdo do post exemplo 03.</p>"
-//   }
-// ];
-
-// Geração estática dos slugs em português
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // The locale 'en' is hardcoded here because this is the /blog route
   const resolvedParams = await params;
@@ -51,7 +19,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <>
-      <Header />
+      <Header postSlug={post.slug} relatedSlug={post.relatedSlug} />
       <main
         className="mx-auto px-4 sm:px-8 md:px-12 lg:px-16 pb-16 max-w-5xl"
         style={{

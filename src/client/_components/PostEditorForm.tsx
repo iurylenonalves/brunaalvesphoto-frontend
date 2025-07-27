@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
 import ReactMarkdown from 'react-markdown';
 
@@ -27,13 +27,15 @@ export default function PostEditorForm({
 }: PostEditorFormProps) {
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
-  const [locale, setLocale] = useState<"en" | "pt">("en");
+  const [locale, setLocale] = useState<"en" | "pt">(initialData?.locale || "en");
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [publishedAt, setPublishedAt] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { token } = useAuth();
   const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
+  const [relatedSlug, setRelatedSlug] = useState(initialData?.relatedSlug || "");
+  const [availableSlugs, setAvailableSlugs] = useState<string[]>([]);
 
   useEffect(() => {
     if (initialData) {
@@ -43,8 +45,21 @@ export default function PostEditorForm({
       setBlocks(initialData.blocks || []);
       setThumbnailSrc(initialData.thumbnail || null);
       setPublishedAt(initialData.publishedAt ? new Date(initialData.publishedAt).toISOString().substring(0, 10) : "");
+      setRelatedSlug(initialData.relatedSlug || "");
     }
   }, [initialData]);
+
+  useEffect(() => {
+    // Busca os slugs do outro idioma para o campo relatedSlug
+    const fetchSlugs = async () => {
+      const targetLocale = locale === "en" ? "pt" : "en";
+      console.log("Buscando slugs do idioma:", targetLocale);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?locale=${targetLocale}`);
+      const posts = await res.json();
+      setAvailableSlugs(posts.map((p: any) => p.slug));
+    };
+    fetchSlugs();
+  }, [locale]);
 
    const handleBlockChange = (index: number, field: string, value: any) => {
     const newBlocks = [...blocks];
@@ -93,6 +108,10 @@ export default function PostEditorForm({
         formData.append("thumbnailSrc", thumbnailSrc);
       }
 
+      if (relatedSlug) {
+        formData.append("relatedSlug", relatedSlug);
+      }
+
       const imageBlocks = blocks.filter(b => b.type === 'image' && b.file);
       if (imageBlocks.length === 0 && !initialData) {
         throw new Error("At least one image is required for a new post.");
@@ -119,6 +138,7 @@ export default function PostEditorForm({
         setBlocks([]);
         setPublishedAt("");
         setThumbnailSrc(null);
+        setRelatedSlug("");
       }
 
     } catch (err: any) {
@@ -183,6 +203,24 @@ export default function PostEditorForm({
           className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
           required
         />
+      </div>
+
+      {/* Related Slug */}
+      <div>
+        <label htmlFor="relatedSlug" className="block font-semibold mb-1 text-gray-700">
+          Related Slug (slug of the equivalent post in the other language)
+        </label>
+        <select
+          id="relatedSlug"
+          value={relatedSlug}
+          onChange={(e) => setRelatedSlug(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
+        >
+            <option value="">Select related slug</option>
+          {availableSlugs.map(slug => (
+            <option key={slug} value={slug}>{slug}</option>
+          ))}
+        </select>
       </div>
 
       {/* Blocks */}

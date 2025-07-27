@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import en from "../app/locales/en.json";
 import pt from "../app/locales/pt.json";
 
@@ -27,7 +28,17 @@ const TranslationContext = createContext<TranslationContextType | undefined>(und
 export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children, initialLocale }) => {
   const [locale, setLocaleState] = useState<string>(initialLocale);
   const [translations, setTranslations] = useState<Translations>(initialLocale === "pt" ? pt : en);
+  const pathname = usePathname();
   //const [isHydrated, setIsHydrated] = useState(false);
+
+  // useEffect to set the initial locale based on the pathname
+  useEffect(() => {
+    if (pathname.startsWith("/pt")) {
+      setLocale("pt");
+    } else {
+      setLocale("en");
+    }
+  }, [pathname]);
   
   // useEffect to sync the locale and translations with the localStorage
   useEffect(() => {

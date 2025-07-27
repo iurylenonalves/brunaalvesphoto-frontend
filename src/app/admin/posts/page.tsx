@@ -101,9 +101,9 @@ export default function AdminPostsPage() {
       </div> */}
 
      <PostEditorForm
+          initialData={{ relatedSlug: "" }} // Pass an empty relatedSlug for new posts
           onSubmit={handleCreate}
-          loading={loading}
-            // Pass an empty function, as the form now resets itself
+          loading={loading}            
           onSuccess={() => {
             console.log("Post created successfully, form has been reset.");
           }}

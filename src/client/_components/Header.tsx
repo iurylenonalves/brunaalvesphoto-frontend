@@ -13,7 +13,12 @@ import MobileMenu from './MobileMenu';
 
 import { usePathname } from "next/navigation";
 
-const Header = () => {
+interface HeaderProps {
+  postSlug?: string;
+  relatedSlug?: string;
+}
+
+const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { translations, locale } = useTranslations();
 
@@ -101,7 +106,7 @@ const Header = () => {
             {/* Instagram */}
           </a>
 
-          <ToggleLanguageButton />
+          <ToggleLanguageButton slug={postSlug} relatedSlug={relatedSlug} />
         </div>
 
         {/* Mobile Controls */}

@@ -8,46 +8,6 @@ interface BlogPostPageProps {
   params: { slug: string };
 }
 
-// const posts = [
-//   {
-//     slug: "english-post-1",
-//     title: "Bride Portrait",
-//     subtitle: "By Bruna Alves",
-//     publishedAt: "2024-06-01", // <-- Adicionado
-//     blocks: [
-//       { type: "text", content: "<p>Primeiro texto do post...</p>" },
-//       { type: "image", src: "/images/posts/studio09-large.webp", alt: "Bride Portrait" },
-//       { type: "text", content: "<p>Segundo texto do post...</p>" },
-//       { type: "image", src: "/images/posts/studio10-large.webp", alt: "Another photo" },
-//       { type: "text", content: "<p>Terceiro texto do post...</p>" },
-//       { type: "image", src: "/images/posts/studio11-large.webp", alt: "Last photo" },
-//       { type: "text", content: "<p>Texto final do post...</p>" }
-//     ]
-//   },
-//   {
-//     slug: "english-post-2",
-//     title: "English Post 2",
-//     subtitle: "Subtitle EN 2",
-//     publishedAt: "2024-06-10", // <-- Adicionado
-//     imageUrl: "/images/posts/en2.jpg",
-//     content: "<p>Content for English Post 2.</p>"
-//   },
-//   {
-//     slug: "english-post-3",
-//     title: "English Post 3",
-//     subtitle: "Subtitle EN 3",
-//     publishedAt: "2024-06-15", // <-- Adicionado
-//     imageUrl: "/images/posts/en3.jpg",
-//     content: "<p>Content for English Post 3.</p>"
-//   }
-// ];
-
-// Geração estática dos slugs em inglês
-// export function generateStaticParams() {
-//   return posts.map(post => ({ slug: post.slug }));
-// }
-
-// Esta função agora busca o post da sua API
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // The locale 'en' is hardcoded here because this is the /blog route
   const resolvedParams = await params;
@@ -59,7 +19,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <>
-      <Header />
+      <Header postSlug={post.slug} relatedSlug={post.relatedSlug} />
       <main
         className="mx-auto px-4 sm:px-8 md:px-12 lg:px-16 pb-16 max-w-5xl"
         style={{

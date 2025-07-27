@@ -1,13 +1,20 @@
 'use client'
 
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "@/context/TranslationContext";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "../../styles/toggleLanguageButton.module.css";
 
-const ToggleLanguageButton = () => {
+interface ToggleLanguageButtonProps {
+  slug?: string;
+  relatedSlug?: string;
+}
+
+const ToggleLanguageButton = ({ slug, relatedSlug }: ToggleLanguageButtonProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { locale, setLocale } = useTranslations();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -43,7 +50,28 @@ const ToggleLanguageButton = () => {
   const toggleLanguage = () => {
     const newLocale = locale === "en" ? "pt" : "en";
     setLocale(newLocale);
-    router.push(newLocale === "en" ? "/" : "/pt/");
+
+    // Se estiver em página de post e houver relatedSlug
+    if ((pathname.startsWith("/blog/") || pathname.startsWith("/pt/blog/")) && relatedSlug) {
+      // Redireciona para o post relacionado no outro idioma
+      const targetPath = newLocale === "pt"
+        ? `/pt/blog/${relatedSlug}`
+        : `/blog/${relatedSlug}`;
+      router.push(targetPath);
+      window.location.reload();
+      return;
+    }
+
+    // Redirect to the appropriate blog page based on the current locale
+    // This logic assumes that the blog pages are structured as /blog for English and /pt
+    if (pathname.startsWith("/pt/blog")) {
+      router.push("/blog")
+    } else if (pathname.startsWith("/blog")) {
+      router.push("/pt/blog");
+    } else {
+      // Redirect to the home page in the new locale
+      router.push(newLocale === "en" ? "/" : "/pt/");
+    }
   };
   
   // Determine which flag to show based on the current locale
