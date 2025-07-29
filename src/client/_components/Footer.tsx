@@ -11,7 +11,8 @@ const Footer = () => {
   const { translations, locale } = useTranslations();
   const [isModalOpen, setModalOpen] = useState(false);
   const pathname = usePathname();
-  const isHome = ["/", "/pt", "/pt/"].includes(pathname);
+  // Corrigir detecção da página home para incluir /en e /en/
+  const isHome = ["/", "/en", "/en/", "/pt", "/pt/"].includes(pathname);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -26,14 +27,20 @@ const Footer = () => {
       <div className={footerStyles.container}>       
         <div className={footerStyles.links}>
         <Link
-            href={isHome ? "#about" : locale === "pt" ? "/pt/about" : "/about"}
+            href={isHome ? "#about" : locale === "pt" ? "/pt/about" : "/en/about"}
             className={footerStyles.link}
             scroll={isHome}
           >
             {translations.footerAbout}
           </Link>
           <Link
-            href={isHome ? "#contact" : locale === "pt" ? "/pt/contact" : "/contact"}
+            href={`/${locale}/blog`}
+            className={footerStyles.link}
+          >
+            Blog
+          </Link>
+          <Link
+            href={isHome ? "#contact" : locale === "pt" ? "/pt/contact" : "/en/contact"}
             className={footerStyles.link}
             scroll={isHome}
           >
