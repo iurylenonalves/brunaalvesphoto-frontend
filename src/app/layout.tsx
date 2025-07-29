@@ -2,7 +2,7 @@ import { Questrial, Raleway } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
 import { AosInit } from "@/client/_components/aos-init";
-import { TranslationProvider } from "@/context/TranslationContext";
+//import { TranslationProvider } from "@/context/TranslationContext";
 import { AuthProvider } from "@/client/_components/AuthContext";
 
 
@@ -50,20 +50,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="locale">
       <head>        
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="en" />
+        {/* <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="en" />
         <link rel="alternate" href="https://www.brunaalvesphoto.com/pt/" hrefLang="pt" />
         <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="x-default" />
-        <link rel="canonical" href="https://www.brunaalvesphoto.com/" />        
+        <link rel="canonical" href="https://www.brunaalvesphoto.com/" />         */}
       </head>
       <body className={`${questrial.variable} ${raleway.variable} antialiased`}>
         <AuthProvider>
-          <TranslationProvider initialLocale="en">
+          {/* <TranslationProvider initialLocale="en"> */}
             {children}
-          </TranslationProvider>
+          {/* </TranslationProvider> */}
         </AuthProvider>
         <AosInit />
       </body>

@@ -33,12 +33,19 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({ childr
 
   // useEffect to set the initial locale based on the pathname
   useEffect(() => {
-    if (pathname.startsWith("/pt")) {
-      setLocale("pt");
+    // Extrair locale do pathname: /en/about -> en, /pt/contact -> pt, /about -> detect from initialLocale
+    const pathSegments = pathname.split('/').filter(Boolean);
+    const potentialLocale = pathSegments[0];
+    
+    // Only set locale if it's a valid locale
+    if (potentialLocale === "pt" || potentialLocale === "en") {
+      setLocale(potentialLocale);
     } else {
-      setLocale("en");
+      // For invalid routes like /about/, /admin/, use the initialLocale or default to 'en'
+      const fallbackLocale = (initialLocale === "pt" || initialLocale === "en") ? initialLocale : "en";
+      setLocale(fallbackLocale);
     }
-  }, [pathname]);
+  }, [pathname, initialLocale]);
   
   // useEffect to sync the locale and translations with the localStorage
   useEffect(() => {
