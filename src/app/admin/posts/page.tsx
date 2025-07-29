@@ -1,19 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getPosts, deletePost, createPost } from "@/lib/api";
 import PostEditorForm from "@/client/_components/PostEditorForm";
 import Link from "next/link";
 
-export default function AdminPostsPage() {
+interface Post {
+  id: string;
+  title: string;
+  subtitle: string;
+  slug: string;
+  locale: string;
+  publishedAt?: string;
+  thumbnail?: string;
+}
+
+function AdminPostsPageContent() {
   const { token, logout, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = (searchParams.get("locale") as "en" | "pt") || "en";
 
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -27,8 +37,7 @@ export default function AdminPostsPage() {
       setLoading(true);
       getPosts(locale)
         .then(setPosts)
-        .catch(err => {
-          console.error("Failed to fetch posts:", err);
+        .catch(() => {
           setPosts([]); // Em caso de erro, define como array vazio
         })
         .finally(() => setLoading(false));
@@ -41,7 +50,8 @@ export default function AdminPostsPage() {
       try {
         await deletePost(slug, token!, locale);
         setPosts(posts.filter((p) => p.slug !== slug));
-      } catch (error) {
+      } catch (deleteError) {
+        console.error("Failed to delete post:", deleteError);
         alert("Failed to delete post");
       } finally {
         setDeletingSlug(null);
@@ -52,6 +62,7 @@ export default function AdminPostsPage() {
   const handleCreate = async (formData: FormData) => {    
     const newPost = await createPost(formData, token!);    
     setPosts(prev => [newPost, ...prev]);
+    return newPost;
   };
 
   const handleLocaleChange = (newLocale: "en" | "pt") => {
@@ -145,7 +156,7 @@ export default function AdminPostsPage() {
       </div>
 
       <ul className="grid gap-4 mt-4">
-        {paginatedPosts.map((post: any) => (
+        {paginatedPosts.map((post: Post) => (
           <li
             key={post.slug}
             className="flex items-center justify-between bg-white shadow-md rounded-lg px-4 py-3 border border-gray-200"
@@ -213,5 +224,13 @@ export default function AdminPostsPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function AdminPostsPage() {
+  return (
+    <Suspense fallback={<div className="text-center mt-8">Loading...</div>}>
+      <AdminPostsPageContent />
+    </Suspense>
   );
 }

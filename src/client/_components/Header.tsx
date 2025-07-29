@@ -28,15 +28,6 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
   // Garantir que locale seja válido
   const currentLocale = locale === 'pt' ? 'pt' : 'en';
 
-  // Debug para entender o problema
-  console.log('Header Debug:', { 
-    pathname, 
-    isHome, 
-    locale, 
-    currentLocale,
-    translationsAvailable: !!translations
-  });
-
   const toggleMenu = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);

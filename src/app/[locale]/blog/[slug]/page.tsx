@@ -4,7 +4,23 @@ import Footer from "@/client/_components/Footer";
 import { notFound } from "next/navigation";
 import ReactMarkdown from 'react-markdown';
 import type { Metadata } from "next";
+import Image from "next/image";
 
+interface Post {
+  id: string;
+  title: string;
+  subtitle: string;
+  slug: string;
+  locale: string;
+  publishedAt?: string;
+  relatedSlug?: string;
+  blocks?: Array<{
+    type: "text" | "image";
+    content?: string;
+    src?: string;
+    alt?: string;
+  }>;
+}
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
@@ -16,8 +32,8 @@ export async function generateStaticParams(): Promise<{ slug: string; locale: st
   const postsEn = await getPosts("en");
   const postsPt = await getPosts("pt");
 
-  const paramsEn = postsEn.map((post: any) => ({ slug: post.slug, locale: 'en' }));
-  const paramsPt = postsPt.map((post: any) => ({ slug: post.slug, locale: 'pt' }));
+  const paramsEn = postsEn.map((post: Post) => ({ slug: post.slug, locale: 'en' }));
+  const paramsPt = postsPt.map((post: Post) => ({ slug: post.slug, locale: 'pt' }));
 
   return [...paramsEn, ...paramsPt];
 }
@@ -70,16 +86,18 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         )}
         <article className="prose lg:prose-lg mx-auto w-full">
-          {post.blocks && post.blocks.map((block: any, idx: number) =>
+          {post.blocks && post.blocks.map((block: { type: "text" | "image"; content?: string; src?: string; alt?: string }, idx: number) =>
             block.type === "text" ? (
               <ReactMarkdown key={idx}>
                 {block.content ?? ""}
               </ReactMarkdown>
             ) : (
-              <img
+              <Image
                 key={idx}                
                 src={`${process.env.NEXT_PUBLIC_API_URL}/${block.src}`}
-                alt={block.alt}
+                alt={block.alt || "Blog image"}
+                width={800}
+                height={400}
                 className="w-full h-auto rounded my-8"
               />
             )

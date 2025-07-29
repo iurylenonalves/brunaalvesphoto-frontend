@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
 import ReactMarkdown from 'react-markdown';
 
@@ -12,9 +12,19 @@ interface Block {
   file?: File;
 }
 
+interface InitialData {
+  title?: string;
+  subtitle?: string;
+  locale?: "en" | "pt";
+  blocks?: Block[];
+  publishedAt?: string;
+  relatedSlug?: string;
+  thumbnail?: string;
+}
+
 interface PostEditorFormProps {
-  initialData?: any;
-  onSubmit: (formData: FormData) => Promise<any>;
+  initialData?: InitialData;
+  onSubmit: (formData: FormData) => Promise<{ slug: string; title: string; subtitle: string; locale: string; }>;
   loading: boolean;
   onSuccess: () => void; 
 }
@@ -56,16 +66,16 @@ export default function PostEditorForm({
       console.log("Buscando slugs do idioma:", targetLocale);
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?locale=${targetLocale}`);
       const posts = await res.json();
-      setAvailableSlugs(posts.map((p: any) => p.slug));
+      setAvailableSlugs(posts.map((p: { slug: string }) => p.slug));
     };
     fetchSlugs();
   }, [locale]);
 
-   const handleBlockChange = (index: number, field: string, value: any) => {
+   const handleBlockChange = (index: number, field: string, value: string | File | undefined) => {
     const newBlocks = [...blocks];
-    if (field === "file") {
+    if (field === "file" && value instanceof File) {
       newBlocks[index] = { ...newBlocks[index], file: value, src: 'image-placeholder' };
-    } else {
+    } else if (typeof value === "string") {
       newBlocks[index] = { ...newBlocks[index], [field]: value };
     }
     setBlocks(newBlocks);
@@ -141,8 +151,9 @@ export default function PostEditorForm({
         setRelatedSlug("");
       }
 
-    } catch (err: any) {
-      setError(err.message || "Failed to submit post.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to submit post.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -286,6 +297,7 @@ export default function PostEditorForm({
               />
               {(block.file || block.src) && (
                 <div className="mt-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={block.file 
                       ? URL.createObjectURL(block.file) 
@@ -293,7 +305,7 @@ export default function PostEditorForm({
                         ? block.src 
                         : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`
                     }
-                    alt={block.alt}
+                    alt={block.alt || "Preview"}
                     className="max-h-40 rounded-lg border"
                   />
                   {/* BOTÃO PARA DEFINIR THUMBNAIL */}
@@ -352,17 +364,19 @@ export default function PostEditorForm({
               <ReactMarkdown>{block.content ?? ""}</ReactMarkdown>
             </div>
           ) : block.file ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               key={idx}
               src={URL.createObjectURL(block.file)}
-              alt={block.alt}
+              alt={block.alt || "Preview"}
               className="mb-2 max-h-48 rounded"
             />
           ) : block.src ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               key={idx}
               src={block.src.startsWith('http') ? block.src : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`}
-              alt={block.alt}
+              alt={block.alt || "Preview"}
               className="mb-2 max-h-48 rounded"
             />
           ) : null

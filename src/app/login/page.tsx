@@ -1,5 +1,5 @@
 "use client";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
 import { useAuth } from "@/client/_components/AuthContext";
 import { useRouter } from "next/navigation";
 import Header from "@/client/_components/Header";
@@ -13,7 +13,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) {
+      setError("No credential received from Google");
+      return;
+    }
+    
     setError(""); // clear any previous error
     setLoading(true);
     try {

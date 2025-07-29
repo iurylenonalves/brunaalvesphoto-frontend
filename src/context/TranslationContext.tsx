@@ -51,9 +51,10 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({ childr
   useEffect(() => {
     const savedLocale = localStorage.getItem("locale");
     if (savedLocale && savedLocale !== locale) {
-      setLocale(savedLocale);
+      setLocaleState(savedLocale);
+      setTranslations(savedLocale === "pt" ? pt : en);
     }
-  }, []);
+  }, [locale]);
 
   // Function to set the locale and translations
   const setLocale = (newLocale: string) => {

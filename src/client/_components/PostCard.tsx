@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 interface PostCardProps {
   post: {
@@ -16,9 +17,11 @@ export default function PostCard({ post, locale }: PostCardProps) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-lg shadow-lg transition-shadow duration-300 hover:shadow-xl">
       <Link href={postUrl} aria-label={`Read more about ${post.title}`}>
-        <img 
+        <Image 
           src={post.imageUrl} 
           alt={post.title} 
+          width={400}
+          height={288}
           className="h-72 w-full object-cover transition-transform duration-300 group-hover:scale-105" 
         />
       </Link>

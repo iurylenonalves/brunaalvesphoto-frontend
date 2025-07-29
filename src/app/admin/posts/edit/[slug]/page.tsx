@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { getPostBySlug, updatePost } from "@/lib/api";
 import { useAuth } from "@/client/_components/AuthContext";
@@ -10,12 +10,12 @@ import Link from "next/link";
 interface Block {
   type: "text" | "image";
   content?: string;
-  file?: File | null;
+  file?: File;
   alt?: string;
   src?: string;
 }
 
-export default function EditPostPage() {
+function EditPostPageContent() {
   const { slug } = useParams() as { slug: string };
   const { token, logout } = useAuth();
   const router = useRouter();
@@ -55,9 +55,9 @@ export default function EditPostPage() {
         setLocale((post.locale as "en" | "pt") || "en");
         setPublishedAt(post.publishedAt || "");
         setBlocks(
-          (post.blocks || []).map((block: any) =>
+          (post.blocks || []).map((block: Block) =>
             block.type === "image"
-              ? { ...block, file: null }
+              ? { ...block, file: undefined }
               : block
           ) as Block[]
         );
@@ -86,7 +86,7 @@ export default function EditPostPage() {
     setSaveSuccess(false);
     
     try {
-      await updatePost(slug, formData, token!);
+      const updatedPost = await updatePost(slug, formData, token!);
       setSaveSuccess(true);
       
       // Wait a bit to show the success message before redirecting
@@ -94,9 +94,12 @@ export default function EditPostPage() {
         router.push(`/admin/posts?locale=${locale}`);
       }, 1500);
       
+      return updatedPost;
+      
     } catch (err) {
       console.error("Error updating post:", err);
       setError("Failed to update post. Please try again.");
+      throw err;
     } finally {
       setSaving(false);
     }
@@ -170,5 +173,13 @@ export default function EditPostPage() {
         />
       </div>
     </main>
+  );
+}
+
+export default function EditPostPage() {
+  return (
+    <Suspense fallback={<div className="text-center mt-8">Loading...</div>}>
+      <EditPostPageContent />
+    </Suspense>
   );
 }
