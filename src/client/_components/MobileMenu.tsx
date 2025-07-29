@@ -16,34 +16,37 @@ interface MobileMenuProps {
   locale?: string;
 }
 
-const MobileMenu = ({ translations, setIsOpen, locale= "en" }: MobileMenuProps) => {
+const MobileMenu = ({ translations, setIsOpen, locale = "en" }: MobileMenuProps) => {
   const pathname = usePathname();
-  const isHome = ["/", "/pt", "/pt/"].includes(pathname);
+  const isHome = pathname === "/" || pathname === "/en" || pathname === "/pt" || pathname === "/en/" || pathname === "/pt/";
+  // Garantir que locale seja válido
+  const currentLocale = locale === 'pt' ? 'pt' : 'en';
 
   return (
     <nav className={styles.mobileMenu}>
       <Link
-        href={isHome ? "#about" : locale === "pt" ? "/pt/about" : "/about"}
+        href={isHome ? "#about" : `/${currentLocale}/about`}
         onClick={() => setIsOpen(false)}
         scroll={isHome}
       >
         {translations.about}
       </Link>
       <Link
-        href={isHome ? "#portfolio" : locale === "pt" ? "/pt/portfolio" : "/portfolio"}
+        href={isHome ? "#portfolio" : `/${currentLocale}/portfolio`}
         onClick={() => setIsOpen(false)}
         scroll={isHome}
       >
         {translations.portfolio}
       </Link>
       <Link
-        href={locale === "pt" ? "/pt/blog" : "/blog"}
+        href={`/${currentLocale}/blog`}
+        onClick={() => setIsOpen(false)}
         className={styles.navLink}
       >
         Blog
       </Link>
       <Link
-        href={isHome ? "#contact" : locale === "pt" ? "/pt/contact" : "/contact"}
+        href={isHome ? "#contact" : `/${currentLocale}/contact`}
         onClick={() => setIsOpen(false)}
         scroll={isHome}
       >

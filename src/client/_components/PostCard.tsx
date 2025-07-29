@@ -11,7 +11,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, locale }: PostCardProps) {
-  const postUrl = locale === "pt" ? `/pt/blog/${post.slug}` : `/blog/${post.slug}`;
+  const postUrl = locale === "pt" ? `/pt/blog/${post.slug}` : `/en/blog/${post.slug}`;
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-lg shadow-lg transition-shadow duration-300 hover:shadow-xl">

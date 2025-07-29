@@ -164,7 +164,7 @@ export default function AdminPostsPage() {
             <div className="flex items-center gap-2 flex-shrink-0">
               {/* VIEW */}
               <Link
-                href={post.locale === 'pt' ? `/pt/blog/${post.slug}` : `/blog/${post.slug}`}
+                href={post.locale === 'pt' ? `/pt/blog/${post.slug}` : `/en/blog/${post.slug}`}
                 target="_blank"
                 className="px-3 py-1 text-sm font-semibold bg-green-500 text-white rounded-md shadow-sm cursor-pointer transition hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
               >

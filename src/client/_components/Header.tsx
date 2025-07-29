@@ -23,7 +23,19 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
   const { translations, locale } = useTranslations();
 
   const pathname = usePathname();
-  const isHome = ["/", "/pt", "/pt/"].includes(pathname);
+  // É página home se for / ou /en ou /pt (com ou sem barra final)
+  const isHome = pathname === "/" || pathname === "/en" || pathname === "/pt" || pathname === "/en/" || pathname === "/pt/";
+  // Garantir que locale seja válido
+  const currentLocale = locale === 'pt' ? 'pt' : 'en';
+
+  // Debug para entender o problema
+  console.log('Header Debug:', { 
+    pathname, 
+    isHome, 
+    locale, 
+    currentLocale,
+    translationsAvailable: !!translations
+  });
 
   const toggleMenu = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -33,7 +45,7 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
     <header className={styles.header}>
       <div className={styles.container}>
         {/* Logo */}
-        <Link href={locale === "pt" ? "/pt" : "/"} className={styles.logoImg}>
+        <Link href={currentLocale === "pt" ? "/pt" : "/en"} className={styles.logoImg}>
         <Image 
           src="/images/bruna-logo-white.svg" 
           alt="Logo" 
@@ -54,27 +66,27 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
         {/* Menu for large screens */}
         <nav className={styles.nav}>
         <Link
-            href={isHome ? "#about" : locale === "pt" ? "/pt/about" : "/about"}
+            href={isHome ? "#about" : `/${currentLocale}/about`}
             className={styles.navLink}
             scroll={isHome}
           >
             {translations.about}
           </Link>
           <Link
-            href={isHome ? "#portfolio" : locale === "pt" ? "/pt/portfolio" : "/portfolio"}
+            href={isHome ? "#portfolio" : `/${currentLocale}/portfolio`}
             className={styles.navLink}
             scroll={isHome}
           >
             {translations.portfolio}
           </Link>
           <Link
-            href={locale === "pt" ? "/pt/blog" : "/blog"}
+            href={`/${currentLocale}/blog`}
             className={styles.navLink}
           >
             Blog
           </Link>
           <Link
-            href={isHome ? "#contact" : locale === "pt" ? "/pt/contact" : "/contact"}
+            href={isHome ? "#contact" : `/${currentLocale}/contact`}
             className={styles.navLink}
             scroll={isHome}
           >
@@ -113,7 +125,7 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
         <div className={styles.mobileControls}>
           {/* Language Toggle for Mobile */}
           <div className={styles.mobileLanguage}>
-            <ToggleLanguageButton />
+            <ToggleLanguageButton slug={postSlug} relatedSlug={relatedSlug} />
           </div>
           
           {/* Menu Button Mobile */}
@@ -129,7 +141,7 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
 
       {/* Dropdown Menu Mobile */}
       {isOpen && (
-        <MobileMenu translations={translations} setIsOpen={setIsOpen} />
+        <MobileMenu translations={translations} setIsOpen={setIsOpen} locale={currentLocale} />
       )}
     </header>
   );
