@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
 import ReactMarkdown from 'react-markdown';
 import imageCompression from 'browser-image-compression';
+import { cleanImageUrl, buildImageUrl, compareThumbnailUrls } from "@/utils/urlUtils";
 
 interface Block {
   type: "text" | "image";
@@ -51,11 +52,18 @@ export default function PostEditorForm({
 
   useEffect(() => {
     if (initialData) {
+      console.log("🔍 [PostEditorForm] Loading initialData:", initialData);
+      console.log("🔍 [PostEditorForm] initialData.blocks:", initialData.blocks);
       setTitle(initialData.title || "");
       setSubtitle(initialData.subtitle || "");
       setLocale(initialData.locale || "en");
       setBlocks(initialData.blocks || []);
-      setThumbnailSrc(initialData.thumbnail || null);
+      
+      const cleanedThumbnail = cleanImageUrl(initialData.thumbnail);
+      console.log("🖼️ [PostEditorForm] Original thumbnail:", initialData.thumbnail);
+      console.log("🧹 [PostEditorForm] Cleaned thumbnail:", cleanedThumbnail);
+      setThumbnailSrc(cleanedThumbnail);
+      
       setPublishedAt(initialData.publishedAt ? new Date(initialData.publishedAt).toISOString().substring(0, 10) : "");
       setRelatedSlug(initialData.relatedSlug || "");
     }
@@ -130,14 +138,22 @@ export default function PostEditorForm({
 
   const handleThumbnailSelection = (block: Block, index: number) => {
     // Cria um identificador único para a imagem clicada.
-    // Usa 'new-image-' + index para arquivos novos, ou o src para imagens existentes.
-    const uniqueId = block.file ? `new-image-${index}` : block.src;
+    // Usa 'new-image-' + index para arquivos novos, ou o src limpo para imagens existentes.
+    const uniqueId = block.file ? `new-image-${index}` : cleanImageUrl(block.src);
+    console.log("🎯 [PostEditorForm] Thumbnail selection - uniqueId:", uniqueId, "current thumbnailSrc:", thumbnailSrc);
+    console.log("🔍 [PostEditorForm] Comparing URLs:", compareThumbnailUrls(thumbnailSrc, uniqueId));
 
-    // Se o ID único for válido e já for o thumbnail atual, desmarca (seta para null).
-    if (uniqueId && thumbnailSrc === uniqueId) {
+    // Para imagens existentes, usar comparação robusta
+    const isCurrentThumbnail = block.file 
+      ? thumbnailSrc === `new-image-${index}`
+      : compareThumbnailUrls(thumbnailSrc, block.src);
+
+    if (isCurrentThumbnail) {
+      console.log("❌ [PostEditorForm] Deselecting thumbnail");
       setThumbnailSrc(null);
     } else {
       // Caso contrário, define o novo thumbnail.
+      console.log("✅ [PostEditorForm] Setting new thumbnail:", uniqueId);
       setThumbnailSrc(uniqueId || null);
     }
   };
@@ -162,7 +178,10 @@ export default function PostEditorForm({
 
        // Adiciona o caminho da thumbnail escolhida ao FormData
       if (thumbnailSrc) {
+        console.log("📤 [PostEditorForm] Sending thumbnailSrc:", thumbnailSrc);
         formData.append("thumbnailSrc", thumbnailSrc);
+      } else {
+        console.log("⚠️ [PostEditorForm] No thumbnailSrc to send");
       }
 
       if (relatedSlug) {
@@ -353,9 +372,7 @@ export default function PostEditorForm({
                   <img
                     src={block.file 
                       ? URL.createObjectURL(block.file) 
-                      : block.src && (block.src.startsWith('http') || block.src.startsWith('https'))
-                        ? block.src 
-                        : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`
+                      : buildImageUrl(block.src)
                     }
                     alt={block.alt || "Preview"}
                     className="max-h-40 rounded-lg border"
@@ -365,14 +382,16 @@ export default function PostEditorForm({
                     type="button"
                     onClick={() => handleThumbnailSelection(block, index)}
                     className={`mt-2 px-3 py-1 text-xs font-semibold rounded-full transition border-2 ${
-                      (block.file && thumbnailSrc === `new-image-${index}`) || (block.src && thumbnailSrc === block.src)
+                      (block.file && thumbnailSrc === `new-image-${index}`) || 
+                      (block.src && compareThumbnailUrls(thumbnailSrc, block.src))
                         ? 'bg-yellow-400 border-yellow-500 text-white'
                         : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-100'
                     }`}
                     title="Set as thumbnail"
                   >
                     ★ {
-                      (block.file && thumbnailSrc === `new-image-${index}`) || (block.src && thumbnailSrc === block.src)
+                      (block.file && thumbnailSrc === `new-image-${index}`) || 
+                      (block.src && compareThumbnailUrls(thumbnailSrc, block.src))
                         ? 'Thumbnail' 
                         : 'Set as Thumbnail'
                     }
@@ -427,7 +446,7 @@ export default function PostEditorForm({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={idx}
-              src={block.src.startsWith('http') || block.src.startsWith('https') ? block.src : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`}
+              src={buildImageUrl(block.src)}
               alt={block.alt || "Preview"}
               className="mb-2 max-h-48 rounded"
             />
