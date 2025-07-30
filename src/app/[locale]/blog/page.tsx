@@ -2,6 +2,7 @@ import Header from "@/client/_components/Header";
 import Footer from "@/client/_components/Footer";
 import PostCard from "@/client/_components/PostCard";
 import { getPosts } from "@/lib/api";
+import { buildImageUrl } from "@/utils/urlUtils";
 
 interface Post {
   id: string;
@@ -70,11 +71,7 @@ export default async function BlogPage({
                 slug: post.slug,
                 title: post.title,
                 subtitle: post.subtitle,
-                imageUrl: post.thumbnail ? 
-                  (post.thumbnail.startsWith('http') || post.thumbnail.startsWith('https'))
-                    ? post.thumbnail
-                    : `${process.env.NEXT_PUBLIC_API_URL}/${post.thumbnail}`
-                  : '/images/placeholder.png'
+                imageUrl: buildImageUrl(post.thumbnail)
               }}
               locale={locale}
             />
