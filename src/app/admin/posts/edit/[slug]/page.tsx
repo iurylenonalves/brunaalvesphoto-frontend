@@ -33,6 +33,7 @@ function EditPostPageContent() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [publishedAt, setPublishedAt] = useState("");
   const [relatedSlug, setRelatedSlug] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
 
   // Load post data
   useEffect(() => {
@@ -50,10 +51,12 @@ function EditPostPageContent() {
     
     getPostBySlug(slug, locale)
       .then(post => {
+        console.log("📝 [EditPostPage] Loaded post data:", post);
         setTitle(post.title);
         setSubtitle(post.subtitle);
         setLocale((post.locale as "en" | "pt") || "en");
         setPublishedAt(post.publishedAt || "");
+        setThumbnail(post.thumbnail || "");
         setBlocks(
           (post.blocks || []).map((block: Block) =>
             block.type === "image"
@@ -166,7 +169,7 @@ function EditPostPageContent() {
       {/* Edit form */}
       <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
         <PostEditorForm
-          initialData={{ title, subtitle, locale, blocks, publishedAt, relatedSlug }}
+          initialData={{ title, subtitle, locale, blocks, publishedAt, relatedSlug, thumbnail }}
           onSubmit={handleUpdate}
           loading={saving}
           onSuccess={() => {}}
