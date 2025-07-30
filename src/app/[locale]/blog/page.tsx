@@ -71,8 +71,10 @@ export default async function BlogPage({
                 title: post.title,
                 subtitle: post.subtitle,
                 imageUrl: post.thumbnail ? 
-                `${process.env.NEXT_PUBLIC_API_URL}/${post.thumbnail}` : 
-                '/images/placeholder.png'
+                  (post.thumbnail.startsWith('http') || post.thumbnail.startsWith('https'))
+                    ? post.thumbnail
+                    : `${process.env.NEXT_PUBLIC_API_URL}/${post.thumbnail}`
+                  : '/images/placeholder.png'
               }}
               locale={locale}
             />

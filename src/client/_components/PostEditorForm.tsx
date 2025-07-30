@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
 import ReactMarkdown from 'react-markdown';
+import imageCompression from 'browser-image-compression';
 
 interface Block {
   type: "text" | "image";
@@ -46,6 +47,7 @@ export default function PostEditorForm({
   const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
   const [relatedSlug, setRelatedSlug] = useState(initialData?.relatedSlug || "");
   const [availableSlugs, setAvailableSlugs] = useState<string[]>([]);
+  const [compressingImages, setCompressingImages] = useState<{[key: number]: boolean}>({});
 
   useEffect(() => {
     if (initialData) {
@@ -71,10 +73,55 @@ export default function PostEditorForm({
     fetchSlugs();
   }, [locale]);
 
-   const handleBlockChange = (index: number, field: string, value: string | File | undefined) => {
+   const handleBlockChange = async (index: number, field: string, value: string | File | undefined) => {
     const newBlocks = [...blocks];
     if (field === "file" && value instanceof File) {
-      newBlocks[index] = { ...newBlocks[index], file: value, src: 'image-placeholder' };
+      try {
+        // Verifica se o arquivo é muito grande antes da compressão
+        if (value.size > 50 * 1024 * 1024) { // 50MB é o limite máximo antes da compressão
+          setError("Image file is too large. Please choose a smaller image (max 50MB).");
+          return;
+        }
+
+        // Indica que está comprimindo esta imagem
+        setCompressingImages(prev => ({ ...prev, [index]: true }));
+
+        // Configurações para compressão da imagem
+        const options = {
+          maxSizeMB: 8, // Limite de 8MB para ter margem de segurança (backend aceita 10MB)
+          maxWidthOrHeight: 1920, // Redimensiona para máximo 1920px
+          useWebWorker: true, // Usa Web Worker para não bloquear a UI
+          fileType: 'image/webp', // Converte para WebP para melhor compressão
+          quality: 0.8 // 80% de qualidade
+        };
+
+        // Comprime a imagem antes de armazenar
+        const compressedFile = await imageCompression(value, options);
+        
+        // Cria um novo File object com nome apropriado
+        const optimizedFile = new File([compressedFile], 
+          `${value.name.split('.')[0]}.webp`, 
+          { type: 'image/webp' }
+        );
+
+        newBlocks[index] = { ...newBlocks[index], file: optimizedFile, src: 'image-placeholder' };
+        
+        // Log da compressão para debug
+        const originalSizeMB = (value.size / 1024 / 1024).toFixed(2);
+        const compressedSizeMB = (optimizedFile.size / 1024 / 1024).toFixed(2);
+        console.log(`Image compressed: ${originalSizeMB}MB → ${compressedSizeMB}MB`);
+        
+        // Limpa erros se a compressão foi bem-sucedida
+        setError(null);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        setError("Failed to compress image. Please try a different image or reduce its size.");
+        // Em caso de erro, não usa o arquivo
+        return;
+      } finally {
+        // Remove o indicador de compressão
+        setCompressingImages(prev => ({ ...prev, [index]: false }));
+      }
     } else if (typeof value === "string") {
       newBlocks[index] = { ...newBlocks[index], [field]: value };
     }
@@ -267,14 +314,19 @@ export default function PostEditorForm({
             <div key={index} className="space-y-2 p-4 border rounded-lg bg-gray-50">
               <div className="flex items-center justify-between">
                 <label className="block">
-                  <span className="bg-gray-200 px-3 py-2 rounded-lg shadow-sm cursor-pointer hover:bg-gray-300 transition inline-block text-sm font-medium text-gray-700">
-                    Choose Image
+                  <span className={`px-3 py-2 rounded-lg shadow-sm cursor-pointer transition inline-block text-sm font-medium ${
+                    compressingImages[index] 
+                      ? 'bg-yellow-200 text-yellow-800' 
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}>
+                    {compressingImages[index] ? 'Compressing Image...' : 'Choose Image'}
                     <input
                       type="file"
                       accept="image/*"
                       onChange={(e) => handleBlockChange(index, "file", e.target.files?.[0])}
                       className="hidden"
                       required={!initialData}
+                      disabled={compressingImages[index]}
                     />
                   </span>
                 </label>
@@ -301,7 +353,7 @@ export default function PostEditorForm({
                   <img
                     src={block.file 
                       ? URL.createObjectURL(block.file) 
-                      : block.src && block.src.startsWith('http') 
+                      : block.src && (block.src.startsWith('http') || block.src.startsWith('https'))
                         ? block.src 
                         : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`
                     }
@@ -375,7 +427,7 @@ export default function PostEditorForm({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={idx}
-              src={block.src.startsWith('http') ? block.src : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`}
+              src={block.src.startsWith('http') || block.src.startsWith('https') ? block.src : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`}
               alt={block.alt || "Preview"}
               className="mb-2 max-h-48 rounded"
             />

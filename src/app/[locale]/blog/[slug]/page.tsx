@@ -94,7 +94,10 @@ export default async function BlogPostPage({ params }: Props) {
             ) : (
               <Image
                 key={idx}                
-                src={`${process.env.NEXT_PUBLIC_API_URL}/${block.src}`}
+                src={block.src?.startsWith('http') || block.src?.startsWith('https') 
+                  ? block.src 
+                  : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`
+                }
                 alt={block.alt || "Blog image"}
                 width={800}
                 height={400}
