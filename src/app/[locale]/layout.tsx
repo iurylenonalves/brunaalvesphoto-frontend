@@ -9,34 +9,40 @@ export async function generateStaticParams() {
 // Gera os metadados dinamicamente com base no idioma
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  const baseUrl = new URL("https://www.brunaalvesphoto.com");
+  const baseUrl = "https://brunaalvesphoto.com";
 
   if (locale === 'pt') {
     return {
       title: "Fotógrafa Brasileira em Londres",
       description: "Quer transformar seus momentos em registros inesquecíveis? Seja para sua viagem, sua marca ou um retrato especial, estou aqui para capturar sua essência em cada clique.",
-      metadataBase: baseUrl,
       alternates: {
-        canonical: "/pt",
+        canonical: `${baseUrl}/pt/`,
         languages: {
-          "pt-BR": "/pt",
-          "en-GB": "/",
-          "x-default": "/",
+          "pt": `${baseUrl}/pt/`,
+          "en": `${baseUrl}/`,
         },
       },
       openGraph: {
         title: "Fotógrafa Brasileira em Londres",
-        description: "Quer transformar seus momentos em registros inesquecíveis?...",
+        description: "Quer transformar seus momentos em registros inesquecíveis? Seja para sua viagem, sua marca ou um retrato especial, estou aqui para capturar sua essência em cada clique.",
         type: "website",
         locale: "pt_BR",
-        url: "/pt",
+        url: `${baseUrl}/pt/`,
         siteName: "Fotógrafa Brasileira em Londres",
         images: [
           { 
-            url: "/images/hero-image-large.webp",
+            url: `${baseUrl}/images/hero-image-large.webp`,
             width: 1200,
             height: 630,
-            alt: "Fotógrafa Brasileira em Londres"
+            alt: "Fotógrafa Brasileira em Londres",
+            type: "image/webp"
+          },
+          { 
+            url: `${baseUrl}/images/about-image-large.webp`,
+            width: 1200,
+            height: 630,
+            alt: "Bruna Alves - Fotógrafa Profissional em Londres",
+            type: "image/webp"
           }
         ],
       },
@@ -47,28 +53,34 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: "Brazilian Photographer in London",
     description: "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
-    metadataBase: baseUrl,
     alternates: {
-      canonical: "/",
+      canonical: `${baseUrl}/`,
       languages: {
-        "en-GB": "/",
-        "pt-BR": "/pt",
-        "x-default": "/",
+        "en": `${baseUrl}/`,
+        "pt": `${baseUrl}/pt/`,
       },
     },
     openGraph: {
       title: "Brazilian Photographer in London",
-      description: "Want to turn your moments into unforgettable memories?...",
+      description: "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
       type: "website",
       locale: "en_GB",
-      url: "/",
+      url: `${baseUrl}/`,
       siteName: "Brazilian Photographer in London",
       images: [
         { 
-          url: "/images/hero-image-large.webp",
+          url: `${baseUrl}/images/hero-image-large.webp`,
           width: 1200,
           height: 630,
-          alt: "Brazilian Photographer in London"
+          alt: "Brazilian Photographer in London",
+          type: "image/webp"
+        },
+        { 
+          url: `${baseUrl}/images/about-image-large.webp`,
+          width: 1200,
+          height: 630,
+          alt: "Bruna Alves - Professional Photographer in London",
+          type: "image/webp"
         }
       ],
     },

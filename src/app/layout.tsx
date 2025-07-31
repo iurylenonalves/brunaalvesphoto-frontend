@@ -2,8 +2,8 @@ import { Questrial, Raleway } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
 import { AosInit } from "@/client/_components/aos-init";
-//import { TranslationProvider } from "@/context/TranslationContext";
 import { AuthProvider } from "@/client/_components/AuthContext";
+import StructuredData from "@/client/_components/StructuredData";
 
 
 const questrial = Questrial({
@@ -22,25 +22,75 @@ const raleway = Raleway({
 
 export const metadata: Metadata = {
   title: "Brazilian Photographer in London",
-  description:
-    "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
-  metadataBase: new URL("https://www.brunaalvesphoto.com"),
+  description: "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
+  keywords: ['London photographer', 'tourism photography', 'corporate photography', 'studio photography', 'Bruna Alves', 'professional photographer'],
+  authors: [{ name: 'Bruna Alves' }],
+  creator: 'Bruna Alves',
+  publisher: 'Bruna Alves Photography',
+  metadataBase: new URL("https://brunaalvesphoto.com"),
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  alternates: {
+    canonical: 'https://brunaalvesphoto.com',
+    languages: {
+      'en': 'https://brunaalvesphoto.com',
+      'pt': 'https://brunaalvesphoto.com/pt',
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     title: "Brazilian Photographer in London",
-    description:
-      "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
+    description: "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
     type: "website",
     locale: "en_GB",
-    url: "https://www.brunaalvesphoto.com",
+    url: "https://brunaalvesphoto.com",
     siteName: "Brazilian Photographer in London",
     images: [
       { 
-        url: "https://www.brunaalvesphoto.com/images/hero-image-large.webp",  // URL absoluta
+        url: "/images/hero-image-large.webp",
         width: 1200,
         height: 630,
-        alt: "Brazilian Photographer in London"
+        alt: "Brazilian Photographer in London",
+        type: "image/webp"
+      },
+      { 
+        url: "/images/about-image-large.webp",
+        width: 1200,
+        height: 630,
+        alt: "Bruna Alves - Professional Photographer in London",
+        type: "image/webp"
       }
     ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Brazilian Photographer in London",
+    description: "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
+    images: ['/images/hero-image-large.webp'],
   },
 };
 
@@ -50,20 +100,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="locale">
+    <html lang="en">
       <head>        
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        {/* <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="en" />
-        <link rel="alternate" href="https://www.brunaalvesphoto.com/pt/" hrefLang="pt" />
-        <link rel="alternate" href="https://www.brunaalvesphoto.com/" hrefLang="x-default" />
-        <link rel="canonical" href="https://www.brunaalvesphoto.com/" />         */}
       </head>
       <body className={`${questrial.variable} ${raleway.variable} antialiased`}>
+        <StructuredData />
         <AuthProvider>
-          {/* <TranslationProvider initialLocale="en"> */}
-            {children}
-          {/* </TranslationProvider> */}
+          {children}
         </AuthProvider>
         <AosInit />
       </body>
