@@ -18,7 +18,7 @@ const Portfolio = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 9; // Number of items per page
+  const itemsPerPage = 12; // Number of items per page
   const sectionRef = useRef<HTMLDivElement>(null);
   const [hasMounted, setHasMounted] = useState(false);
   const [isScrollingToGallery, setIsScrollingToGallery] = useState(false);
