@@ -23,8 +23,8 @@
 
 
   "categoryAll": "All",
-  "categoryTourist": "Tourist",
-  "categoryProfessional": "Professional",
+  "categoryTravel": "Travel",
+  "categoryBusiness": "Business",
   "categoryStudio": "Studio",
 
   "modalArialLabelClose": "Close",

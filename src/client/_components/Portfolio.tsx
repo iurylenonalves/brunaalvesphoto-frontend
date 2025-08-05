@@ -44,7 +44,7 @@ const Portfolio = () => {
       { base: "studio08" },{ base: "studio09" }, { base: "studio10" }, 
       { base: "studio11" }
     ],
-    tourism: 
+    travel: 
     [
       { base: "tour10" }, { base: "tour11" }, { base: "tour12" }, 
       { base: "tour13" }, { base: "tour01" }, { base: "tour02" }, 
@@ -54,7 +54,7 @@ const Portfolio = () => {
       { base: "tour16" }, { base: "tour17" }, { base: "tour18" }, 
       { base: "tour19" }
     ],
-    professional: 
+    business: 
     [
       { base: "work01" }, { base: "work02" }, { base: "work03" }, 
       { base: "work04" }, { base: "work05" }, { base: "work06" }, 
@@ -123,7 +123,7 @@ const Portfolio = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {paginatedImages.map(({ base }, index) => (
               <div
                 key={index}
