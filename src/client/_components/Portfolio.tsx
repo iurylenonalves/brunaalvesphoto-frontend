@@ -7,9 +7,12 @@ import Pagination from "./Pagination";
 import CategoryFilter from "./CategoryFilter";
 import Loader from "./Loader";
 import { useTranslations } from "@/context/TranslationContext";
+import { generateAltText, generateImageTitle, PHOTOGRAPHER_NAME, BUSINESS_NAME, LOCATION, CATEGORY_DESCRIPTIONS } from "@/utils/seoConstants";
 
 interface ImageItem {
   base: string;
+  alt?: string;
+  title?: string;
 }
 
 type PortfolioImages = Record<string, ImageItem[]>;
@@ -24,7 +27,16 @@ const Portfolio = () => {
   const [isScrollingToGallery, setIsScrollingToGallery] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
 
-  const { translations } = useTranslations();
+  const { translations, locale } = useTranslations();
+
+  // Function to generate SEO-optimized alt text and title from image base name
+  const generateImageMetadata = (base: string) => {
+    const currentLocale = (locale === 'pt' ? 'pt' : 'en') as 'en' | 'pt';
+    return {
+      alt: generateAltText(base, currentLocale),
+      title: generateImageTitle(base, currentLocale)
+    };
+  };
 
   const portfolioImages: PortfolioImages = {
     all: [
@@ -224,13 +236,79 @@ const Portfolio = () => {
     }
   }, [currentPage, isScrollingToGallery, hasMounted]);
 
+  // Generate Schema.org structured data for image gallery
+  const generateSchemaData = () => {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const currentLocale = (locale === 'pt' ? 'pt' : 'en') as 'en' | 'pt';
+    const categoryDescriptions = CATEGORY_DESCRIPTIONS[currentLocale];
+    
+    // Get current category description
+    const categoryKey = selectedCategory as keyof typeof categoryDescriptions;
+    const description = categoryDescriptions[categoryKey] || categoryDescriptions.all;
+    
+    return {
+      "@context": "https://schema.org",
+      "@type": "ImageGallery",
+      "name": `${BUSINESS_NAME} Portfolio`,
+      "description": description,
+      "url": `${baseUrl}/#portfolio`,
+      "inLanguage": currentLocale === 'pt' ? 'pt-BR' : 'en-GB',
+      "author": {
+        "@type": "Person",
+        "name": PHOTOGRAPHER_NAME,
+        "jobTitle": currentLocale === 'pt' ? "Fotógrafa Profissional" : "Professional Photographer",
+        "url": baseUrl,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": LOCATION
+        }
+      },
+      "image": filteredImages.slice(0, 12).map((item) => ({
+        "@type": "ImageObject",
+        "url": `${baseUrl}/images/${item.base}-large.webp`,
+        "thumbnail": `${baseUrl}/images/${item.base}-thumbnail.webp`,
+        "description": generateImageMetadata(item.base).alt,
+        "name": generateImageMetadata(item.base).title,
+        "contentLocation": LOCATION,
+        "inLanguage": currentLocale === 'pt' ? 'pt-BR' : 'en-GB',
+        "creator": {
+          "@type": "Person", 
+          "name": PHOTOGRAPHER_NAME
+        },
+        "copyrightHolder": {
+          "@type": "Person",
+          "name": PHOTOGRAPHER_NAME
+        }
+      }))
+    };
+  };
+
 
   return (
-    <section className="py-16 px-6 bg-white scroll-mt-16" id="portfolio" ref={sectionRef}>
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-gray-900 mb-8" data-aos="fade-up">
-          {translations.portfolioTitle}
-        </h2>
+    <>
+      {/* Schema.org Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateSchemaData()) }}
+      />
+      
+      <section 
+        className="py-16 px-6 bg-white scroll-mt-16" 
+        id="portfolio" 
+        ref={sectionRef}
+        itemScope
+        itemType="https://schema.org/ImageGallery"
+      >
+        <div className="max-w-6xl mx-auto text-center">
+          <header>
+            <h2 
+              className="text-4xl font-bold text-gray-900 mb-8" 
+              data-aos="fade-up"
+              itemProp="name"
+            >
+              {translations.portfolioTitle}
+            </h2>
+          </header>
 
         {/* Filter Category */}
         <CategoryFilter 
@@ -243,27 +321,34 @@ const Portfolio = () => {
           <Loader />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {paginatedImages.map(({ base }, index) => (
-              <div
-                key={index}
-                className="group relative overflow-hidden rounded-lg shadow-md cursor-pointer"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-                onClick={() => setSelectedIndex(startIndex + index)}
-              >
-                <Image
-                  src={`/images/${base}-thumbnail.webp`}
-                  alt={`Portfolio image ${index + 1}`}
-                  width={500}
-                  height={400}
-                  className="w-full h-72 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out flex items-center justify-center">
-                  <span className="text-white text-lg font-semibold">{translations.portfolioImagesDetails}</span>
-                </div>
-              </div>
-            ))}
+            {paginatedImages.map(({ base }, index) => {
+              const { alt, title } = generateImageMetadata(base);
+              const currentImageIndex = startIndex + index;
+              
+              return (
+                <figure
+                  key={`${base}-${currentImageIndex}`}
+                  className="group relative overflow-hidden rounded-lg shadow-md cursor-pointer"
+                  data-aos="fade-up"
+                  data-aos-delay={index * 100}
+                  onClick={() => setSelectedIndex(currentImageIndex)}
+                >
+                  <Image
+                    src={`/images/${base}-thumbnail.webp`}
+                    alt={alt}
+                    title={title}
+                    width={500}
+                    height={400}
+                    className="w-full h-72 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out flex items-center justify-center">
+                    <span className="text-white text-lg font-semibold">{translations.portfolioImagesDetails}</span>
+                  </div>
+                </figure>
+              );
+            })}
           </div>
         )}
 
@@ -276,15 +361,16 @@ const Portfolio = () => {
         />
       </div>
 
-      {/* Lightbox */}
-      {selectedIndex !== null && (
-        <Modal
-          images={filteredImages.map(({ base }) => `/images/${base}-large.webp`)}
-          selectedIndex={selectedIndex}
-          onClose={() => setSelectedIndex(null)}
-        />
-      )}
-    </section>
+        {/* Lightbox */}
+        {selectedIndex !== null && (
+          <Modal
+            images={filteredImages.map(({ base }) => `/images/${base}-large.webp`)}
+            selectedIndex={selectedIndex}
+            onClose={() => setSelectedIndex(null)}
+          />
+        )}
+      </section>
+    </>
   );
 };
 
