@@ -29,18 +29,18 @@ const Portfolio = () => {
   const portfolioImages: PortfolioImages = {
     all: 
     [
-      { base: "tour01" }, { base: "tour02" }, { base: "tour03" }, 
-      { base: "tour04" }, { base: "tour05" }, { base: "tour06" }, 
-      { base: "tour07" }, { base: "tour08" }, { base: "tour09" }, 
-      { base: "tour10" }, { base: "tour11" }, { base: "tour12" }, 
+      { base: "tour16" }, { base: "tour14" }, { base: "tour28" },
+      { base: "tour11" }, { base: "tour13" }, { base: "work28" },
+      { base: "tour29" }, { base: "tour18" }, { base: "tour08" },
+      { base: "tour06" }, { base: "tour30" }, { base: "tour20" },
       { base: "tour13" }, { base: "tour14" }, { base: "tour15" },
       { base: "tour16" }, { base: "tour17" }, { base: "tour18" },
       { base: "tour19" }, { base: "tour20" }, { base: "tour21" },
       { base: "tour22" }, { base: "tour23" }, { base: "tour24" },
       { base: "tour25" }, { base: "tour26" }, { base: "tour27" },
-      { base: "tour28" }, { base: "work01" }, { base: "work02" }, 
-      { base: "work03" }, { base: "work04" }, { base: "work05" }, 
-      { base: "work06" }, { base: "work07" }, { base: "work08" }, 
+      { base: "tour28" }, { base: "work01" }, { base: "work02" },
+      { base: "work03" }, { base: "work04" }, { base: "work05" },
+      { base: "work06" }, { base: "work07" }, { base: "work08" },
       { base: "work09" }, { base: "work10" }, { base: "work11" },
       { base: "work12" }, { base: "work13" }, { base: "work14" },
       { base: "work15" }, { base: "work16" }, { base: "work17" },
@@ -57,33 +57,34 @@ const Portfolio = () => {
     ],
     travel: 
     [
-      { base: "tour01" }, { base: "tour02" }, { base: "tour03" }, 
-      { base: "tour04" }, { base: "tour05" }, { base: "tour06" }, 
-      { base: "tour07" }, { base: "tour08" }, { base: "tour09" }, 
-      { base: "tour10" }, { base: "tour11" }, { base: "tour12" }, 
+      { base: "tour01" }, { base: "tour02" }, { base: "tour03" },
+      { base: "tour04" }, { base: "tour05" }, { base: "tour06" },
+      { base: "tour07" }, { base: "tour08" }, { base: "tour09" },
+      { base: "tour10" }, { base: "tour11" }, { base: "tour12" },
       { base: "tour13" }, { base: "tour14" }, { base: "tour15" },
       { base: "tour16" }, { base: "tour17" }, { base: "tour18" },
       { base: "tour19" }, { base: "tour20" }, { base: "tour21" },
       { base: "tour22" }, { base: "tour23" }, { base: "tour24" },
       { base: "tour25" }, { base: "tour26" }, { base: "tour27" },
-      { base: "tour28" }, 
+      { base: "tour28" }, { base: "tour29" }, { base: "tour30" }
     ],
     business: 
     [
-      { base: "work01" }, { base: "work02" }, { base: "work03" }, 
-      { base: "work04" }, { base: "work05" }, { base: "work06" }, 
-      { base: "work07" }, { base: "work08" }, { base: "work09" }, 
-      { base: "work10" }, { base: "work11" }, { base: "work12" }, 
+      { base: "work01" }, { base: "work02" }, { base: "work03" },
+      { base: "work04" }, { base: "work05" }, { base: "work06" },
+      { base: "work07" }, { base: "work08" }, { base: "work09" },
+      { base: "work10" }, { base: "work11" }, { base: "work12" },
       { base: "work13" }, { base: "work14" }, { base: "work15" },
       { base: "work16" }, { base: "work17" }, { base: "work18" },
       { base: "work19" }, { base: "work20" }, { base: "work21" },
       { base: "work22" }, { base: "work23" }, { base: "work24" },
-      { base: "work25" }, { base: "work26" }, { base: "work27" }
+      { base: "work25" }, { base: "work26" }, { base: "work27" },
+      { base: "work28" }
     ],
     studio: 
     [
-      { base: "studio01" }, { base: "studio02" }, { base: "studio03" }, 
-      { base: "studio04" }, { base: "studio05" }, { base: "studio06" }, 
+      { base: "studio01" }, { base: "studio02" }, { base: "studio03" },
+      { base: "studio04" }, { base: "studio05" }, { base: "studio06" },
       { base: "studio07" }, { base: "studio08" }, { base: "studio09" },
       { base: "studio10" }, { base: "studio11" }, { base: "studio12" },
       { base: "studio13" }, { base: "studio14" }, { base: "studio15" },
