@@ -51,12 +51,13 @@ export const useContactForm = (locale: string, translations: Translations) => {
 
     if (!validateForm()) return;
 
-    const VERCEL_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api-brunaphoto-vercel.vercel.app/api/contact';
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api-brunaphoto-vercel.vercel.app';
+    const CONTACT_API_URL = `${API_BASE_URL}/api/contacts`;
 
     setStatus(translations.loading || 'loading');
 
     try {
-      const response = await axios.post(VERCEL_API_URL, formData, {
+      const response = await axios.post(CONTACT_API_URL, formData, {
         headers: { 'Content-Type': 'application/json' },
         timeout: 10000,
       });
