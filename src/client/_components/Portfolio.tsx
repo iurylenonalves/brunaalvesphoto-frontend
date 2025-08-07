@@ -26,6 +26,7 @@ const Portfolio = () => {
   const [hasMounted, setHasMounted] = useState(false);
   const [isScrollingToGallery, setIsScrollingToGallery] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
+  const [schemaData, setSchemaData] = useState<string>('')
 
   const { translations, locale } = useTranslations();
 
@@ -236,61 +237,70 @@ const Portfolio = () => {
     }
   }, [currentPage, isScrollingToGallery, hasMounted]);
 
-  // Generate Schema.org structured data for image gallery
-  const generateSchemaData = () => {
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const currentLocale = (locale === 'pt' ? 'pt' : 'en') as 'en' | 'pt';
-    const categoryDescriptions = CATEGORY_DESCRIPTIONS[currentLocale];
-    
-    // Get current category description
-    const categoryKey = selectedCategory as keyof typeof categoryDescriptions;
-    const description = categoryDescriptions[categoryKey] || categoryDescriptions.all;
-    
-    return {
-      "@context": "https://schema.org",
-      "@type": "ImageGallery",
-      "name": `${BUSINESS_NAME} Portfolio`,
-      "description": description,
-      "url": `${baseUrl}/#portfolio`,
-      "inLanguage": currentLocale === 'pt' ? 'pt-BR' : 'en-GB',
-      "author": {
-        "@type": "Person",
-        "name": PHOTOGRAPHER_NAME,
-        "jobTitle": currentLocale === 'pt' ? "Fotógrafa Profissional" : "Professional Photographer",
-        "url": baseUrl,
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": LOCATION
-        }
-      },
-      "image": filteredImages.slice(0, 12).map((item) => ({
-        "@type": "ImageObject",
-        "url": `${baseUrl}/images/${item.base}-large.webp`,
-        "thumbnail": `${baseUrl}/images/${item.base}-thumbnail.webp`,
-        "description": generateImageMetadata(item.base).alt,
-        "name": generateImageMetadata(item.base).title,
-        "contentLocation": LOCATION,
-        "inLanguage": currentLocale === 'pt' ? 'pt-BR' : 'en-GB',
-        "creator": {
-          "@type": "Person", 
-          "name": PHOTOGRAPHER_NAME
-        },
-        "copyrightHolder": {
-          "@type": "Person",
-          "name": PHOTOGRAPHER_NAME
-        }
-      }))
-    };
-  };
+  // Generate schema data only on client side to avoid hydration mismatch
+  useEffect(() => {
+    if (hasMounted && typeof window !== 'undefined') {
+      const generateClientSchemaData = () => {
+        const baseUrl = window.location.origin;
+        const currentLocale = (locale === 'pt' ? 'pt' : 'en') as 'en' | 'pt';
+        const categoryDescriptions = CATEGORY_DESCRIPTIONS[currentLocale];
+        
+        // Get current category description
+        const categoryKey = selectedCategory as keyof typeof categoryDescriptions;
+        const description = categoryDescriptions[categoryKey] || categoryDescriptions.all;
+        
+        return {
+          "@context": "https://schema.org",
+          "@type": "ImageGallery",
+          "name": `${BUSINESS_NAME} Portfolio`,
+          "description": description,
+          "url": `${baseUrl}/#portfolio`,
+          "inLanguage": currentLocale === 'pt' ? 'pt-BR' : 'en-GB',
+          "author": {
+            "@type": "Person",
+            "name": PHOTOGRAPHER_NAME,
+            "jobTitle": currentLocale === 'pt' ? "Fotógrafa Profissional" : "Professional Photographer",
+            "url": baseUrl,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": LOCATION
+            }
+          },
+          "image": filteredImages.slice(0, 12).map((item) => ({
+            "@type": "ImageObject",
+            "url": `${baseUrl}/images/${item.base}-large.webp`,
+            "thumbnail": `${baseUrl}/images/${item.base}-thumbnail.webp`,
+            "description": generateImageMetadata(item.base).alt,
+            "name": generateImageMetadata(item.base).title,
+            "contentLocation": LOCATION,
+            "inLanguage": currentLocale === 'pt' ? 'pt-BR' : 'en-GB',
+            "creator": {
+              "@type": "Person", 
+              "name": PHOTOGRAPHER_NAME
+            },
+            "copyrightHolder": {
+              "@type": "Person",
+              "name": PHOTOGRAPHER_NAME
+            }
+          }))
+        };
+      };
+
+      const schema = generateClientSchemaData();
+      setSchemaData(JSON.stringify(schema));
+    }
+  }, [selectedCategory, locale, filteredImages, hasMounted]);
 
 
   return (
     <>
-      {/* Schema.org Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateSchemaData()) }}
-      />
+      {/* Schema.org Structured Data - Only rendered on client side */}
+      {schemaData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: schemaData }}
+        />
+      )}
       
       <section 
         className="py-16 px-6 bg-white scroll-mt-16" 
