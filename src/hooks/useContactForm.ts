@@ -51,6 +51,7 @@ export const useContactForm = (locale: string, translations: Translations) => {
 
     if (!validateForm()) return;
 
+    // Fix: Ensure correct API URL construction
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api-brunaphoto-vercel.vercel.app';
     const CONTACT_API_URL = `${API_BASE_URL}/api/contacts`;
 
