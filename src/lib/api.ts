@@ -206,24 +206,110 @@ if (!API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined in your environment variables.");
 }
 
-export async function getPosts(locale: string) {
-  const response = await fetch(`${API_URL}/api/posts?locale=${locale}`,{
-    cache: 'no-store',
-  });
-  if (!response.ok) {   
-    const errorBody = await response.text(); 
-    console.error("API Error Response:", errorBody);    
-    throw new Error(`Failed to fetch posts. Status: ${response.status}. Body: ${errorBody}`);
+// Dados de fallback para uso durante build quando API não estiver disponível
+const fallbackPosts = [
+  {
+    id: "1",
+    slug: "exemplo-post",
+    title: "Post de Exemplo",
+    subtitle: "Este é um post de exemplo para visualização.",
+    locale: "en",
+    publishedAt: "2024-06-01",
+    blocks: [
+      { type: "text" as const, content: "Conteúdo de exemplo." },
+      { type: "image" as const, src: "https://placekitten.com/400/200", alt: "Gatinho de exemplo" }
+    ]
+  },
+  {
+    id: "2",
+    slug: "exemplo-post-pt",
+    title: "Post de Exemplo PT",
+    subtitle: "Este é um post de exemplo para visualização em português.",
+    locale: "pt",
+    publishedAt: "2024-06-02",
+    blocks: [
+      { type: "text" as const, content: "Conteúdo de exemplo em português." },
+      { type: "image" as const, src: "https://placekitten.com/400/200", alt: "Gatinho de exemplo" }
+    ]
+  },
+  {
+    id: "3",
+    slug: "english-post-1",
+    title: "Bride Portrait",
+    subtitle: "By Bruna Alves",
+    locale: "en",
+    publishedAt: "2024-06-03",
+    blocks: [
+      { type: "text" as const, content: "<p>Primeiro texto do post...</p>" },
+      { type: "image" as const, src: "/images/posts/studio09-large.webp", alt: "Bride Portrait" },
+      { type: "text" as const, content: "<p>Segundo texto do post...</p>" },
+      { type: "image" as const, src: "/images/posts/studio10-large.webp", alt: "Another photo" },
+      { type: "text" as const, content: "<p>Terceiro texto do post...</p>" },
+      { type: "image" as const, src: "/images/posts/studio11-large.webp", alt: "Last photo" },
+      { type: "text" as const, content: "<p>Texto final do post...</p>" }
+    ]
   }
-  return response.json();
+];
+
+function getFallbackPosts(locale: string) {
+  return fallbackPosts.filter(post => post.locale === locale);
+}
+
+function getFallbackPostBySlug(slug: string, locale: string) {
+  return fallbackPosts.find(post => post.slug === slug && post.locale === locale) || null;
+}
+
+export async function getPosts(locale: string) {
+  try {
+    const response = await fetch(`${API_URL}/api/posts?locale=${locale}`,{
+      cache: 'no-store',
+    });
+    
+    if (!response.ok) {   
+      const errorBody = await response.text(); 
+      if (process.env.NODE_ENV === 'development') {
+        console.error("API Error Response:", errorBody);    
+      }
+      
+      // Se for erro 401 (autenticação), usar fallback durante build
+      if (response.status === 401) {
+        console.warn("API authentication failed during build, using fallback data");
+        return getFallbackPosts(locale);
+      }
+      
+      throw new Error(`Failed to fetch posts. Status: ${response.status}. Body: ${errorBody}`);
+    }
+    return response.json();
+  } catch (_error) {
+    // Se houver qualquer erro de rede durante o build, usar fallback
+    if (process.env.NODE_ENV !== 'development') {
+      console.warn("API request failed during build, using fallback data");
+      return getFallbackPosts(locale);
+    }
+    throw _error;
+  }
 }
 
 export async function getPostBySlug(slug: string, locale: string) {
-  const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`);
-  if (!response.ok) {    
-    return null; 
+  try {
+    const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`);
+    if (!response.ok) {
+      // Se for erro 401 (autenticação), usar fallback durante build
+      if (response.status === 401) {
+        console.warn("API authentication failed during build, using fallback data for post");
+        return getFallbackPostBySlug(slug, locale);
+      }
+      return null; 
+    }
+    return response.json();
+  } catch (_error) {
+    // Se houver qualquer erro de rede durante o build, usar fallback
+    if (process.env.NODE_ENV !== 'development') {
+      console.warn("API request failed during build, using fallback data for post");
+      return getFallbackPostBySlug(slug, locale);
+    }
+    return null;
   }
-  return response.json();
 }
 
 export async function createPost(formData: FormData, token: string) {

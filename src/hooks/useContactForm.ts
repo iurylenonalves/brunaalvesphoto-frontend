@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { z } from 'zod';
 import axios from 'axios';
@@ -61,7 +60,10 @@ export const useContactForm = (locale: string, translations: Translations) => {
         headers: { 'Content-Type': 'application/json' },
         timeout: 10000,
       });
-      console.log('Response:', response.data);
+      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Response:', response.data);
+      }
 
       setStatus('success');
       setFormData({ 
@@ -73,16 +75,21 @@ export const useContactForm = (locale: string, translations: Translations) => {
       
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('Submission error:', error);
-      setStatus(error.response?.status === 429 
-        ? 'too-many-requests' 
-        : translations.contactError || 'An error occurred'
-      );            
-    } else {
-      console.error('Unexpected error:', error);
-      setStatus(translations.contactError || 'An error occurred');
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Submission error:', error);
+        }
+        setStatus(error.response?.status === 429 
+          ? 'too-many-requests' 
+          : translations.contactError || 'An error occurred'
+        );            
+      } else {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Unexpected error:', error);
+        }
+        setStatus(translations.contactError || 'An error occurred');
+      }
     }
   };
-  }
+
   return { formData, errors, status, handleChange, handleSubmit }; 
 }

@@ -52,16 +52,20 @@ export default function PostEditorForm({
 
   useEffect(() => {
     if (initialData) {
-      console.log("🔍 [PostEditorForm] Loading initialData:", initialData);
-      console.log("🔍 [PostEditorForm] initialData.blocks:", initialData.blocks);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("🔍 [PostEditorForm] Loading initialData:", initialData);
+        console.log("🔍 [PostEditorForm] initialData.blocks:", initialData.blocks);
+      }
       setTitle(initialData.title || "");
       setSubtitle(initialData.subtitle || "");
       setLocale(initialData.locale || "en");
       setBlocks(initialData.blocks || []);
       
       const cleanedThumbnail = cleanImageUrl(initialData.thumbnail);
-      console.log("🖼️ [PostEditorForm] Original thumbnail:", initialData.thumbnail);
-      console.log("🧹 [PostEditorForm] Cleaned thumbnail:", cleanedThumbnail);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("🖼️ [PostEditorForm] Original thumbnail:", initialData.thumbnail);
+        console.log("🧹 [PostEditorForm] Cleaned thumbnail:", cleanedThumbnail);
+      }
       setThumbnailSrc(cleanedThumbnail);
       
       setPublishedAt(initialData.publishedAt ? new Date(initialData.publishedAt).toISOString().substring(0, 10) : "");
@@ -73,7 +77,9 @@ export default function PostEditorForm({
     // Busca os slugs do outro idioma para o campo relatedSlug
     const fetchSlugs = async () => {
       const targetLocale = locale === "en" ? "pt" : "en";
-      console.log("Buscando slugs do idioma:", targetLocale);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("Buscando slugs do idioma:", targetLocale);
+      }
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?locale=${targetLocale}`);
       const posts = await res.json();
       setAvailableSlugs(posts.map((p: { slug: string }) => p.slug));
@@ -117,12 +123,16 @@ export default function PostEditorForm({
         // Log da compressão para debug
         const originalSizeMB = (value.size / 1024 / 1024).toFixed(2);
         const compressedSizeMB = (optimizedFile.size / 1024 / 1024).toFixed(2);
-        console.log(`Image compressed: ${originalSizeMB}MB → ${compressedSizeMB}MB`);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`Image compressed: ${originalSizeMB}MB → ${compressedSizeMB}MB`);
+        }
         
         // Limpa erros se a compressão foi bem-sucedida
         setError(null);
       } catch (error) {
-        console.error('Error compressing image:', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error compressing image:', error);
+        }
         setError("Failed to compress image. Please try a different image or reduce its size.");
         // Em caso de erro, não usa o arquivo
         return;
@@ -140,8 +150,10 @@ export default function PostEditorForm({
     // Cria um identificador único para a imagem clicada.
     // Usa 'new-image-' + index para arquivos novos, ou o src limpo para imagens existentes.
     const uniqueId = block.file ? `new-image-${index}` : cleanImageUrl(block.src);
-    console.log("🎯 [PostEditorForm] Thumbnail selection - uniqueId:", uniqueId, "current thumbnailSrc:", thumbnailSrc);
-    console.log("🔍 [PostEditorForm] Comparing URLs:", compareThumbnailUrls(thumbnailSrc, uniqueId));
+    if (process.env.NODE_ENV === 'development') {
+      console.log("🎯 [PostEditorForm] Thumbnail selection - uniqueId:", uniqueId, "current thumbnailSrc:", thumbnailSrc);
+      console.log("🔍 [PostEditorForm] Comparing URLs:", compareThumbnailUrls(thumbnailSrc, uniqueId));
+    }
 
     // Para imagens existentes, usar comparação robusta
     const isCurrentThumbnail = block.file 
@@ -153,7 +165,9 @@ export default function PostEditorForm({
       setThumbnailSrc(null);
     } else {
       // Caso contrário, define o novo thumbnail.
-      console.log("✅ [PostEditorForm] Setting new thumbnail:", uniqueId);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("✅ [PostEditorForm] Setting new thumbnail:", uniqueId);
+      }
       setThumbnailSrc(uniqueId || null);
     }
   };
