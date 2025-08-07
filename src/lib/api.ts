@@ -240,13 +240,33 @@ const fallbackPosts = [
     locale: "en",
     publishedAt: "2024-06-03",
     blocks: [
-      { type: "text" as const, content: "<p>Primeiro texto do post...</p>" },
+      { type: "text" as const, content: "<p>Professional bride portrait session in London.</p>" },
       { type: "image" as const, src: "/images/posts/studio09-large.webp", alt: "Bride Portrait" },
-      { type: "text" as const, content: "<p>Segundo texto do post...</p>" },
-      { type: "image" as const, src: "/images/posts/studio10-large.webp", alt: "Another photo" },
-      { type: "text" as const, content: "<p>Terceiro texto do post...</p>" },
-      { type: "image" as const, src: "/images/posts/studio11-large.webp", alt: "Last photo" },
-      { type: "text" as const, content: "<p>Texto final do post...</p>" }
+      { type: "text" as const, content: "<p>Capturing the beauty and elegance of the bride.</p>" }
+    ]
+  },
+  {
+    id: "4",
+    slug: "professional-photography",
+    title: "Professional Photography Services",
+    subtitle: "London Portrait Photography",
+    locale: "en",
+    publishedAt: "2024-06-10",
+    blocks: [
+      { type: "text" as const, content: "<p>Professional photography services in London.</p>" },
+      { type: "image" as const, src: "https://placekitten.com/600/400", alt: "Professional Photography" }
+    ]
+  },
+  {
+    id: "5",
+    slug: "fotografia-profissional",
+    title: "Serviços de Fotografia Profissional",
+    subtitle: "Fotografia de Retrato em Londres",
+    locale: "pt",
+    publishedAt: "2024-06-15",
+    blocks: [
+      { type: "text" as const, content: "<p>Serviços de fotografia profissional em Londres.</p>" },
+      { type: "image" as const, src: "https://placekitten.com/600/400", alt: "Fotografia Profissional" }
     ]
   }
 ];
@@ -260,55 +280,76 @@ function getFallbackPostBySlug(slug: string, locale: string) {
 }
 
 export async function getPosts(locale: string) {
+  console.log(`[API] Attempting to fetch posts for locale: ${locale}`);
+  console.log(`[API] Using API URL: ${API_URL}/api/posts?locale=${locale}`);
+  
   try {
     const response = await fetch(`${API_URL}/api/posts?locale=${locale}`,{
       cache: 'no-store',
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'NextJS-Static-Build'
+      },
+      signal: AbortSignal.timeout(15000) // 15 second timeout
     });
+    
+    console.log(`[API] Response status: ${response.status}`);
     
     if (!response.ok) {   
       const errorBody = await response.text(); 
-      if (process.env.NODE_ENV === 'development') {
-        console.error("API Error Response:", errorBody);    
-      }
+      console.error(`[API] Error response body: ${errorBody.substring(0, 500)}`);
       
       // Se for erro 401 (autenticação), usar fallback durante build
       if (response.status === 401) {
-        console.warn("API authentication failed during build, using fallback data");
+        console.warn("[API] 401 Authentication failed during build, using fallback data");
         return getFallbackPosts(locale);
       }
       
-      throw new Error(`Failed to fetch posts. Status: ${response.status}. Body: ${errorBody}`);
-    }
-    return response.json();
-  } catch (_error) {
-    // Se houver qualquer erro de rede durante o build, usar fallback
-    if (process.env.NODE_ENV !== 'development') {
-      console.warn("API request failed during build, using fallback data");
+      console.error(`[API] HTTP Error ${response.status}, using fallback data`);
       return getFallbackPosts(locale);
     }
-    throw _error;
+    
+    const data = await response.json();
+    console.log(`[API] Successfully fetched ${data.length} posts`);
+    return data;
+  } catch (_error) {
+    console.error(`[API] Network/Timeout error: ${_error}`);
+    console.warn("[API] Using fallback data due to network error");
+    return getFallbackPosts(locale);
   }
 }
 
 export async function getPostBySlug(slug: string, locale: string) {
+  console.log(`[API] Fetching post: ${slug} (${locale})`);
+  
   try {
-    const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`);
+    const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`, {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'NextJS-Static-Build'
+      },
+      signal: AbortSignal.timeout(15000)
+    });
+    
+    console.log(`[API] Post response status: ${response.status}`);
+    
     if (!response.ok) {
       // Se for erro 401 (autenticação), usar fallback durante build
       if (response.status === 401) {
-        console.warn("API authentication failed during build, using fallback data for post");
+        console.warn(`[API] 401 for post ${slug}, using fallback data`);
         return getFallbackPostBySlug(slug, locale);
       }
+      console.warn(`[API] Post ${slug} not found (${response.status})`);
       return null; 
     }
-    return response.json();
+    
+    const data = await response.json();
+    console.log(`[API] Successfully fetched post: ${data.title}`);
+    return data;
   } catch (_error) {
-    // Se houver qualquer erro de rede durante o build, usar fallback
-    if (process.env.NODE_ENV !== 'development') {
-      console.warn("API request failed during build, using fallback data for post");
-      return getFallbackPostBySlug(slug, locale);
-    }
-    return null;
+    console.error(`[API] Error fetching post ${slug}: ${_error}`);
+    console.warn(`[API] Using fallback for post ${slug}`);
+    return getFallbackPostBySlug(slug, locale);
   }
 }
 
