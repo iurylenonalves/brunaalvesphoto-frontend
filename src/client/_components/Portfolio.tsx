@@ -248,6 +248,14 @@ const Portfolio = () => {
         // Get current category description
         const categoryKey = selectedCategory as keyof typeof categoryDescriptions;
         const description = categoryDescriptions[categoryKey] || categoryDescriptions.all;
+
+        // Generate image metadata function (moved inside useEffect to avoid dependency warning)
+        const getImageMetadata = (base: string) => {
+          return {
+            alt: generateAltText(base, currentLocale),
+            title: generateImageTitle(base, currentLocale)
+          };
+        };
         
         return {
           "@context": "https://schema.org",
@@ -266,23 +274,26 @@ const Portfolio = () => {
               "addressLocality": LOCATION
             }
           },
-          "image": filteredImages.slice(0, 12).map((item) => ({
-            "@type": "ImageObject",
-            "url": `${baseUrl}/images/${item.base}-large.webp`,
-            "thumbnail": `${baseUrl}/images/${item.base}-thumbnail.webp`,
-            "description": generateImageMetadata(item.base).alt,
-            "name": generateImageMetadata(item.base).title,
-            "contentLocation": LOCATION,
-            "inLanguage": currentLocale === 'pt' ? 'pt-BR' : 'en-GB',
-            "creator": {
-              "@type": "Person", 
-              "name": PHOTOGRAPHER_NAME
-            },
-            "copyrightHolder": {
-              "@type": "Person",
-              "name": PHOTOGRAPHER_NAME
-            }
-          }))
+          "image": filteredImages.slice(0, 12).map((item) => {
+            const metadata = getImageMetadata(item.base);
+            return {
+              "@type": "ImageObject",
+              "url": `${baseUrl}/images/${item.base}-large.webp`,
+              "thumbnail": `${baseUrl}/images/${item.base}-thumbnail.webp`,
+              "description": metadata.alt,
+              "name": metadata.title,
+              "contentLocation": LOCATION,
+              "inLanguage": currentLocale === 'pt' ? 'pt-BR' : 'en-GB',
+              "creator": {
+                "@type": "Person", 
+                "name": PHOTOGRAPHER_NAME
+              },
+              "copyrightHolder": {
+                "@type": "Person",
+                "name": PHOTOGRAPHER_NAME
+              }
+            };
+          })
         };
       };
 

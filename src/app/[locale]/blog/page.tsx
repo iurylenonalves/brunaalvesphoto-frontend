@@ -52,7 +52,7 @@ export default async function BlogPage({
   return (
     <>
       <Header />
-      <main className="mx-auto px-8 sm:px-16 md:px-24 lg:px-40 pb-16"
+      <main className="max-w-6xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16 pb-16"
       style={{
         paddingTop: "150px",
         minHeight: "100vh",
@@ -63,7 +63,7 @@ export default async function BlogPage({
       >
         <h1 
           className="text-2xl sm:text-3xl md:text-4xl font-bold mb-12 text-center">Blog</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post: Post) => (
             <PostCard
               key={post.slug}

@@ -20,9 +20,11 @@ export default function PostCard({ post, locale }: PostCardProps) {
         <Image 
           src={post.imageUrl} 
           alt={post.title} 
-          width={400}
-          height={288}
-          className="h-72 w-full object-cover transition-transform duration-300 group-hover:scale-105" 
+          width={500}
+          height={400}
+          className="h-72 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       </Link>
       <div className="flex flex-1 flex-col p-6">
