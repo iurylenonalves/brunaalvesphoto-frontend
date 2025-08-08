@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
 import ReactMarkdown from 'react-markdown';
 import imageCompression from 'browser-image-compression';
 import { cleanImageUrl, buildImageUrl, compareThumbnailUrls } from "@/utils/urlUtils";
+import { upload } from "@vercel/blob/client";
+import { createPostJson, updatePostJson, type PostJsonPayload } from "@/lib/api";
 
 interface Block {
   type: "text" | "image";
@@ -15,6 +17,7 @@ interface Block {
 }
 
 interface InitialData {
+  slug?: string;
   title?: string;
   subtitle?: string;
   locale?: "en" | "pt";
@@ -44,6 +47,8 @@ export default function PostEditorForm({
   const [publishedAt, setPublishedAt] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const { token } = useAuth();
   const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
   const [relatedSlug, setRelatedSlug] = useState(initialData?.relatedSlug || "");
@@ -180,47 +185,80 @@ export default function PostEditorForm({
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSuccess(false);
 
     try {
       if (!token) throw new Error("You must be logged in.");
 
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("subtitle", subtitle);
-      formData.append("locale", locale);
-      formData.append("publishedAt", publishedAt);
-
-       // Adiciona o caminho da thumbnail escolhida ao FormData
-      if (thumbnailSrc) {
-        console.log("📤 [PostEditorForm] Sending thumbnailSrc:", thumbnailSrc);
-        formData.append("thumbnailSrc", thumbnailSrc);
-      } else {
-        console.log("⚠️ [PostEditorForm] No thumbnailSrc to send");
-      }
-
-      if (relatedSlug) {
-        formData.append("relatedSlug", relatedSlug);
-      }
-
-      const imageBlocks = blocks.filter(b => b.type === 'image' && b.file);
-      if (imageBlocks.length === 0 && !initialData) {
-        throw new Error("At least one image is required for a new post.");
-      }
-      imageBlocks.forEach(block => formData.append('images', block.file!));
-
-      const contentBlocks = blocks.map(block => {
-        if (block.type === "text") return { type: "text", content: block.content || "" };
-        if (block.type === "image") { 
-          const src = block.file ? 'image-placeholder' : block.src;
-          return { type: "image", src: src, alt: block.alt || "" };
+      // 1) Upload images directly to Vercel Blob
+      // Map blocks: upload any File to Blob and replace with final URL
+      const uploadedBlocks: Block[] = [];
+      for (let i = 0; i < blocks.length; i++) {
+        const block = blocks[i];
+        if (block.type === 'image' && block.file) {
+          // Guard very large files (extra safety)
+          if (block.file.size > 150 * 1024 * 1024) {
+            throw new Error("Image exceeds 150MB limit.");
+          }
+          const pathname = `posts/${Date.now()}-${block.file.name.replace(/[^a-zA-Z0-9-_\.]/g, '')}`;
+          const blob = await upload(pathname, block.file, {
+            access: 'public',
+            handleUploadUrl: `${process.env.NEXT_PUBLIC_API_URL}/api/uploads/sign`,
+            clientPayload: JSON.stringify({ jwt: token }),
+            multipart: true,
+          });
+          uploadedBlocks.push({ type: 'image', src: blob.url, alt: block.alt || '' });
+        } else if (block.type === 'image') {
+          uploadedBlocks.push({ type: 'image', src: block.src, alt: block.alt || '' });
+        } else {
+          uploadedBlocks.push({ type: 'text', content: block.content || '' });
         }
-        return null;
-      }).filter(Boolean);
-      formData.append("blocks", JSON.stringify(contentBlocks));
+      }
 
-      await onSubmit(formData);
+      // 2) Choose thumbnail URL
+      let thumbnailToSend: string | undefined;
+      if (thumbnailSrc) {
+        if (thumbnailSrc.startsWith('new-image-')) {
+          const index = parseInt(thumbnailSrc.replace('new-image-', ''), 10);
+          const img = uploadedBlocks[index];
+          if (img && img.type === 'image' && img.src) thumbnailToSend = img.src;
+        } else {
+          thumbnailToSend = cleanImageUrl(thumbnailSrc) || undefined;
+        }
+      }
+
+      // 3) Build JSON payload with strict types
+      const blocksPayload: PostJsonPayload["blocks"] = [];
+      for (const b of uploadedBlocks) {
+        if (b.type === 'text') {
+          blocksPayload.push({ type: 'text', content: b.content ?? '' });
+        } else if (b.type === 'image' && b.src) {
+          blocksPayload.push({ type: 'image', src: b.src, alt: b.alt || '' });
+        }
+      }
+
+      const payload: PostJsonPayload = {
+        title,
+        subtitle,
+        locale,
+        publishedAt: publishedAt || undefined,
+        relatedSlug: relatedSlug || undefined,
+        thumbnailSrc: thumbnailToSend,
+        blocks: blocksPayload
+      };
+
+      // 4) Call JSON endpoints (create or update)
+      if (initialData && initialData.slug) {
+        await updatePostJson(initialData.slug, payload, token);
+      } else {
+        await createPostJson(payload, token);
+      }
+
       onSuccess();
-
+      setSuccess(true);
+      if (formRef.current) {
+        formRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
       if (!initialData) {
         setTitle("");
         setSubtitle("");
@@ -230,7 +268,7 @@ export default function PostEditorForm({
         setThumbnailSrc(null);
         setRelatedSlug("");
       }
-
+      setTimeout(() => setSuccess(false), 2000);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Failed to submit post.";
       setError(errorMessage);
@@ -240,7 +278,12 @@ export default function PostEditorForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+      {success && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-2 text-center">
+          Post saved successfully!
+        </div>
+      )}
       {/* Title */}
       <div>
         <label htmlFor="title" className="block font-semibold mb-1 text-gray-700">Title</label>

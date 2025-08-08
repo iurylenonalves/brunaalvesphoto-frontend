@@ -400,3 +400,73 @@ export async function deletePost(slug: string, token: string, locale: string) {
   }  
   return { success: true };
 }
+
+// New: Direct-to-Blob client upload flow
+// 1) Ask backend to sign client upload
+export async function getClientUploadToken(jwt: string, pathname: string) {
+  const res = await fetch(`${API_URL}/api/uploads/sign`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      // The handleUpload helper expects the raw body from the client SDK,
+      // but for non-Next frameworks, passing pathname here is enough to
+      // generate a token via onBeforeGenerateToken.
+      // We also pass our JWT inside clientPayload.
+      action: 'blob.generate-client-token',
+      pathname,
+      clientPayload: JSON.stringify({ jwt })
+    })
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Failed to get upload token: ${err}`);
+  }
+  return res.json();
+}
+
+// 2) Create post using JSON (after images uploaded directly to Blob)
+type TextBlock = { type: 'text'; content: string };
+type ImageBlock = { type: 'image'; src: string; alt?: string };
+export type PostJsonPayload = {
+  title: string;
+  subtitle: string;
+  locale: 'en' | 'pt';
+  publishedAt?: string;
+  relatedSlug?: string;
+  thumbnailSrc?: string;
+  blocks: Array<TextBlock | ImageBlock>;
+};
+
+export async function createPostJson(payload: PostJsonPayload, token: string) {
+  const res = await fetch(`${API_URL}/api/posts`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to create post');
+  }
+  return res.json();
+}
+
+export async function updatePostJson(slug: string, payload: PostJsonPayload, token: string) {
+  const res = await fetch(`${API_URL}/api/posts/${slug}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to update post');
+  }
+  return res.json();
+}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
-import { getPostBySlug, updatePost } from "@/lib/api";
+import { getPostBySlug } from "@/lib/api";
 import { useAuth } from "@/client/_components/AuthContext";
 import PostEditorForm from "@/client/_components/PostEditorForm";
 import Link from "next/link";
@@ -83,29 +83,9 @@ function EditPostPageContent() {
   };
 
   // Function to update the post
-  const handleUpdate = async (formData: FormData) => {
-    setSaving(true);
-    setError(null);
-    setSaveSuccess(false);
-    
-    try {
-      const updatedPost = await updatePost(slug, formData, token!);
-      setSaveSuccess(true);
-      
-      // Wait a bit to show the success message before redirecting
-      setTimeout(() => {
-        router.push(`/admin/posts?locale=${locale}`);
-      }, 1500);
-      
-      return updatedPost;
-      
-    } catch (err) {
-      console.error("Error updating post:", err);
-      setError("Failed to update post. Please try again.");
-      throw err;
-    } finally {
-      setSaving(false);
-    }
+  const handleUpdate = async (_formData: FormData): Promise<{ slug: string; title: string; subtitle: string; locale: string; }> => {
+    // No-op: form submits internally via JSON endpoints
+    return { slug, title, subtitle, locale };
   };
 
   if (loading) return (
@@ -169,7 +149,7 @@ function EditPostPageContent() {
       {/* Edit form */}
       <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
         <PostEditorForm
-          initialData={{ title, subtitle, locale, blocks, publishedAt, relatedSlug, thumbnail }}
+          initialData={{ slug, title, subtitle, locale, blocks, publishedAt, relatedSlug, thumbnail }}
           onSubmit={handleUpdate}
           loading={saving}
           onSuccess={() => {}}

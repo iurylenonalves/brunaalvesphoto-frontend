@@ -60,7 +60,7 @@ export function compareThumbnailUrls(url1: string | null | undefined, url2: stri
 export function buildImageUrl(url: string | null | undefined, apiUrl?: string): string {
   const cleanUrl = cleanImageUrl(url);
   
-  if (!cleanUrl) return '/images/placeholder.png';
+  if (!cleanUrl) return '/placeholder.png';
   
   // Se a URL já é completa (http/https), retorna ela mesma
   if (cleanUrl.startsWith('http') || cleanUrl.startsWith('https')) {

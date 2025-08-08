@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getPosts, deletePost, createPost } from "@/lib/api";
+import { getPosts, deletePost } from "@/lib/api";
 import PostEditorForm from "@/client/_components/PostEditorForm";
 import Link from "next/link";
 
@@ -59,10 +59,9 @@ function AdminPostsPageContent() {
     }
   };
   
-  const handleCreate = async (formData: FormData) => {    
-    const newPost = await createPost(formData, token!);    
-    setPosts(prev => [newPost, ...prev]);
-    return newPost;
+  const handleCreate = async (_formData: FormData): Promise<{ slug: string; title: string; subtitle: string; locale: string; }> => {
+    // No-op: form submits internally via JSON endpoints
+    return { slug: '', title: '', subtitle: '', locale };
   };
 
   const handleLocaleChange = (newLocale: "en" | "pt") => {
