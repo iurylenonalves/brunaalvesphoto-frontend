@@ -15,6 +15,7 @@ interface Post {
   locale: string;
   publishedAt?: string;
   thumbnail?: string;
+  thumbnailSrc?: string;
 }
 
 function AdminPostsPageContent() {
@@ -28,7 +29,7 @@ function AdminPostsPageContent() {
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 5;
+  const postsPerPage = 10;
 
   useEffect(() => {
     if (!authLoading && !token) {
@@ -160,16 +161,25 @@ function AdminPostsPageContent() {
             key={post.slug}
             className="flex items-center justify-between bg-white shadow-md rounded-lg px-4 py-3 border border-gray-200"
           >
-            {/* Container for Title and Date */}
-            <div>
-              <span className="text-base font-semibold text-gray-800">{post.title}</span>
-              {post.publishedAt && (
-                <span className="ml-2 text-sm text-gray-500">
-                  ({new Date(post.publishedAt).toLocaleDateString()})
-                </span>
+            {/* Container for Thumbnail, Title and Date */}
+            <div className="flex items-center gap-4">
+              {(post.thumbnail || post.thumbnailSrc) && (
+                <img
+                  src={post.thumbnail || post.thumbnailSrc}
+                  alt={post.title + ' thumbnail'}
+                  className="w-14 h-14 object-cover rounded border"
+                  style={{ minWidth: 56, minHeight: 56 }}
+                />
               )}
+              <div>
+                <span className="text-base font-semibold text-gray-800">{post.title}</span>
+                {post.publishedAt && (
+                  <span className="ml-2 text-sm text-gray-500">
+                    ({new Date(post.publishedAt).toLocaleDateString()})
+                  </span>
+                )}
+              </div>
             </div>
-      
             {/* Container for the Buttons (with alignment and spacing) */}
             <div className="flex items-center gap-2 flex-shrink-0">
               {/* VIEW */}
@@ -188,7 +198,7 @@ function AdminPostsPageContent() {
               >
                 Edit
               </Link>
-      
+
               {/* DELETE */}
               <button
                 disabled={deletingSlug === post.slug}
