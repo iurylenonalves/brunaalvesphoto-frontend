@@ -3,7 +3,7 @@
 import styles from '../../styles/header.module.css';
 
 import { useCallback, useState } from 'react';
-import Image from 'next/image';
+//import Image from 'next/image';
 import Link from 'next/link';
 import { Menu, X, Instagram, MessageCircle } from 'lucide-react';
 import { useTranslations } from '@/context/TranslationContext';
@@ -37,21 +37,21 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
       <div className={styles.container}>
         {/* Logo */}
         <Link href={currentLocale === "pt" ? "/pt" : "/en"} className={styles.logoImg}>
-        <Image 
-          src="/images/bruna-logo-white.svg" 
-          alt="Logo" 
-          width={150} 
-          height={75} 
-          priority={true}
-        />
-        <Image
-          src="/images/bruna-logo-black.svg"
-          alt="Logo Dark"
-          width={150}
-          height={75}
-          priority={true}
-          className={styles.logoImgDark}
-        />
+          <picture>
+            {/* O navegador escolherá esta source se a media query for verdadeira (tema escuro) */}
+            <source
+              media="(prefers-color-scheme: dark)"
+              srcSet="/images/brunaalvesphoto-logo-white.svg"
+            />
+            {/* Esta é a imagem padrão (fallback) para tema claro ou se <source> falhar */}
+            <img
+              src="/images/brunaalvesphoto-logo-black.svg"
+              alt="Logo Bruna Alves Photography"
+              width={150}
+              height={75}
+              className={styles.logoImage} // Usando a nova classe simplificada
+            />
+          </picture>
         </Link>
 
         {/* Menu for large screens */}
