@@ -3,6 +3,7 @@ import Header from "@/client/_components/Header";
 import Footer from "@/client/_components/Footer";
 import { notFound } from "next/navigation";
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { Metadata } from "next";
 import Image from "next/image";
 
@@ -88,7 +89,10 @@ export default async function BlogPostPage({ params }: Props) {
         <article className="prose lg:prose-lg mx-auto w-full">
           {post.blocks && post.blocks.map((block: { type: "text" | "image"; content?: string; src?: string; alt?: string }, idx: number) =>
             block.type === "text" ? (
-              <ReactMarkdown key={idx}>
+              <ReactMarkdown 
+                key={idx}
+                remarkPlugins={[remarkGfm]}
+              >
                 {block.content ?? ""}
               </ReactMarkdown>
             ) : (
@@ -101,7 +105,7 @@ export default async function BlogPostPage({ params }: Props) {
                 alt={block.alt || "Blog image"}
                 width={800}
                 height={400}
-                className="w-full h-auto rounded my-8"
+                className="w-full max-w-2xl mx-auto h-auto rounded my-8"
               />
             )
           )}

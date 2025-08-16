@@ -143,20 +143,24 @@
   .mobileControls {
     display: flex;
   }
+
+  .logoImage {
+    width: 120px;
+  }
 }
 
 @media (max-width: 460px) {
   .container {
     padding: 12px;
   }
-
-  /* .logo {
-    font-size: 1.2rem;
-  } */
-
+  
   .mobileLanguage {
     transform: scale(0.85);
     margin-right: 4px;
+  }
+
+  .logoImage {
+    width: 100px;
   }
 }
 

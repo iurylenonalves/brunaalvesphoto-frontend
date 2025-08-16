@@ -202,3 +202,11 @@
     text-decoration-thickness: 2px; /* Sublinhado mais grosso no hover */
   }
 }
+
+.prose p {
+  margin-bottom: 1em;
+}
+
+.prose > :last-child {
+  margin-bottom: 0;
+}
