@@ -1,5 +1,6 @@
 import { getPostBySlug, getPosts } from "@/lib/api";
 import Header from "@/client/_components/Header";
+import PostNavigation from "@/client/_components/PostNavigation";
 import Footer from "@/client/_components/Footer";
 import { notFound } from "next/navigation";
 import ReactMarkdown from 'react-markdown';
@@ -24,6 +25,11 @@ interface Post {
   publishedAt?: string;
   relatedSlug?: string;
   blocks?: Block[];
+}
+
+interface Navigation {
+  previous: { slug: string; title: string } | null;
+  next: { slug: string; title: string } | null;
 }
 
 type Props = {
@@ -57,11 +63,13 @@ export async function generateStaticParams(): Promise<{ slug: string; locale: st
 export default async function BlogPostPage({ params }: Props) {
   // Use the locale from params to fetch the correct post
   const { slug, locale } = await params;
-  const post = await getPostBySlug(slug, locale);
+  const data: { post: Post; navigation: Navigation } | null = await getPostBySlug(slug, locale);
 
-  if (!post) {
+  if (!data || !data.post) {
     notFound();
   }
+
+  const { post, navigation } = data;
 
   const firstImageIndex = post.blocks?.findIndex((block: Block) => block.type === "image") ?? -1;
 
@@ -130,6 +138,11 @@ export default async function BlogPostPage({ params }: Props) {
             }
           })}
         </article>
+        <PostNavigation 
+          previousPost={navigation.previous}
+          nextPost={navigation.next}
+          locale={locale}
+        />
       </main>
       <Footer />
     </>

@@ -1,0 +1,44 @@
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #e5e7eb; /* Cor cinza claro */
+  padding-top: 2rem;
+  margin-top: 4rem;
+  width: 100%;
+}
+
+.navLinkWrapper {
+  flex: 1;
+  min-width: 0; /* Permite que o texto quebre corretamente em flex items */
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.navLink {
+  display: inline-block;
+  color: #374151; /* Cor de texto escura */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: #ca8a04; /* Cor amarela do seu tema */
+}
+
+.navLabel {
+  display: block;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #6b7280; /* Cor de texto cinza */
+  margin-bottom: 0.5rem;
+}
+
+.navTitle {
+  display: block;
+  font-size: 1.125rem; /* 18px */
+  font-weight: 700;
+  line-height: 1.4;
+}
