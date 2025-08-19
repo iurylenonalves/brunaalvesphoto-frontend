@@ -7,6 +7,14 @@ import remarkGfm from 'remark-gfm';
 import type { Metadata } from "next";
 import Image from "next/image";
 
+type Block = {
+  type: "text" | "image";
+  content?: string;
+  src?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+};
 interface Post {
   id: string;
   title: string;
@@ -15,12 +23,7 @@ interface Post {
   locale: string;
   publishedAt?: string;
   relatedSlug?: string;
-  blocks?: Array<{
-    type: "text" | "image";
-    content?: string;
-    src?: string;
-    alt?: string;
-  }>;
+  blocks?: Block[];
 }
 
 type Props = {
@@ -28,7 +31,7 @@ type Props = {
 };
 
 
-// A função agora precisa gerar params para ambos os idiomas
+// Generates static paths for all posts in all locales
 export async function generateStaticParams(): Promise<{ slug: string; locale: string }[]> {
   const postsEn = await getPosts("en");
   const postsPt = await getPosts("pt");
@@ -40,7 +43,7 @@ export async function generateStaticParams(): Promise<{ slug: string; locale: st
 }
 
 
-// BOA PRÁTICA: Se você precisar de metadados dinâmicos, a função seria assim:
+ // Generates dynamic metadata for each post page
  export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   const post = await getPostBySlug(slug, locale);
@@ -52,13 +55,15 @@ export async function generateStaticParams(): Promise<{ slug: string; locale: st
 
 
 export default async function BlogPostPage({ params }: Props) {
-  // Use o locale dos params para buscar o post correto
+  // Use the locale from params to fetch the correct post
   const { slug, locale } = await params;
   const post = await getPostBySlug(slug, locale);
 
   if (!post) {
     notFound();
   }
+
+  const firstImageIndex = post.blocks?.findIndex((block: Block) => block.type === "image") ?? -1;
 
   return (
     <>
@@ -87,28 +92,43 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         )}
         <article className="prose lg:prose-lg mx-auto w-full">
-          {post.blocks && post.blocks.map((block: { type: "text" | "image"; content?: string; src?: string; alt?: string }, idx: number) =>
-            block.type === "text" ? (
-              <ReactMarkdown 
-                key={idx}
-                remarkPlugins={[remarkGfm]}
-              >
-                {block.content ?? ""}
-              </ReactMarkdown>
-            ) : (
-              <Image
-                key={idx}                
-                src={block.src?.startsWith('http') || block.src?.startsWith('https') 
-                  ? block.src 
-                  : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`
-                }
-                alt={block.alt || "Blog image"}
-                width={800}
-                height={400}
-                className="w-full max-w-2xl mx-auto h-auto rounded my-8"
-              />
-            )
-          )}
+          {post.blocks && post.blocks.map((block: Block, idx: number) => {
+            // Usamos um switch para uma renderização mais limpa e escalável
+            switch (block.type) {
+              case "text":
+                return (
+                  <ReactMarkdown key={idx} remarkPlugins={[remarkGfm]}>
+                    {block.content ?? ""}
+                  </ReactMarkdown>
+                );
+
+              case "image":
+                return (
+                  block.src && (                    
+                    <div 
+                      key={idx}
+                      className={idx === firstImageIndex ? 'aos-disabled' : ''}
+                    >
+                      <Image
+                        src={block.src.startsWith('http') 
+                          ? block.src 
+                          : `${process.env.NEXT_PUBLIC_API_URL}/${block.src}`
+                        }
+                        alt={block.alt || post.title}
+                        width={block.width || 800}
+                        height={block.height || 450}
+                        className="w-full max-w-2xl mx-auto h-auto rounded my-8"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 768px"
+                        priority={idx === firstImageIndex}
+                      />
+                    </div>
+                  )
+                );
+              
+              default:
+                return null;
+            }
+          })}
         </article>
       </main>
       <Footer />

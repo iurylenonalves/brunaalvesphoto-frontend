@@ -7,6 +7,9 @@ interface PostCardProps {
     title: string;
     subtitle: string;
     imageUrl: string;
+    thumbnailAlt?: string;
+    thumbnailWidth?: number;
+    thumbnailHeight?: number;
   };
   locale: string;
 }
@@ -17,15 +20,17 @@ export default function PostCard({ post, locale }: PostCardProps) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-lg shadow-lg transition-shadow duration-300 hover:shadow-xl">
       <Link href={postUrl} aria-label={`Read more about ${post.title}`}>
-        <Image 
-          src={post.imageUrl} 
-          alt={post.title} 
-          width={500}
-          height={400}
-          className="h-72 w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
+        <div className="relative w-full h-72 overflow-hidden">
+          <Image 
+            src={post.imageUrl} 
+            alt={post.thumbnailAlt || post.title} 
+            width={post.thumbnailWidth || 500}
+            height={post.thumbnailHeight || 400}
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        </div>
       </Link>
       <div className="flex flex-1 flex-col p-6">
         <h3 className="text-xl font-semibold">

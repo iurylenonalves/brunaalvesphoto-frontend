@@ -4,16 +4,16 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
 import ReactMarkdown from 'react-markdown';
 import imageCompression from 'browser-image-compression';
-import { cleanImageUrl, buildImageUrl, compareThumbnailUrls } from "@/utils/urlUtils";
-import { upload } from "@vercel/blob/client";
-import { createPostJson, updatePostJson, type PostJsonPayload } from "@/lib/api";
+import { cleanImageUrl, buildImageUrl } from "@/utils/urlUtils";
+import { createPostJson, updatePostJson, type PostJsonPayload, uploadImage, ProcessedImageResult } from "@/lib/api";
 
 interface Block {
   type: "text" | "image";
   content?: string;
   src?: string;
   alt?: string;
-  file?: File;
+  width?: number;
+  height?: number;
 }
 
 interface InitialData {
@@ -25,6 +25,7 @@ interface InitialData {
   publishedAt?: string;
   relatedSlug?: string;
   thumbnail?: string;
+  thumbnailAlt?: string;
 }
 
 interface PostEditorFormProps {
@@ -40,6 +41,7 @@ export default function PostEditorForm({
   loading: loadingProp,
   onSuccess,
 }: PostEditorFormProps) {
+  
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [locale, setLocale] = useState<"en" | "pt">(initialData?.locale || "en");
@@ -51,9 +53,11 @@ export default function PostEditorForm({
   const formRef = useRef<HTMLFormElement>(null);
   const { token } = useAuth();
   const [thumbnailSrc, setThumbnailSrc] = useState<string | null>(null);
+  const [thumbnailAlt, setThumbnailAlt] = useState("");
   const [relatedSlug, setRelatedSlug] = useState(initialData?.relatedSlug || "");
   const [availableSlugs, setAvailableSlugs] = useState<string[]>([]);
   const [compressingImages, setCompressingImages] = useState<{[key: number]: boolean}>({});
+  const [uploadingImages, setUploadingImages] = useState<{[key: number]: boolean}>({});
 
   useEffect(() => {
     if (initialData) {
@@ -72,6 +76,7 @@ export default function PostEditorForm({
         console.log("🧹 [PostEditorForm] Cleaned thumbnail:", cleanedThumbnail);
       }
       setThumbnailSrc(cleanedThumbnail);
+      setThumbnailAlt(initialData.thumbnailAlt || "");
       
       setPublishedAt(initialData.publishedAt ? new Date(initialData.publishedAt).toISOString().substring(0, 10) : "");
       setRelatedSlug(initialData.relatedSlug || "");
@@ -79,7 +84,7 @@ export default function PostEditorForm({
   }, [initialData]);
 
   useEffect(() => {
-    // Busca os slugs do outro idioma para o campo relatedSlug
+    // Fetch available slugs for the "related post" dropdown
     const fetchSlugs = async () => {
       const targetLocale = locale === "en" ? "pt" : "en";
       if (process.env.NODE_ENV === 'development') {
@@ -89,96 +94,80 @@ export default function PostEditorForm({
       const posts = await res.json();
       setAvailableSlugs(posts.map((p: { slug: string }) => p.slug));
     };
-    fetchSlugs();
+      fetchSlugs();
   }, [locale]);
 
-   const handleBlockChange = async (index: number, field: string, value: string | File | undefined) => {
-    const newBlocks = [...blocks];
-    if (field === "file" && value instanceof File) {
-      try {
-        // Verifica se o arquivo é muito grande antes da compressão
-        if (value.size > 50 * 1024 * 1024) { // 50MB é o limite máximo antes da compressão
-          setError("Image file is too large. Please choose a smaller image (max 50MB).");
-          return;
-        }
 
-        // Indica que está comprimindo esta imagem
+    // Handlers 
+  const handleBlockChange = async (index: number, field: string, value: string | File | undefined) => {
+    if (field === "file" && value instanceof File && token) {
+      // User experience check for oversized files before upload
+      if (value.size > 50 * 1024 * 1024) {
+        setError("Image file is too large. Please select a file smaller than 50MB.");
+        return;
+      }
+       
+      try {
         setCompressingImages(prev => ({ ...prev, [index]: true }));
 
-        // Configurações para compressão da imagem
         const options = {
-          maxSizeMB: 8, // Limite de 8MB para ter margem de segurança (backend aceita 10MB)
-          maxWidthOrHeight: 1920, // Redimensiona para máximo 1920px
-          useWebWorker: true, // Usa Web Worker para não bloquear a UI
-          fileType: 'image/webp', // Converte para WebP para melhor compressão
-          quality: 0.8 // 80% de qualidade
+          maxSizeMB: 15,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+          fileType: 'image/webp',
+          quality: 0.8
         };
 
-        // Comprime a imagem antes de armazenar
+        // Step 1: Compress the image in the browser for a faster upload
         const compressedFile = await imageCompression(value, options);
+        const optimizedFile = new File([compressedFile], `${value.name.split('.')[0]}.webp`, { type: 'image/webp' });
         
-        // Cria um novo File object com nome apropriado
-        const optimizedFile = new File([compressedFile], 
-          `${value.name.split('.')[0]}.webp`, 
-          { type: 'image/webp' }
-        );
-
-        newBlocks[index] = { ...newBlocks[index], file: optimizedFile, src: 'image-placeholder' };
-        
-        // Log da compressão para debug
-        const originalSizeMB = (value.size / 1024 / 1024).toFixed(2);
-        const compressedSizeMB = (optimizedFile.size / 1024 / 1024).toFixed(2);
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`Image compressed: ${originalSizeMB}MB → ${compressedSizeMB}MB`);
-        }
-        
-        // Limpa erros se a compressão foi bem-sucedida
-        setError(null);
-      } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Error compressing image:', error);
-        }
-        setError("Failed to compress image. Please try a different image or reduce its size.");
-        // Em caso de erro, não usa o arquivo
-        return;
-      } finally {
-        // Remove o indicador de compressão
         setCompressingImages(prev => ({ ...prev, [index]: false }));
+        setUploadingImages(prev => ({ ...prev, [index]: true }));
+        
+        // Step 2: Upload the pre-compressed image to the backend for final processing
+        const result: ProcessedImageResult = await uploadImage(optimizedFile, token);
+
+        // Step 3: Update the block with the final URL and dimensions from the backend        
+        const updatedBlocks = [...blocks];
+        updatedBlocks[index] = {
+          ...updatedBlocks[index],
+          src: result.imageUrl,
+          width: result.width,
+          height: result.height,
+        };
+        setBlocks(updatedBlocks);
+        setError(null);
+
+      } catch (error) {
+          console.error('Error uploading or compressing image:', error);
+          setError("Failed to compress image. Please try a different image or reduce its size.");        
+      } finally {        
+        setCompressingImages(prev => ({ ...prev, [index]: false }));
+        setUploadingImages(prev => ({ ...prev, [index]: false }));
       }
     } else if (typeof value === "string") {
+      // Handle changes to text fields like `alt` or `content`
+      const newBlocks = [...blocks];
       newBlocks[index] = { ...newBlocks[index], [field]: value };
+      setBlocks(newBlocks);
     }
-    setBlocks(newBlocks);
   };
 
-  const handleThumbnailSelection = (block: Block, index: number) => {
-    // Cria um identificador único para a imagem clicada.
-    // Usa 'new-image-' + index para arquivos novos, ou o src limpo para imagens existentes.
-    const uniqueId = block.file ? `new-image-${index}` : cleanImageUrl(block.src);
-    if (process.env.NODE_ENV === 'development') {
-      console.log("🎯 [PostEditorForm] Thumbnail selection - uniqueId:", uniqueId, "current thumbnailSrc:", thumbnailSrc);
-      console.log("🔍 [PostEditorForm] Comparing URLs:", compareThumbnailUrls(thumbnailSrc, uniqueId));
-    }
-
-    // Para imagens existentes, usar comparação robusta
-    const isCurrentThumbnail = block.file 
-      ? thumbnailSrc === `new-image-${index}`
-      : compareThumbnailUrls(thumbnailSrc, block.src);
+  // Handle thumbnail selection
+  const handleThumbnailSelection = (block: Block) => {
+    if (!block.src) return; 
+    const isCurrentThumbnail = thumbnailSrc && cleanImageUrl(thumbnailSrc) === cleanImageUrl(block.src);
 
     if (isCurrentThumbnail) {
-      console.log("❌ [PostEditorForm] Deselecting thumbnail");
       setThumbnailSrc(null);
     } else {
-      // Caso contrário, define o novo thumbnail.
-      if (process.env.NODE_ENV === 'development') {
-        console.log("✅ [PostEditorForm] Setting new thumbnail:", uniqueId);
-      }
-      setThumbnailSrc(uniqueId || null);
+      setThumbnailSrc(block.src);
     }
   };
 
   const addTextBlock = () => setBlocks([...blocks, { type: "text", content: "" }]);
-  const addImageBlock = () => setBlocks([...blocks, { type: "image", src: "", alt: "", file: undefined }]);
+  const addImageBlock = () => setBlocks([...blocks, { type: "image", src: "", alt: "" }]);
   const removeBlock = (index: number) => setBlocks(blocks.filter((_, i) => i !== index));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -190,64 +179,32 @@ export default function PostEditorForm({
     try {
       if (!token) throw new Error("You must be logged in.");
 
-      // 1) Upload images directly to Vercel Blob
-      // Map blocks: upload any File to Blob and replace with final URL
-      const uploadedBlocks: Block[] = [];
-      for (let i = 0; i < blocks.length; i++) {
-        const block = blocks[i];
-        if (block.type === 'image' && block.file) {
-          // Guard very large files (extra safety)
-          if (block.file.size > 150 * 1024 * 1024) {
-            throw new Error("Image exceeds 150MB limit.");
-          }
-          const pathname = `posts/${Date.now()}-${block.file.name.replace(/[^a-zA-Z0-9-_\.]/g, '')}`;
-          const blob = await upload(pathname, block.file, {
-            access: 'public',
-            handleUploadUrl: `${process.env.NEXT_PUBLIC_API_URL}/api/uploads/sign`,
-            clientPayload: JSON.stringify({ jwt: token }),
-            multipart: true,
-          });
-          uploadedBlocks.push({ type: 'image', src: blob.url, alt: block.alt || '' });
-        } else if (block.type === 'image') {
-          uploadedBlocks.push({ type: 'image', src: block.src, alt: block.alt || '' });
-        } else {
-          uploadedBlocks.push({ type: 'text', content: block.content || '' });
-        }
+      // Validation: Ensure all images have been uploaded before saving
+      if (blocks.some(b => b.type === 'image' && !b.src)) {
+        throw new Error("Please wait for all images to finish uploading before saving.");
       }
 
-      // 2) Choose thumbnail URL
-      let thumbnailToSend: string | undefined;
-      if (thumbnailSrc) {
-        if (thumbnailSrc.startsWith('new-image-')) {
-          const index = parseInt(thumbnailSrc.replace('new-image-', ''), 10);
-          const img = uploadedBlocks[index];
-          if (img && img.type === 'image' && img.src) thumbnailToSend = img.src;
-        } else {
-          thumbnailToSend = cleanImageUrl(thumbnailSrc) || undefined;
-        }
-      }
-
-      // 3) Build JSON payload with strict types
-      const blocksPayload: PostJsonPayload["blocks"] = [];
-      for (const b of uploadedBlocks) {
-        if (b.type === 'text') {
-          blocksPayload.push({ type: 'text', content: b.content ?? '' });
-        } else if (b.type === 'image' && b.src) {
-          blocksPayload.push({ type: 'image', src: b.src, alt: b.alt || '' });
-        }
-      }
-
+      // Step 1: Build the final JSON payload from the current state
       const payload: PostJsonPayload = {
         title,
         subtitle,
         locale,
         publishedAt: publishedAt || undefined,
         relatedSlug: relatedSlug || undefined,
-        thumbnailSrc: thumbnailToSend,
-        blocks: blocksPayload
+        thumbnailSrc: thumbnailSrc || undefined,
+        thumbnailAlt: thumbnailAlt || undefined,
+        blocks: blocks.map(b => ({
+          // Ensure a clean object is sent to the API
+          type: b.type,
+          content: b.content || '',
+          src: b.src || '',
+          alt: b.alt || '',
+          width: b.width || 0,
+          height: b.height || 0,
+        }))
       };
 
-      // 4) Call JSON endpoints (create or update)
+      // Step 2: Send the payload to the appropriate API endpoint
       if (initialData && initialData.slug) {
         await updatePostJson(initialData.slug, payload, token);
       } else {
@@ -259,6 +216,8 @@ export default function PostEditorForm({
       if (formRef.current) {
         formRef.current.scrollIntoView({ behavior: 'smooth' });
       }
+
+      // Reset form if it was a new post creation
       if (!initialData) {
         setTitle("");
         setSubtitle("");
@@ -284,6 +243,7 @@ export default function PostEditorForm({
           Post saved successfully!
         </div>
       )}
+      
       {/* Title */}
       <div>
         <label htmlFor="title" className="block font-semibold mb-1 text-gray-700">Title</label>
@@ -338,7 +298,7 @@ export default function PostEditorForm({
           required
         />
       </div>
-
+     
       {/* Related Slug */}
       <div>
         <label htmlFor="relatedSlug" className="block font-semibold mb-1 text-gray-700">
@@ -355,6 +315,21 @@ export default function PostEditorForm({
             <option key={slug} value={slug}>{slug}</option>
           ))}
         </select>
+      </div>
+
+       {/* Thumbnail Alt Text */}
+      <div>
+        <label htmlFor="thumbnailAlt" className="block font-semibold mb-1 text-gray-700">
+          Thumbnail Description (for SEO & Accessibility)
+        </label>
+        <input
+          id="thumbnailAlt"
+          type="text"
+          value={thumbnailAlt}
+          onChange={(e) => setThumbnailAlt(e.target.value)}
+          placeholder="e.g., Couple smiling in front of the London Eye"
+          className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
+        />
       </div>
 
       {/* Blocks */}
@@ -391,18 +366,17 @@ export default function PostEditorForm({
               <div className="flex items-center justify-between">
                 <label className="block">
                   <span className={`px-3 py-2 rounded-lg shadow-sm cursor-pointer transition inline-block text-sm font-medium ${
-                    compressingImages[index] 
+                    compressingImages[index] || uploadingImages[index]
                       ? 'bg-yellow-200 text-yellow-800' 
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                   }`}>
-                    {compressingImages[index] ? 'Compressing Image...' : 'Choose Image'}
+                    {compressingImages[index] ? 'Compressing...' : uploadingImages[index] ? 'Uploading...' : 'Choose Image'}
                     <input
                       type="file"
                       accept="image/*"
                       onChange={(e) => handleBlockChange(index, "file", e.target.files?.[0])}
                       className="hidden"
-                      required={!initialData}
-                      disabled={compressingImages[index]}
+                      disabled={compressingImages[index] || uploadingImages[index]}
                     />
                   </span>
                 </label>
@@ -423,34 +397,30 @@ export default function PostEditorForm({
                 className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition"
                 required
               />
-              {(block.file || block.src) && (
+              {(block.src) && (
                 <div className="mt-2">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={block.file 
-                      ? URL.createObjectURL(block.file) 
-                      : buildImageUrl(block.src)
-                    }
+                    src={buildImageUrl(block.src)}
                     alt={block.alt || "Preview"}
                     className="max-h-40 rounded-lg border"
                   />
-                  {/* BOTÃO PARA DEFINIR THUMBNAIL */}
+
+                  {/* BUTTON TO SET THUMBNAIL */}
                   <button
                     type="button"
-                    onClick={() => handleThumbnailSelection(block, index)}
+                    onClick={() => handleThumbnailSelection(block)}
                     className={`mt-2 px-3 py-1 text-xs font-semibold rounded-full transition border-2 ${
-                      (block.file && thumbnailSrc === `new-image-${index}`) || 
-                      (block.src && compareThumbnailUrls(thumbnailSrc, block.src))
+                      thumbnailSrc && cleanImageUrl(thumbnailSrc) === cleanImageUrl(block.src)
                         ? 'bg-yellow-400 border-yellow-500 text-white'
                         : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-100'
                     }`}
                     title="Set as thumbnail"
                   >
                     ★ {
-                      (block.file && thumbnailSrc === `new-image-${index}`) || 
-                      (block.src && compareThumbnailUrls(thumbnailSrc, block.src))
-                        ? 'Thumbnail' 
-                        : 'Set as Thumbnail'
+                      thumbnailSrc && cleanImageUrl(thumbnailSrc) === cleanImageUrl(block.src)
+                      ? 'Thumbnail'
+                      : 'Set as Thumbnail'
                     }
                   </button>
                 </div>
@@ -486,29 +456,33 @@ export default function PostEditorForm({
         <h3 className="text-xl font-bold mb-4 text-gray-700">Preview</h3>
         <h2 className="text-2xl font-bold">{title}</h2>
         <p className="text-gray-600 mb-4">{subtitle}</p>
-        {blocks.map((block, idx) =>
-          block.type === "text" ? (
-            <div key={idx} className="prose mb-2">
-              <ReactMarkdown>{block.content ?? ""}</ReactMarkdown>
-            </div>
-          ) : block.file ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={idx}
-              src={URL.createObjectURL(block.file)}
-              alt={block.alt || "Preview"}
-              className="mb-2 max-h-48 rounded"
-            />
-          ) : block.src ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={idx}
-              src={buildImageUrl(block.src)}
-              alt={block.alt || "Preview"}
-              className="mb-2 max-h-48 rounded"
-            />
-          ) : null
-        )}
+        
+        {/* Loop over blocks to render the preview */}
+        {blocks.map((block, idx) => {          
+          switch (block.type) {
+            case "text":
+              return (
+                <div key={idx} className="prose mb-2">
+                  <ReactMarkdown>{block.content ?? ""}</ReactMarkdown>
+                </div>
+              );
+            case "image":              
+              return block.src ? (
+                <img
+                  key={idx}
+                  src={buildImageUrl(block.src)}
+                  alt={block.alt || "Image Preview"}
+                  className="mb-2 max-h-48 rounded-lg shadow-sm border"
+                />
+              ) : (
+                <div key={idx} className="mb-2 p-4 h-24 flex items-center justify-center bg-gray-200 text-gray-500 rounded-lg border border-dashed">
+                  Waiting for image...
+                </div>
+              );
+            default:              
+              return null;
+          }
+        })}
       </div>
 
       {/* Save/Update button */}

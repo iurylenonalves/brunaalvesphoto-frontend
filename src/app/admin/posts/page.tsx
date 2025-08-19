@@ -16,6 +16,7 @@ interface Post {
   publishedAt?: string;
   thumbnail?: string;
   thumbnailSrc?: string;
+  thumbnailAlt?: string;
 }
 
 function AdminPostsPageContent() {
@@ -166,7 +167,7 @@ function AdminPostsPageContent() {
               {(post.thumbnail || post.thumbnailSrc) && (
                 <img
                   src={post.thumbnail || post.thumbnailSrc}
-                  alt={post.title + ' thumbnail'}
+                  alt={post.thumbnailAlt || post.title + ' thumbnail'}
                   className="w-14 h-14 object-cover rounded border"
                   style={{ minWidth: 56, minHeight: 56 }}
                 />

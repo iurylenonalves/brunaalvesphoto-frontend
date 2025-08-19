@@ -34,6 +34,7 @@ function EditPostPageContent() {
   const [publishedAt, setPublishedAt] = useState("");
   const [relatedSlug, setRelatedSlug] = useState("");
   const [thumbnail, setThumbnail] = useState("");
+  const [thumbnailAlt, setThumbnailAlt] = useState("");
 
   // Load post data
   useEffect(() => {
@@ -57,6 +58,7 @@ function EditPostPageContent() {
         setLocale((post.locale as "en" | "pt") || "en");
         setPublishedAt(post.publishedAt || "");
         setThumbnail(post.thumbnail || "");
+        setThumbnailAlt(post.thumbnailAlt || "");
         setBlocks(
           (post.blocks || []).map((block: Block) =>
             block.type === "image"
@@ -149,7 +151,7 @@ function EditPostPageContent() {
       {/* Edit form */}
       <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
         <PostEditorForm
-          initialData={{ slug, title, subtitle, locale, blocks, publishedAt, relatedSlug, thumbnail }}
+          initialData={{ slug, title, subtitle, locale, blocks, publishedAt, relatedSlug, thumbnail, thumbnailAlt }}
           onSubmit={handleUpdate}
           loading={saving}
           onSuccess={() => {}}

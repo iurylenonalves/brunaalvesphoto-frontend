@@ -138,14 +138,15 @@ const ToggleLanguageButton = ({ slug, relatedSlug }: ToggleLanguageButtonProps) 
         onClick={toggleLanguage} 
         aria-label={`Switch language to ${flagAlt}`}
         className={styles.toggleButton}
+        suppressHydrationWarning={true}
       >
-        <Image 
+        <Image
           className={styles.flagIcon}
           src={`/images/${flagToShow}.svg`} 
           alt={flagAlt} 
-          width={isMobile ? 36 : 64} 
-          height={isMobile ? 26 : 48}               
-        />     
+          width={isMobile ? 38 : 64}
+          height={isMobile ? 27 : 48}
+        />
       </button>
     </div>
   );

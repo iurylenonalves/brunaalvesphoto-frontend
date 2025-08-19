@@ -90,6 +90,8 @@
   background: none;
   border: none;
   cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
 }
 
 /* Menu mobile */
@@ -122,11 +124,22 @@
 .mobileControls {
   display: none;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 
-.mobileLanguage {
-  margin-right: 8px;
+.mobileLanguage button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+}
+
+.mobileLanguage button {
+  padding: 8px;
+  border-radius: 8px;
 }
 
 /* Responsiveness */
@@ -142,6 +155,10 @@
 
   .mobileControls {
     display: flex;
+    align-items: center;
+    gap: 0px;
+    margin: 0;
+    padding: 0;
   }
 
   .logoImage {

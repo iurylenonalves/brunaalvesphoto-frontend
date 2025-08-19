@@ -22,12 +22,18 @@ export function AosInit() {
         duration: 800,
       });
     };
+
+    const handleLoad = () => {
+      setTimeout(() => {
+        loadAos();
+      }, 100); // Um pequeno atraso para garantir que a renderização principal ocorra
+    };
     
     if (document.readyState === 'complete') {
       loadAos();
     } else {
-      window.addEventListener('load', loadAos);
-      return () => window.removeEventListener('load', loadAos);
+      window.addEventListener('load', handleLoad);
+      return () => window.removeEventListener('load', handleLoad);
     }
   }, []);
 

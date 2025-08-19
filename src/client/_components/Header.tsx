@@ -48,8 +48,8 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
               src="/images/brunaalvesphoto-logo-black.svg"
               alt="Logo Bruna Alves Photography"
               width={150}
-              height={75}
-              className={styles.logoImage} // Usando a nova classe simplificada
+              height={97}
+              className={styles.logoImage}
             />
           </picture>
         </Link>
@@ -114,18 +114,17 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
 
         {/* Mobile Controls */}
         <div className={styles.mobileControls}>
-          {/* Language Toggle for Mobile */}
           <div className={styles.mobileLanguage}>
             <ToggleLanguageButton slug={postSlug} relatedSlug={relatedSlug} />
-          </div>
-          
-          {/* Menu Button Mobile */}
-          <button 
+          </div>{/* 
+           O comentário aqui "come" o espaço/quebra de linha entre os dois elementos,
+           fazendo com que eles fiquem encostados.
+          */}<button
             className={styles.menuButton} 
             onClick={toggleMenu}
             aria-label={isOpen ? translations.closeMenu : translations.openMenu}
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={32} /> : <Menu size={32} />}
           </button>
         </div>
       </div>

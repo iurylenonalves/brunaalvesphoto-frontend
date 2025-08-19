@@ -30,13 +30,15 @@
   .toggleButton {
     gap: 4px;
     font-size: 0.8rem;
+    padding: 10.5px 5px;
+    border-radius: 8px;
   }
 
   .flagIcon {
-    width: 36px;
+    /* width: 36px;
     height: 26px;
     min-width: 36px;
-    min-height: 26px;   
+    min-height: 26px;    */
     border-radius: 4px;
   }  
 }
