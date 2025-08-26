@@ -1,6 +1,7 @@
 import { getPostBySlug, getPosts } from "@/lib/api";
 import Header from "@/client/_components/Header";
 import PostNavigation from "@/client/_components/PostNavigation";
+import RecommendedPosts from "@/client/_components/RecommendedPosts";
 import Footer from "@/client/_components/Footer";
 import { notFound } from "next/navigation";
 import ReactMarkdown from 'react-markdown';
@@ -26,10 +27,24 @@ interface Post {
   relatedSlug?: string;
   blocks?: Block[];
 }
-
 interface Navigation {
   previous: { slug: string; title: string } | null;
   next: { slug: string; title: string } | null;
+}
+
+interface RecommendedPost {
+  slug: string;
+  title: string;
+  thumbnail: string;
+  thumbnailAlt?: string;
+  thumbnailWidth?: number;
+  thumbnailHeight?: number;
+}
+
+interface PostPageData {
+  post: Post;
+  navigation: Navigation;
+  recommended: RecommendedPost[]; // <-- USA O NOVO TIPO PRECISO
 }
 
 type Props = {
@@ -63,13 +78,13 @@ export async function generateStaticParams(): Promise<{ slug: string; locale: st
 export default async function BlogPostPage({ params }: Props) {
   // Use the locale from params to fetch the correct post
   const { slug, locale } = await params;
-  const data: { post: Post; navigation: Navigation } | null = await getPostBySlug(slug, locale);
+  const data: PostPageData | null = await getPostBySlug(slug, locale);
 
   if (!data || !data.post) {
     notFound();
   }
 
-  const { post, navigation } = data;
+  const { post, navigation, recommended } = data;
 
   const firstImageIndex = post.blocks?.findIndex((block: Block) => block.type === "image") ?? -1;
 
@@ -138,11 +153,16 @@ export default async function BlogPostPage({ params }: Props) {
             }
           })}
         </article>
-        <PostNavigation 
-          previousPost={navigation.previous}
-          nextPost={navigation.next}
-          locale={locale}
-        />
+        <div className="mt-16 pt-16 border-t border-gray-200">
+          <PostNavigation 
+            previousPost={navigation.previous}
+            nextPost={navigation.next}
+            locale={locale}
+          />          
+        </div>
+        <div className="mt-16 pt-8 border-t border-gray-200">
+          <RecommendedPosts posts={recommended} locale={locale} />
+        </div>
       </main>
       <Footer />
     </>
