@@ -50,11 +50,23 @@ function EditPostPageContent() {
     setSaveSuccess(false);
     setError(null);
     
-    getPostBySlug(slug, locale)
-      .then(post => {
-        console.log("📝 [EditPostPage] Loaded post data:", post);
-        setTitle(post.title);
-        setSubtitle(post.subtitle);
+    getPostBySlug(slug, locale, token)
+      .then(response => {
+        console.log("📝 [EditPostPage] Loaded post data:", response);
+        
+        // Verifica se temos um objeto 'post' dentro da resposta (estrutura do backend)
+        const post = response && response.post ? response.post : response;
+        
+        // Saída adicional para debug
+        console.log("📝 [EditPostPage] Dados do post a serem usados:", post);
+        
+        if (!post || typeof post !== 'object') {
+          console.error("📝 [EditPostPage] Dados do post inválidos:", post);
+          throw new Error("Dados do post inválidos ou vazios");
+        }
+        
+        setTitle(post.title || "");
+        setSubtitle(post.subtitle || "");
         setLocale((post.locale as "en" | "pt") || "en");
         setPublishedAt(post.publishedAt || "");
         setThumbnail(post.thumbnail || "");

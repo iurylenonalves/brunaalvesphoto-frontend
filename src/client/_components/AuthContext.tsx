@@ -24,7 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error("Could not access localStorage:", error);
     } finally {
-      setLoading(false); // Termina o carregamento após verificar
+      setLoading(false);
     }
   }, []);
 

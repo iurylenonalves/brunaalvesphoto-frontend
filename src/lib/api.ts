@@ -117,19 +117,27 @@ export async function getPosts(locale: string) {
   }
 }
 
-export async function getPostBySlug(slug: string, locale: string) {
+export async function getPostBySlug(slug: string, locale: string, token?: string | null) {
+  // Log reduzido para produção
   console.log(`[API] Fetching post: ${slug} (${locale})`);
   
   try {
+    // Preparar headers
+    const headers: Record<string, string> = {
+      'Accept': 'application/json',
+      'User-Agent': 'NextJS-Static-Build'
+    };
+    
+    // Adicionar token de autenticação se estiver disponível
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
     const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`, {
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'NextJS-Static-Build'
-      },
+      cache: 'no-store', // Desabilita o cache para sempre buscar dados frescos
+      headers,
       signal: AbortSignal.timeout(15000)
     });
-    
-    console.log(`[API] Post response status: ${response.status}`);
     
     if (!response.ok) {
       // Se for erro 401 (autenticação), usar fallback durante build
@@ -142,7 +150,9 @@ export async function getPostBySlug(slug: string, locale: string) {
     }
     
     const data = await response.json();
-    console.log(`[API] Successfully fetched post: ${data.title}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[API] Successfully fetched post: ${data.title || data.post?.title || 'Unknown'}`);
+    }
     return data;
   } catch (_error) {
     console.error(`[API] Error fetching post ${slug}: ${_error}`);

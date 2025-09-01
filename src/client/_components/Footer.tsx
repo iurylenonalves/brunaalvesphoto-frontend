@@ -11,7 +11,7 @@ const Footer = () => {
   const { translations, locale } = useTranslations();
   const [isModalOpen, setModalOpen] = useState(false);
   const pathname = usePathname();
-  // Corrigir detecção da página home para incluir /en e /en/
+  // Fix home page detection to include /en and /en/
   const isHome = ["/", "/en", "/en/", "/pt", "/pt/"].includes(pathname);
 
   const handleOpenModal = () => {
