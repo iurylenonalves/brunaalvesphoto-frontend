@@ -119,5 +119,9 @@
   "section9Title": "9. Contato",
   "privacyPolicyCloseButton": "Fechar",
 
+  "emptyStateTitle": "Ainda não há histórias, mas fique ligado!",
+  "emptyStateMessage": "Em breve você encontrará aqui novas sessões fotográficas e histórias de Londres e de outros lugares. Volte mais tarde para conferir meus trabalhos mais recentes!",
+  "emptyStateCtaText": "Agende sua Sessão",
+
   "recommendedPostsTitle": "Você Também Pode Gostar"
 }

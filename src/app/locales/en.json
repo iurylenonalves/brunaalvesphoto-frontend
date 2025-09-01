@@ -119,5 +119,9 @@
   "section9Title": "9. Contact",
   "privacyPolicyCloseButton": "Close",
 
+  "emptyStateTitle": "No Stories Yet, But Stay Tuned!",
+  "emptyStateMessage": "New photography sessions and stories from London and beyond will be posted here soon. Come back later to see the latest work!",
+  "emptyStateCtaText": "Book Your Session",
+
   "recommendedPostsTitle": "You Might Also Like"
 }
