@@ -247,10 +247,7 @@ export default function PostEditorForm({
             onBlockChange={handleBlockChange}
             onRemoveBlock={removeBlock}
             onThumbnailSelection={handleThumbnailSelection}
-            
-            // A lógica de comparação é feita aqui e o resultado (booleano) é passado como prop
             isThumbnail={thumbnailSrc ? cleanImageUrl(thumbnailSrc) === cleanImageUrl(block.src) : false}
-            
             isCompressing={compressingImages[index] || false}
             isUploading={uploadingImages[index] || false}
           />
@@ -287,7 +284,7 @@ export default function PostEditorForm({
         className="w-full mt-6 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow cursor-pointer transition hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
         disabled={loading || loadingProp}
       >
-        {loading || loadingProp ? "Saving..." : initialData ? "Update Post" : "Save Post"}
+        {loading || loadingProp ? "Saving..." : (initialData && initialData.slug) ? "Update Post" : "Save Post"}
       </button>
     </form>
   );

@@ -6,18 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getPosts, deletePost } from "@/lib/api";
 import PostEditorForm from "@/client/_components/PostEditorForm";
 import Link from "next/link";
-
-interface Post {
-  id: string;
-  title: string;
-  subtitle: string;
-  slug: string;
-  locale: string;
-  publishedAt?: string;
-  thumbnail?: string;
-  thumbnailSrc?: string;
-  thumbnailAlt?: string;
-}
+import type { PostSummary } from "@/types";
 
 function AdminPostsPageContent() {
   const { token, logout, loading: authLoading } = useAuth();
@@ -25,10 +14,11 @@ function AdminPostsPageContent() {
   const searchParams = useSearchParams();
   const locale = (searchParams.get("locale") as "en" | "pt") || "en";
 
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
 
@@ -49,9 +39,14 @@ function AdminPostsPageContent() {
   const handleDelete = async (slug: string) => {
     if (confirm("Are you sure you want to delete this post?")) {
       setDeletingSlug(slug);
+      setSuccessMessage(null);
       try {
         await deletePost(slug, token!, locale);
         setPosts(posts.filter((p) => p.slug !== slug));
+        setSuccessMessage("Post deleted successfully.");
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 3000);
       } catch (deleteError) {
         console.error("Failed to delete post:", deleteError);
         alert("Failed to delete post");
@@ -86,7 +81,6 @@ function AdminPostsPageContent() {
 
   return (
     <main className="container mx-auto p-4">
-
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Create New Post</h1>
         <button
@@ -95,24 +89,8 @@ function AdminPostsPageContent() {
         >
           Logout
         </button>
-      </div>
-
-      {/* <div className="bg-white p-4 rounded-lg shadow border border-gray-200 mb-6 flex items-center gap-4">
-        <label className="block font-semibold text-gray-700" htmlFor="language">
-          Language:
-        </label>
-        <select
-          id="language"
-          value={locale}
-          onChange={e => setLocale(e.target.value as "en" | "pt")}
-          className="p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition w-40"
-        >
-          <option value="en">English</option>
-          <option value="pt">Portuguese</option>
-        </select>
-      </div> */}
-
-     <PostEditorForm
+      </div>  
+        <PostEditorForm
           initialData={{ relatedSlug: "" }} // Pass an empty relatedSlug for new posts
           onSubmit={handleCreate}
           loading={loading}            
@@ -123,7 +101,12 @@ function AdminPostsPageContent() {
       
       {/* Manage Posts Section */}
       <div className="mt-10">
-        <h2 className="text-2xl font-bold mb-4">Manage Posts</h2>
+        <h2 className="text-2xl font-bold mb-4">Manage Posts</h2>        
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-center">
+            {successMessage}
+          </div>
+        )}
         
         {/* Flex container to align search and filters */}
         <div className="flex justify-between items-center gap-4 mb-4">
@@ -157,7 +140,7 @@ function AdminPostsPageContent() {
       </div>
 
       <ul className="grid gap-4 mt-4">
-        {paginatedPosts.map((post: Post) => (
+        {paginatedPosts.map((post: PostSummary) => (
           <li
             key={post.slug}
             className="flex items-center justify-between bg-white shadow-md rounded-lg px-4 py-3 border border-gray-200"
