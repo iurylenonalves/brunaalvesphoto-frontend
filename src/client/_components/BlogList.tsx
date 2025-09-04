@@ -3,22 +3,7 @@
 import PostCard from "./PostCard";
 import { buildImageUrl } from "@/utils/urlUtils";
 import { useTranslations } from '@/context/TranslationContext';
-
-interface Post {
-  id: string;
-  title: string;
-  subtitle: string;
-  thumbnail: string | null; 
-  slug: string;
-  createdAt: string;
-  thumbnailAlt?: string;
-  thumbnailWidth?: number;
-  thumbnailHeight?: number;
-}
-
-interface BlogListProps {
-  posts: Post[];
-}
+import type { BlogListProps } from "@/types";
 
 export default function BlogList({ posts }: BlogListProps) {
   const { locale } = useTranslations();

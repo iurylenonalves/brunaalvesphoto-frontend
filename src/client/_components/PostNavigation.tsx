@@ -3,17 +3,7 @@
 import Link from 'next/link';
 import styles from '../../styles/post-navigation.module.css';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-
-interface NavPost {
-  slug: string;
-  title: string;
-}
-
-interface PostNavigationProps {
-  previousPost: NavPost | null;
-  nextPost: NavPost | null;
-  locale: string;
-}
+import type { PostNavigationProps } from "@/types";
 
 export default function PostNavigation({ previousPost, nextPost, locale }: PostNavigationProps) {
   if (!previousPost && !nextPost) {

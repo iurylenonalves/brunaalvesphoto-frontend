@@ -1,10 +1,12 @@
+import { PostJsonPayload, ProcessedImageResult } from "@/types";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 if (!API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined in your environment variables.");
 }
 
-// Dados de fallback para uso durante build quando API não estiver disponível
+// Fallback data for use during build when API is not available
 const fallbackPosts = [
   {
     id: "1",
@@ -97,7 +99,7 @@ export async function getPosts(locale: string) {
       const errorBody = await response.text(); 
       console.error(`[API] Error response body: ${errorBody.substring(0, 500)}`);
       
-      // Se for erro 401 (autenticação), usar fallback durante build
+      // If it's a 401 error (authentication), use fallback during build
       if (response.status === 401) {
         console.warn("[API] 401 Authentication failed during build, using fallback data");
         return getFallbackPosts(locale);
@@ -118,7 +120,7 @@ export async function getPosts(locale: string) {
 }
 
 export async function getPostBySlug(slug: string, locale: string, token?: string | null) {
-  // Log reduzido para produção
+  // Reduced logging for production
   console.log(`[API] Fetching post: ${slug} (${locale})`);
   
   try {
@@ -128,19 +130,19 @@ export async function getPostBySlug(slug: string, locale: string, token?: string
       'User-Agent': 'NextJS-Static-Build'
     };
     
-    // Adicionar token de autenticação se estiver disponível
+    // Add authentication token if available
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
     
     const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`, {
-      cache: 'no-store', // Desabilita o cache para sempre buscar dados frescos
+      // Disable cache to always fetch fresh data
       headers,
       signal: AbortSignal.timeout(15000)
     });
     
     if (!response.ok) {
-      // Se for erro 401 (autenticação), usar fallback durante build
+      // If it's a 401 error (authentication), use fallback during build
       if (response.status === 401) {
         console.warn(`[API] 401 for post ${slug}, using fallback data`);
         return getFallbackPostBySlug(slug, locale);
@@ -235,27 +237,6 @@ export async function getClientUploadToken(jwt: string, pathname: string) {
 }
 
 // 2) Create post using JSON (after images uploaded directly to Blob)
-type TextBlock = { type: 'text'; content: string };
-type ImageBlock = { 
-  type: 'image';
-  src: string;
-  alt?: string
-  width?: number;
-  height?: number;
-};
-
-
-export type PostJsonPayload = {
-  title: string;
-  subtitle: string;
-  locale: 'en' | 'pt';
-  publishedAt?: string;
-  relatedSlug?: string;
-  thumbnailSrc?: string;
-  thumbnailAlt?: string;
-  blocks: Array<TextBlock | ImageBlock>;
-};
-
 export async function createPostJson(payload: PostJsonPayload, token: string) {
   const res = await fetch(`${API_URL}/api/posts`, {
     method: 'POST',
@@ -288,27 +269,19 @@ export async function updatePostJson(slug: string, payload: PostJsonPayload, tok
   return res.json();
 }
 
-// Interface para o retorno do nosso novo endpoint
-export interface ProcessedImageResult {
-  imageUrl: string;
-  thumbnailUrl: string;
-  width: number;
-  height: number;
-}
-
-/**
- * NOVA FUNÇÃO: Faz o upload de um arquivo de imagem para nosso backend
- * para processamento e armazenamento.
+ /**
+ * NEW FUNCTION: Uploads an image file to our backend
+ * for processing and storage.
  */
 export async function uploadImage(imageFile: File, token: string): Promise<ProcessedImageResult> {
   const formData = new FormData();
-  formData.append("image", imageFile); // A chave "image" deve corresponder ao upload.single("image") no backend
+  formData.append("image", imageFile); // The key "image" must match upload.single("image") on the backend
 
   const response = await fetch(`${API_URL}/api/uploads/image`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
-      // NÃO defina 'Content-Type', o navegador fará isso automaticamente para FormData
+      // DO NOT set 'Content-Type', the browser will automatically set it for FormData
     },
     body: formData,
   });

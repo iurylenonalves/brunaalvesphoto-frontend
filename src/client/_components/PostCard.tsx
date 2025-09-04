@@ -1,18 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-
-interface PostCardProps {
-  post: {
-    slug: string;
-    title: string;
-    subtitle: string;
-    imageUrl: string;
-    thumbnailAlt?: string;
-    thumbnailWidth?: number;
-    thumbnailHeight?: number;
-  };
-  locale: string;
-}
+import type { PostCardProps } from "@/types";
 
 export default function PostCard({ post, locale }: PostCardProps) {
   const postUrl = locale === "pt" ? `/pt/blog/${post.slug}` : `/en/blog/${post.slug}`;
@@ -22,8 +10,8 @@ export default function PostCard({ post, locale }: PostCardProps) {
       <Link href={postUrl} aria-label={`Read more about ${post.title}`}>
         <div className="relative w-full h-72 overflow-hidden">
           <Image 
-            src={post.imageUrl} 
-            alt={post.thumbnailAlt || post.title} 
+            src={post.imageUrl}
+            alt={post.thumbnailAlt || post.title}
             width={post.thumbnailWidth || 500}
             height={post.thumbnailHeight || 400}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
