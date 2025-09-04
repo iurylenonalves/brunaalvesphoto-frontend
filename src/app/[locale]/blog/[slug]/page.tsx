@@ -8,57 +8,19 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Metadata } from "next";
 import Image from "next/image";
-
-type Block = {
-  type: "text" | "image";
-  content?: string;
-  src?: string;
-  alt?: string;
-  width?: number;
-  height?: number;
-};
-interface Post {
-  id: string;
-  title: string;
-  subtitle: string;
-  slug: string;
-  locale: string;
-  publishedAt?: string;
-  relatedSlug?: string;
-  blocks?: Block[];
-}
-interface Navigation {
-  previous: { slug: string; title: string } | null;
-  next: { slug: string; title: string } | null;
-}
-
-interface RecommendedPost {
-  slug: string;
-  title: string;
-  thumbnail: string;
-  thumbnailAlt?: string;
-  thumbnailWidth?: number;
-  thumbnailHeight?: number;
-}
-
-interface PostPageData {
-  post: Post;
-  navigation: Navigation;
-  recommended: RecommendedPost[]; // <-- USA O NOVO TIPO PRECISO
-}
+import type { Block, PostPageData } from "@/types";
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
-
 
 // Generates static paths for all posts in all locales
 export async function generateStaticParams(): Promise<{ slug: string; locale: string }[]> {
   const postsEn = await getPosts("en");
   const postsPt = await getPosts("pt");
 
-  const paramsEn = postsEn.map((post: Post) => ({ slug: post.slug, locale: 'en' }));
-  const paramsPt = postsPt.map((post: Post) => ({ slug: post.slug, locale: 'pt' }));
+  const paramsEn = postsEn.map((post: { slug: string }) => ({ slug: post.slug, locale: 'en' }));
+  const paramsPt = postsPt.map((post: { slug: string }) => ({ slug: post.slug, locale: 'pt' }));
 
   return [...paramsEn, ...paramsPt];
 }
@@ -67,13 +29,13 @@ export async function generateStaticParams(): Promise<{ slug: string; locale: st
  // Generates dynamic metadata for each post page
  export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
-  const post = await getPostBySlug(slug, locale);
+  const data: PostPageData | null = await getPostBySlug(slug, locale);
+
   return {
-    title: post?.title,
-    description: post?.subtitle,
+    title: data?.post?.title,
+    description: data?.post?.subtitle,
   };
 }
-
 
 export default async function BlogPostPage({ params }: Props) {
   // Use the locale from params to fetch the correct post

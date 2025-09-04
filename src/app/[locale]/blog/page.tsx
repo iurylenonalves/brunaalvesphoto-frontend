@@ -3,22 +3,11 @@ import Footer from "@/client/_components/Footer";
 import BlogList from "@/client/_components/BlogList";
 import EmptyState from "@/client/_components/EmptyState";
 import { getPosts } from "@/lib/api";
-
- interface Post {
-  id: string;
-  title: string;
-  subtitle: string;
-  thumbnail: string | null; 
-  slug: string;
-  createdAt: string;
-  thumbnailAlt?: string;
-  thumbnailWidth?: number;
-  thumbnailHeight?: number;
-}
+import type { PostSummary } from "@/types";
 
 export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const posts: Post[] = await getPosts(locale);
+  const posts: PostSummary[] = await getPosts(locale);
   //const posts: Post[] = []; 
 
   return (
