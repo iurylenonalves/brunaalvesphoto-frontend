@@ -42,3 +42,6 @@ next-env.d.ts
 
 #original photos
 original-photos/
+
+# development scripts
+scripts/

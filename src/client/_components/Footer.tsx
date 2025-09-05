@@ -1,18 +1,18 @@
 "use client";
 
 import footerStyles from "../../styles/footer.module.css";
-
 import { useState } from "react";
 import Link from "next/link";
-
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
-
 import { useTranslations } from "@/context/TranslationContext";
-
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
-  const { translations } = useTranslations();
+  const { translations, locale } = useTranslations();
   const [isModalOpen, setModalOpen] = useState(false);
+  const pathname = usePathname();
+  // Fix home page detection to include /en and /en/
+  const isHome = ["/", "/en", "/en/", "/pt", "/pt/"].includes(pathname);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -26,10 +26,24 @@ const Footer = () => {
     <footer className={footerStyles.footer}>
       <div className={footerStyles.container}>       
         <div className={footerStyles.links}>
-          <Link href="#about" className={footerStyles.link}>
+        <Link
+            href={isHome ? "#about" : locale === "pt" ? "/pt/about" : "/en/about"}
+            className={footerStyles.link}
+            scroll={isHome}
+          >
             {translations.footerAbout}
           </Link>
-          <Link href="#contact" className={footerStyles.link}>
+          <Link
+            href={`/${locale}/blog`}
+            className={footerStyles.link}
+          >
+            Blog
+          </Link>
+          <Link
+            href={isHome ? "#contact" : locale === "pt" ? "/pt/contact" : "/en/contact"}
+            className={footerStyles.link}
+            scroll={isHome}
+          >
             {translations.footerContact}
           </Link>
           <button onClick={handleOpenModal} className={footerStyles.link}>

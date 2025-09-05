@@ -23,8 +23,8 @@
 
 
   "categoryAll": "All",
-  "categoryTourist": "Tourist",
-  "categoryProfessional": "Professional",
+  "categoryTravel": "Travel",
+  "categoryBusiness": "Business",
   "categoryStudio": "Studio",
 
   "modalArialLabelClose": "Close",
@@ -117,5 +117,11 @@
   "section8Content": "This policy may be updated at any time to ensure compliance with applicable laws. We recommend that you review this page periodically.",
   
   "section9Title": "9. Contact",
-  "privacyPolicyCloseButton": "Close"
+  "privacyPolicyCloseButton": "Close",
+
+  "emptyStateTitle": "No Stories Yet, But Stay Tuned!",
+  "emptyStateMessage": "New photography sessions and stories from London and beyond will be posted here soon. Come back later to see the latest work!",
+  "emptyStateCtaText": "Book Your Session",
+
+  "recommendedPostsTitle": "You Might Also Like"
 }

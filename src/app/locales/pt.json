@@ -23,8 +23,8 @@
 
 
   "categoryAll": "Todos",
-  "categoryTourist": "Turístico",
-  "categoryProfessional": "Profissional",
+  "categoryTravel": "Viagem",
+  "categoryBusiness": "Corporativo",
   "categoryStudio": "Estúdio",
 
   "modalArialLabelClose": "Fechar",
@@ -117,5 +117,11 @@
   "section8Content": "Esta política pode ser atualizada a qualquer momento para garantir conformidade com as leis aplicáveis. Recomendamos que você consulte esta página periodicamente.",
   
   "section9Title": "9. Contato",
-  "privacyPolicyCloseButton": "Fechar"
+  "privacyPolicyCloseButton": "Fechar",
+
+  "emptyStateTitle": "Ainda não há histórias, mas fique ligado!",
+  "emptyStateMessage": "Em breve você encontrará aqui novas sessões fotográficas e histórias de Londres e de outros lugares. Volte mais tarde para conferir meus trabalhos mais recentes!",
+  "emptyStateCtaText": "Agende sua Sessão",
+
+  "recommendedPostsTitle": "Você Também Pode Gostar"
 }

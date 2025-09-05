@@ -3,6 +3,7 @@
 import styles from '../../styles/header.module.css';
 import Link from 'next/link';
 import { Instagram, MessageCircle } from 'lucide-react';
+import { usePathname } from "next/navigation";
 
 interface MobileMenuProps {
   translations: {
@@ -12,13 +13,45 @@ interface MobileMenuProps {
     whatsappMessage: string;
   };
   setIsOpen: (isOpen: boolean) => void;
+  locale?: string;
 }
 
-const MobileMenu = ({ translations, setIsOpen }: MobileMenuProps) => (
-  <nav className={styles.mobileMenu}>
-    <Link href="#about" onClick={() => setIsOpen(false)}>{translations.about}</Link>
-    <Link href="#portfolio" onClick={() => setIsOpen(false)}>{translations.portfolio}</Link>
-    <Link href="#contact" onClick={() => setIsOpen(false)}>{translations.contact}</Link>
+const MobileMenu = ({ translations, setIsOpen, locale = "en" }: MobileMenuProps) => {
+  const pathname = usePathname();
+  const isHome = pathname === "/" || pathname === "/en" || pathname === "/pt" || pathname === "/en/" || pathname === "/pt/";
+  // Garantir que locale seja válido
+  const currentLocale = locale === 'pt' ? 'pt' : 'en';
+
+  return (
+    <nav className={styles.mobileMenu}>
+      <Link
+        href={isHome ? "#about" : `/${currentLocale}/about`}
+        onClick={() => setIsOpen(false)}
+        scroll={isHome}
+      >
+        {translations.about}
+      </Link>
+      <Link
+        href={isHome ? "#portfolio" : `/${currentLocale}/portfolio`}
+        onClick={() => setIsOpen(false)}
+        scroll={isHome}
+      >
+        {translations.portfolio}
+      </Link>
+      <Link
+        href={`/${currentLocale}/blog`}
+        onClick={() => setIsOpen(false)}
+        className={styles.navLink}
+      >
+        Blog
+      </Link>
+      <Link
+        href={isHome ? "#contact" : `/${currentLocale}/contact`}
+        onClick={() => setIsOpen(false)}
+        scroll={isHome}
+      >
+        {translations.contact}
+      </Link>
 
     {/* Menu Button Mobile */}
     <a
@@ -43,6 +76,6 @@ const MobileMenu = ({ translations, setIsOpen }: MobileMenuProps) => (
       Instagram
     </a>
   </nav>
-);
-
+ );
+}
 export default MobileMenu;

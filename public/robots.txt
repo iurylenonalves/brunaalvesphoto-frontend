@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Block favicon from being crawled as a page
+Disallow: /favicon.ico
+
+# Allow image assets
+Allow: /images/
+
+# Block admin routes
+Disallow: /admin/
+Disallow: /login
+
+Sitemap: https://brunaalvesphoto.com/sitemap.xml

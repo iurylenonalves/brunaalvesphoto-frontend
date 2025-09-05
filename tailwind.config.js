@@ -16,6 +16,7 @@ module.exports = {
     },
   },
   plugins: [
-    require("tailwindcss-animate"), // Plugin para animações
+    require("tailwindcss-animate"),
+    require('@tailwindcss/typography'),
   ],
 };

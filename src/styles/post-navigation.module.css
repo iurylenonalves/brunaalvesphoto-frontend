@@ -1,0 +1,78 @@
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem; /* Adds space between the two links */
+  width: 100%;
+  //margin-bottom: 4rem; /* Creates space between navigation and "You Might Also Like" */
+}
+
+.navLinkWrapper {
+  flex: 1; /* Each link wrapper takes up equal space */
+  min-width: 0; /* Prevents text overflow issues in flex containers */
+  display: flex;
+  flex-direction: column;
+}
+
+.alignRight {
+  align-items: flex-end; /* Aligns the link content to the right */
+}
+
+.navLink {
+  display: inline-block; /* Ensures the link doesn't take full width */
+  color: #374151; /* Dark gray text color */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: #ca8a04; /* Your theme's yellow color on hover */
+}
+
+/* New container for the icon and label */
+.navHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* 8px space between icon and label */
+  margin-bottom: 0.5rem; /* Space between header and title */
+}
+
+/* Aligns the header content to the right for the "Next Post" link */
+.alignRight .navHeader {
+  justify-content: flex-end;
+}
+
+.navLabel {
+  display: block;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em; /* Adds a bit of spacing for style */
+  color: #6b7280; /* Medium gray text color */
+  margin-bottom: 0; /* Margin is now handled by .navHeader */
+}
+
+.navIcon {
+  color: #9ca3af; /* Lighter gray for the icon */
+  transition: transform 0.2s ease;
+}
+
+/* Hover effect for the previous arrow */
+.navLink:hover .navIcon {
+  transform: translateX(-4px);
+}
+
+/* Hover effect for the next arrow */
+.alignRight .navLink:hover .navIcon {
+  transform: translateX(4px);
+}
+
+.navTitle {
+  display: block;
+  font-size: 1.125rem; /* 18px */
+  font-weight: 700;
+  line-height: 1.4;
+  /* Truncate long titles with an ellipsis */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

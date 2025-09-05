@@ -12,8 +12,8 @@ const CategoryFilter = ({ selectedCategory, onSelectCategory }: CategoryFilterPr
  
   const categories = {
     all: translations.categoryAll || "Todos",
-    tourism: translations.categoryTourist || "Turístico",
-    professional: translations.categoryProfessional || "Profissional",
+    travel: translations.categoryTravel || "Viagem",
+    business: translations.categoryBusiness || "Corporativo",
     studio: translations.categoryStudio || "Estúdio",
   }
 

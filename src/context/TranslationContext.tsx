@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import en from "../app/locales/en.json";
 import pt from "../app/locales/pt.json";
 
@@ -27,15 +28,33 @@ const TranslationContext = createContext<TranslationContextType | undefined>(und
 export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children, initialLocale }) => {
   const [locale, setLocaleState] = useState<string>(initialLocale);
   const [translations, setTranslations] = useState<Translations>(initialLocale === "pt" ? pt : en);
+  const pathname = usePathname();
   //const [isHydrated, setIsHydrated] = useState(false);
+
+  // useEffect to set the initial locale based on the pathname
+  useEffect(() => {
+    // Extrair locale do pathname: /en/about -> en, /pt/contact -> pt, /about -> detect from initialLocale
+    const pathSegments = pathname.split('/').filter(Boolean);
+    const potentialLocale = pathSegments[0];
+    
+    // Only set locale if it's a valid locale
+    if (potentialLocale === "pt" || potentialLocale === "en") {
+      setLocale(potentialLocale);
+    } else {
+      // For invalid routes like /about/, /admin/, use the initialLocale or default to 'en'
+      const fallbackLocale = (initialLocale === "pt" || initialLocale === "en") ? initialLocale : "en";
+      setLocale(fallbackLocale);
+    }
+  }, [pathname, initialLocale]);
   
   // useEffect to sync the locale and translations with the localStorage
   useEffect(() => {
     const savedLocale = localStorage.getItem("locale");
     if (savedLocale && savedLocale !== locale) {
-      setLocale(savedLocale);
+      setLocaleState(savedLocale);
+      setTranslations(savedLocale === "pt" ? pt : en);
     }
-  }, []);
+  }, [locale]);
 
   // Function to set the locale and translations
   const setLocale = (newLocale: string) => {

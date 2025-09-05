@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { z } from 'zod';
 import axios from 'axios';
@@ -52,16 +51,21 @@ export const useContactForm = (locale: string, translations: Translations) => {
 
     if (!validateForm()) return;
 
-    const VERCEL_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api-brunaphoto-vercel.vercel.app/api/contacts';
-
+    // Fix: Ensure correct API URL construction
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api-brunaphoto-vercel.vercel.app';
+    const CONTACT_API_URL = `${API_BASE_URL}/api/contacts`;
+    
     setStatus(translations.loading || 'loading');
 
     try {
-      const response = await axios.post(VERCEL_API_URL, formData, {
+      const response = await axios.post(CONTACT_API_URL, formData, {
         headers: { 'Content-Type': 'application/json' },
         timeout: 10000,
       });
-      console.log('Response:', response.data);
+      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Response:', response.data);
+      }
 
       setStatus('success');
       setFormData({ 
@@ -73,16 +77,21 @@ export const useContactForm = (locale: string, translations: Translations) => {
       
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('Submission error:', error);
-      setStatus(error.response?.status === 429 
-        ? 'too-many-requests' 
-        : translations.contactError || 'An error occurred'
-      );            
-    } else {
-      console.error('Unexpected error:', error);
-      setStatus(translations.contactError || 'An error occurred');
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Submission error:', error);
+        }
+        setStatus(error.response?.status === 429 
+          ? 'too-many-requests' 
+          : translations.contactError || 'An error occurred'
+        );            
+      } else {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Unexpected error:', error);
+        }
+        setStatus(translations.contactError || 'An error occurred');
+      }
     }
   };
-  }
+
   return { formData, errors, status, handleChange, handleSubmit }; 
 }
