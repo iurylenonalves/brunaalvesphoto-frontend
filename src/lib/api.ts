@@ -135,8 +135,8 @@ export async function getPostBySlug(slug: string, locale: string, token?: string
       headers['Authorization'] = `Bearer ${token}`;
     }
     
-    const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`, {
-      // Disable cache to always fetch fresh data
+    const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`, {      
+      cache: 'no-store',
       headers,
       signal: AbortSignal.timeout(15000)
     });
