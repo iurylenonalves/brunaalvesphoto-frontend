@@ -85,7 +85,7 @@ export async function getPosts(locale: string) {
   
   try {
     const response = await fetch(`${API_URL}/api/posts?locale=${locale}`,{
-      cache: 'no-store',
+      next: { revalidate: 60 },
       headers: {
         'Accept': 'application/json',
         'User-Agent': 'NextJS-Static-Build'
@@ -136,7 +136,7 @@ export async function getPostBySlug(slug: string, locale: string, token?: string
     }
     
     const response = await fetch(`${API_URL}/api/posts/${slug}?locale=${locale}`, {      
-      cache: 'no-store',
+      next: { revalidate: 60 },
       headers,
       signal: AbortSignal.timeout(15000)
     });
