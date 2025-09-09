@@ -22,6 +22,9 @@ function AdminPostsPageContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
 
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishMessage, setPublishMessage] = useState<string | null>(null);
+
   useEffect(() => {
     if (!authLoading && !token) {
       router.push("/login");
@@ -65,6 +68,34 @@ function AdminPostsPageContent() {
     router.push(`/admin/posts?locale=${newLocale}`);
   };
 
+  const handlePublishChanges = async () => {
+    setIsPublishing(true);
+    setPublishMessage("Starting the publication process... Please wait.");
+
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_VERCEL_DEPLOY_HOOK_URL!, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to trigger the deploy hook.");
+      }
+      
+      const result = await response.json();
+      console.log("Deploy triggered successfully:", result);
+      setPublishMessage("Success! The site is now being updated. It may take a few minutes to be live.");
+      
+      // Limpa a mensagem após um tempo
+      setTimeout(() => setPublishMessage(null), 10000);
+
+    } catch (error) {
+      console.error("Error triggering deploy hook:", error);
+      setPublishMessage("An error occurred. Please try again or publish manually.");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   if (authLoading || loading) return <p className="text-center mt-8">Loading...</p>;
   if (!token) return null;
 
@@ -82,14 +113,31 @@ function AdminPostsPageContent() {
   return (
     <main className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Create New Post</h1>
-        <button
-          className="px-4 py-2 bg-red-500 text-white rounded-lg shadow cursor-pointer transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
-          onClick={logout}
-        >
-          Logout
-        </button>
-      </div>  
+        <h1 className="text-3xl font-bold">Admin Panel</h1>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handlePublishChanges}
+            disabled={isPublishing}
+            className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md cursor-pointer hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          >
+            {isPublishing ? "Publishing..." : "Publish Site Changes"}
+          </button>
+          <button
+            className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow cursor-pointer transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+            onClick={logout}
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+
+      {publishMessage && (
+        <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4 text-center">
+          {publishMessage}
+        </div>
+      )}
+
+      <h2 className="text-2xl font-bold mb-4">Create New Post</h2>
         <PostEditorForm
           initialData={{ relatedSlug: "" }} // Pass an empty relatedSlug for new posts
           onSubmit={handleCreate}
