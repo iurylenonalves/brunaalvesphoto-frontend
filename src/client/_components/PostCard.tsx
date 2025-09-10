@@ -23,11 +23,11 @@ export default function PostCard({ post, locale, priority = false }: PostCardPro
         </div>
       </Link>
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="text-xl font-semibold">
+        <h2 className="text-xl font-semibold">
           <Link href={postUrl} className="hover:text-yellow-600 transition-colors duration-300">
             {post.title}
           </Link>
-        </h3>
+        </h2>
         <p className="mt-2 text-gray-600">{post.subtitle}</p>
       </div>
     </div>
