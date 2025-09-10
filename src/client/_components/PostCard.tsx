@@ -2,8 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import type { PostCardProps } from "@/types";
 
-export default function PostCard({ post, locale, priority = false }: PostCardProps) {
+export default function PostCard({ post, locale, priority = false, sizes }: PostCardProps) {
   const postUrl = locale === "pt" ? `/pt/blog/${post.slug}` : `/en/blog/${post.slug}`;
+  const imageSizes = sizes || "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-lg shadow-lg transition-shadow duration-300 hover:shadow-xl">
@@ -18,7 +19,7 @@ export default function PostCard({ post, locale, priority = false }: PostCardPro
             loading={priority ? 'eager' : 'lazy'}
             priority={priority}
             fetchPriority={priority ? 'high' : 'auto'}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes={imageSizes}
           />
         </div>
       </Link>

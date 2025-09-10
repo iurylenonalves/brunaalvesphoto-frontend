@@ -148,6 +148,7 @@ export interface PostCardProps {
   post: PostCardData;
   locale: string;
   priority?: boolean;
+  sizes?: string;
 }
 
 /**

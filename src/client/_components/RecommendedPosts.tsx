@@ -6,6 +6,7 @@ import type { PostSummary, RecommendedPostsProps } from "@/types";
 
 export default function RecommendedPosts({ posts, locale }: RecommendedPostsProps) {
   const { translations } = useTranslations();
+  const recommendedSizes = "(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw";
 
   if (!posts || posts.length === 0) {
     return null;
@@ -31,6 +32,7 @@ export default function RecommendedPosts({ posts, locale }: RecommendedPostsProp
               thumbnailHeight: post.thumbnailHeight,
             }}
             locale={locale}
+            sizes={recommendedSizes}
           />
         ))}
       </div>
