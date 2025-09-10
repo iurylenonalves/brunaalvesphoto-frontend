@@ -11,7 +11,8 @@ const nextConfig = {
       },
     ],   
     //unoptimized: true, // Allows unoptimized images
-    qualities: [75, 100], 
+    qualities: [75, 100],    
+    deviceSizes: [384, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
   },    
   trailingSlash: true, // Adds a trailing slash to URLs
   reactStrictMode: true, // Enables React strict mode

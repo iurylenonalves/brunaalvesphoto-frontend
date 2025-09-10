@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { PostCardProps } from "@/types";
 
-export default function PostCard({ post, locale }: PostCardProps) {
+export default function PostCard({ post, locale, priority = false }: PostCardProps) {
   const postUrl = locale === "pt" ? `/pt/blog/${post.slug}` : `/en/blog/${post.slug}`;
 
   return (
@@ -15,7 +15,9 @@ export default function PostCard({ post, locale }: PostCardProps) {
             width={post.thumbnailWidth || 500}
             height={post.thumbnailHeight || 400}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
+            loading={priority ? 'eager' : 'lazy'}
+            priority={priority}
+            fetchPriority={priority ? 'high' : 'auto'}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         </div>
