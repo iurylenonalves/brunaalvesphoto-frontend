@@ -17,7 +17,7 @@ export default function AboutPage() {
       >
         <Header />
         <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <About />
+          <About isStandalonePage={true} />
         </div>
         <Footer />
       </main>

@@ -6,8 +6,11 @@ import { MessageCircle } from 'lucide-react';
 import { useTranslations } from '@/context/TranslationContext';
 import { useContactForm } from '@/hooks/useContactForm';
 
+interface ContactProps {
+  isStandalonePage?: boolean;
+}
 
-const Contact = () => {
+const Contact = ({ isStandalonePage = false }: ContactProps) => {
   const { translations, locale } = useTranslations();
   const { formData, errors, status, handleChange, handleSubmit } = useContactForm(locale, translations);
 
@@ -24,7 +27,8 @@ const Contact = () => {
                 width={600}
                 height={400}
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
-                loading='lazy'
+                priority={isStandalonePage}
+                loading={isStandalonePage ? 'eager' : 'lazy'}
               />
             </div>
             <div className="w-full md:w-1/2 text-left">

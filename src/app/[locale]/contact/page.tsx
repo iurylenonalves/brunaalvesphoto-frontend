@@ -17,7 +17,7 @@ export default function ContactPage() {
       >
         <Header />
         <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <Contact />
+          <Contact isStandalonePage={true} />
         </div>
         <Footer />
       </main>

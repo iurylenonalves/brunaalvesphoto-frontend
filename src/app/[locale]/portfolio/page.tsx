@@ -16,7 +16,7 @@ export default function PortfolioPage() {
       >
         <Header />
         <div style={{ flex: 1 }}>
-          <Portfolio />
+          <Portfolio isStandalonePage={true} />
         </div>
          <Footer />
       </main>

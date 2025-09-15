@@ -9,6 +9,9 @@ import Loader from "./Loader";
 import { useTranslations } from "@/context/TranslationContext";
 import { generateAltText, generateImageTitle, PHOTOGRAPHER_NAME, BUSINESS_NAME, LOCATION, CATEGORY_DESCRIPTIONS } from "@/utils/seoConstants";
 
+interface PortfolioProps {
+  isStandalonePage?: boolean; // <-- Mude o nome da prop
+}
 interface ImageItem {
   base: string;
   alt?: string;
@@ -17,7 +20,7 @@ interface ImageItem {
 
 type PortfolioImages = Record<string, ImageItem[]>;
 
-const Portfolio = () => {
+const Portfolio = ({ isStandalonePage = false }: PortfolioProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -345,6 +348,7 @@ const Portfolio = () => {
             {paginatedImages.map(({ base }, index) => {
               const { alt, title } = generateImageMetadata(base);
               const currentImageIndex = startIndex + index;
+              const isPriority = isStandalonePage && index === 0 && currentPage === 1;
               
               return (
                 <figure
@@ -361,7 +365,8 @@ const Portfolio = () => {
                     width={500}
                     height={400}
                     className="w-full h-72 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
+                    priority={isPriority}
+                    loading={isPriority ? "eager" : "lazy"}
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out flex items-center justify-center">
