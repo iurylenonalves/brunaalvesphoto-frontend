@@ -29,6 +29,7 @@ const Contact = ({ isStandalonePage = false }: ContactProps) => {
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
                 priority={isStandalonePage}
                 loading={isStandalonePage ? 'eager' : 'lazy'}
+                fetchPriority={isStandalonePage ? 'high' : 'auto'}
               />
             </div>
             <div className="w-full md:w-1/2 text-left">

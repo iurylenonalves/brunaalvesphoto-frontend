@@ -105,6 +105,7 @@ export default async function BlogPostPage({ params }: Props) {
                         className="w-full max-w-2xl mx-auto h-auto rounded my-8"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 768px"
                         priority={idx === firstImageIndex}
+                        fetchPriority={idx === firstImageIndex ? 'high' : 'auto'}
                       />
                     </div>
                   )

@@ -367,6 +367,7 @@ const Portfolio = ({ isStandalonePage = false }: PortfolioProps) => {
                     className="w-full h-72 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
                     priority={isPriority}
                     loading={isPriority ? "eager" : "lazy"}
+                    fetchPriority={isPriority ? 'high' : 'auto'}
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out flex items-center justify-center">
