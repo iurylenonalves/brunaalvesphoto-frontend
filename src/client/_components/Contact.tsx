@@ -19,14 +19,14 @@ const Contact = ({ isStandalonePage = false }: ContactProps) => {
         <div className="max-w-6xl mx-auto text-center space-y-8">
           <h2 className="text-4xl font-bold text-gray-900">{translations.contactTitle}</h2>
           <div className="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/2 relative rounded-lg overflow-hidden shadow-lg bg-gray-200">
+            <div style={{ paddingTop: '150.33%' }} />
               <Image
                 src="/images/contact-image-large.webp"
                 alt={translations.contactTitle}
-                className="rounded-lg shadow-lg object-contain w-full"
-                width={600}
-                height={400}
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
+                fill
+                className="object-cover absolute top-0 left-0 w-full h-full"
+                sizes="(max-width: 768px) 100vw, 50vw"
                 priority={isStandalonePage}
                 loading={isStandalonePage ? 'eager' : 'lazy'}
                 fetchPriority={isStandalonePage ? 'high' : 'auto'}
