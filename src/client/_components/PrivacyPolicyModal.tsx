@@ -54,7 +54,7 @@ const PrivacyPolicyModal = ({ onClose }: PrivacyPolicyModalProps) => {
           <li>{translations.section6List3}</li>
           <li>{translations.section6List4}</li>
         </ul>
-        <p>{translations.section6Contact} <strong>brunaphoto.sfa@gmail.com</strong></p>
+        <p>{translations.section6Contact} <strong>contact@brunaalvesphoto.com</strong></p>
 
         <h2>{translations.section7Title}</h2>
         <p>{translations.section7Content}</p>
@@ -63,7 +63,7 @@ const PrivacyPolicyModal = ({ onClose }: PrivacyPolicyModalProps) => {
         <p>{translations.section8Content}</p>
 
         <h2>{translations.section9Title}</h2>
-        <p>📧<strong> E-mail:</strong> brunaphoto.sfa@gmail.com</p>
+        <p>📧<strong> E-mail:</strong> contact@brunaalvesphoto.com</p>
 
         <div className={privicyPolicyModalStyles.buttonContainer}>
           <button className={privicyPolicyModalStyles.closeButton} onClick={onClose}>{translations.privacyPolicyCloseButton}</button>
