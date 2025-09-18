@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { Questrial, Raleway } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -110,6 +111,7 @@ export default function RootLayout({
           {children}
         </AuthProvider>
         <AosInit />
+        <Analytics />
       </body>
     </html>
   );
