@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Questrial, Raleway } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -112,6 +113,7 @@ export default function RootLayout({
         </AuthProvider>
         <AosInit />
         <Analytics />
+        <SpeedInsights /> 
       </body>
     </html>
   );
