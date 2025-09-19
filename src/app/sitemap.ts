@@ -1,10 +1,6 @@
 import { MetadataRoute } from 'next';
 import { PostSummary } from '@/types';
 
-// ===================================================================================
-// FONTE DA VERDADE PARA IMAGENS DO PORTFÓLIO
-// Esta lista deve ser um espelho exato da categoria "all" do seu Portfolio.tsx
-// ===================================================================================
 const portfolioImageBases = [
   "london-tower-bridge-tourism-photography-3",
   "south-bank-london-houses-of-parliament-and-big-ben-tourism-photography",
@@ -140,15 +136,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/portfolio`,
       lastModified: new Date(),
-      priority: 0.9,
-      // CORREÇÃO: Mapeando para um array de strings (URLs)
+      priority: 0.9,      
       images: portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`),
     },
     {
       url: `${baseUrl}/pt/portfolio`,
       lastModified: new Date(),
-      priority: 0.9,
-       // CORREÇÃO: Mapeando para um array de strings (URLs)
+      priority: 0.9,       
       images: portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`),
     },
     { url: `${baseUrl}/contact`, lastModified: new Date(), priority: 0.7 },
