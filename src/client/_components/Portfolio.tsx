@@ -294,7 +294,9 @@ const Portfolio = ({ isStandalonePage = false }: PortfolioProps) => {
               "copyrightHolder": {
                 "@type": "Person",
                 "name": PHOTOGRAPHER_NAME
-              }
+              },
+              "creditText": PHOTOGRAPHER_NAME,
+              "copyrightYear": `© ${new Date().getFullYear()} ${BUSINESS_NAME}`
             };
           })
         };
