@@ -5,14 +5,14 @@ import { useState } from "react";
 import Link from "next/link";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import { useTranslations } from "@/context/TranslationContext";
-import { usePathname } from "next/navigation";
+//import { usePathname } from "next/navigation";
 
 const Footer = () => {
   const { translations, locale } = useTranslations();
   const [isModalOpen, setModalOpen] = useState(false);
-  const pathname = usePathname();
+  //const pathname = usePathname();
   // Fix home page detection to include /en and /en/
-  const isHome = ["/", "/en", "/en/", "/pt", "/pt/"].includes(pathname);
+  //const isHome = ["/", "/en", "/en/", "/pt", "/pt/"].includes(pathname);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -27,9 +27,8 @@ const Footer = () => {
       <div className={footerStyles.container}>       
         <div className={footerStyles.links}>
         <Link
-            href={isHome ? "#about" : locale === "pt" ? "/pt/about" : "/en/about"}
+            href={`/${locale}/about`}
             className={footerStyles.link}
-            scroll={isHome}
           >
             {translations.footerAbout}
           </Link>
@@ -40,9 +39,8 @@ const Footer = () => {
             Blog
           </Link>
           <Link
-            href={isHome ? "#contact" : locale === "pt" ? "/pt/contact" : "/en/contact"}
+            href={`/${locale}/contact`}
             className={footerStyles.link}
-            scroll={isHome}
           >
             {translations.footerContact}
           </Link>
