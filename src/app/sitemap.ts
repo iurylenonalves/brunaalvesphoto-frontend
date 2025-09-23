@@ -131,10 +131,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
       alternates: { languages: { en: baseUrl } },
     },
-    { url: `${baseUrl}/about`, lastModified: new Date(), priority: 0.8 },
+    { url: `${baseUrl}/en/about`, lastModified: new Date(), priority: 0.8 },
     { url: `${baseUrl}/pt/about`, lastModified: new Date(), priority: 0.8 },
     {
-      url: `${baseUrl}/portfolio`,
+      url: `${baseUrl}/en/portfolio`,
       lastModified: new Date(),
       priority: 0.9,      
       images: portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`),
@@ -145,12 +145,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,       
       images: portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`),
     },
-    { url: `${baseUrl}/contact`, lastModified: new Date(), priority: 0.7 },
+    { url: `${baseUrl}/en/contact`, lastModified: new Date(), priority: 0.7 },
     { url: `${baseUrl}/pt/contact`, lastModified: new Date(), priority: 0.7 },
-    { url: `${baseUrl}/blog`, lastModified: new Date(), priority: 0.9 },
-    { url: `${baseUrl}/pt/blog`, lastModified: new Date(), priority: 0.9 },
-    { url: `${baseUrl}/privacy-policy`, lastModified: new Date(), priority: 0.5 },
-    { url: `${baseUrl}/pt/privacy-policy`, lastModified: new Date(), priority: 0.5 },
+    { url: `${baseUrl}/en/blog`, lastModified: new Date(), priority: 0.9 },
+    { url: `${baseUrl}/pt/blog`, lastModified: new Date(), priority: 0.9 },    
   ];
 
   return [...staticUrls, ...postUrls];
