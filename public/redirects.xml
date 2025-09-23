@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Permanent redirects -->
+  <url>
+    <loc>https://brunaalvesphoto.com/about</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <!-- This URL permanently redirects to https://www.brunaalvesphoto.com/en/about/ -->
+  </url>
+  <url>
+    <loc>https://brunaalvesphoto.com/portfolio</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <!-- This URL permanently redirects to https://www.brunaalvesphoto.com/en/portfolio/ -->
+  </url>
+  <url>
+    <loc>https://brunaalvesphoto.com/contact</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <!-- This URL permanently redirects to https://www.brunaalvesphoto.com/en/contact/ -->
+  </url>
+  <url>
+    <loc>https://brunaalvesphoto.com/blog</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <!-- This URL permanently redirects to https://www.brunaalvesphoto.com/en/blog/ -->
+  </url>
+  <url>
+    <loc>https://www.brunaalvesphoto.com/about</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <!-- This URL permanently redirects to https://www.brunaalvesphoto.com/en/about/ -->
+  </url>
+  <url>
+    <loc>https://www.brunaalvesphoto.com/portfolio</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <!-- This URL permanently redirects to https://www.brunaalvesphoto.com/en/portfolio/ -->
+  </url>
+  <url>
+    <loc>https://www.brunaalvesphoto.com/contact</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <!-- This URL permanently redirects to https://www.brunaalvesphoto.com/en/contact/ -->
+  </url>
+  <url>
+    <loc>https://www.brunaalvesphoto.com/blog</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <!-- This URL permanently redirects to https://www.brunaalvesphoto.com/en/blog/ -->
+  </url>
+</urlset>

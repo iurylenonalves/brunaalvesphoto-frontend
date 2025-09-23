@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   
+  // Debug logs
+  console.log(`[Middleware] Processing: ${request.url}`);
+  console.log(`[Middleware] Pathname: ${url.pathname}`);
+  
   // 1. Redirect HTTP to HTTPS
   if (url.protocol === 'http:') {
     url.protocol = 'https:';
@@ -54,20 +58,24 @@ export function middleware(request: NextRequest) {
     return NextResponse.next(); // Se já tem, não faz nada
   }
 
-  // Special handling for pages that should redirect to home with anchors
-  const anchorPages = ['/about', '/portfolio', '/contact'];
-  const isAnchorPage = anchorPages.some(page => 
+  // Special handling for pages that should redirect to localized pages, not anchors
+  const staticPages = ['/about', '/portfolio', '/contact'];
+  const isStaticPage = staticPages.some(page => 
     pathname === page || pathname === `${page}/`
   );
 
-  if (isAnchorPage) {
-    // Extract the section name and redirect to home with anchor
-    const section = pathname.replace(/\/$/, '').substring(1); // Remove leading slash and trailing slash
+  if (isStaticPage) {
+    console.log(`[Middleware] Static page detected: ${pathname}`);
+    // Extract the page name and redirect to localized page
+    const pageName = pathname.replace(/\/$/, '').substring(1); // Remove leading slash and trailing slash
     const browserLocale = request.headers.get('Accept-Language')?.split(',')[0].toLowerCase();
     const localeToRedirect = browserLocale?.startsWith('pt') ? 'pt' : defaultLocale;
     
-    const redirectUrl = new URL(`/${localeToRedirect}#${section}`, request.url);
-    return NextResponse.redirect(redirectUrl);
+    console.log(`[Middleware] Redirecting to: /${localeToRedirect}/${pageName}/`);
+    
+    // Redirect to proper localized page instead of anchor
+    const redirectUrl = new URL(`/${localeToRedirect}/${pageName}/`, request.url);
+    return NextResponse.redirect(redirectUrl, 301); // 301 permanent redirect is better for SEO
   }
 
   // Special handling for blog posts without locale prefix
@@ -100,8 +108,10 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Match all pages except static assets
+    '/((?!_next/|images/|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)',
+    // Always run for these specific routes that need redirection
+    '/(about|contact|portfolio|blog)(.*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],

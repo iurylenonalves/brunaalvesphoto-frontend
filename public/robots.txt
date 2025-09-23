@@ -1,14 +1,23 @@
 User-agent: *
 Allow: /
 
-# Block favicon from being crawled as a page
+# Block favicon and other assets from being crawled as pages
 Disallow: /favicon.ico
+Disallow: /*.js$
+Disallow: /*.css$
 
 # Allow image assets
 Allow: /images/
 
 # Block admin routes
 Disallow: /admin/
-Disallow: /login
+Disallow: /login/
 
-Sitemap: https://brunaalvesphoto.com/sitemap.xml
+# These are not real URLs, they redirect to localized versions
+Disallow: /about
+Disallow: /portfolio
+Disallow: /contact
+Disallow: /blog$
+
+# Use www version for consistency
+Sitemap: https://www.brunaalvesphoto.com/sitemap.xml
