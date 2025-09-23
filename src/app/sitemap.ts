@@ -85,14 +85,11 @@ async function fetchBlogPosts(): Promise<PostSummary[]> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`, {
       next: { revalidate: 3600 },
     });
-    if (!response.ok) {
-      console.error('Sitemap: Failed to fetch posts from API');
-      return [];
-    }
+    if (!response.ok) { return []; }
     const data = await response.json();
     return data.posts || [];
   } catch (error) {
-    console.error('Sitemap: Error fetching blog posts:', error);
+    console.error('Sitemap: Error fetching posts:', error);
     return [];
   }
 }
@@ -100,25 +97,40 @@ async function fetchBlogPosts(): Promise<PostSummary[]> {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.brunaalvesphoto.com';
 
-  const posts = await fetchBlogPosts();
-  const postUrls = posts.flatMap(post => [
+  const posts = await fetchBlogPosts();  
+  const postUrls = posts.map(post => ({
+    url: `${baseUrl}/en/blog/${post.slug}`,
+    lastModified: post.createdAt ? new Date(post.createdAt) : new Date(),
+    priority: 0.9,
+    alternates: {
+      languages: {
+        pt: `${baseUrl}/pt/blog/${post.slug}`,
+      },
+    },
+  }));
+
+  // List of static pages to include in the sitemap
+  const staticPages = ['about', 'portfolio', 'contact', 'blog'];
+
+  const staticUrls = staticPages.flatMap(page => ([
     {
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: post.createdAt ? new Date(post.createdAt) : new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-      alternates: { languages: { pt: `${baseUrl}/pt/blog/${post.slug}` } },
+      url: `${baseUrl}/en/${page}/`,
+      lastModified: new Date(),
+      priority: page === 'portfolio' ? 0.9 : (page === 'blog' ? 0.9 : (page === 'about' ? 0.8 : 0.7)),
+      alternates: { languages: { pt: `${baseUrl}/pt/${page}/` } },
+      // Add images for portfolio page to enhance SEO
+      images: page === 'portfolio' ? portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`) : undefined,
     },
     {
-      url: `${baseUrl}/pt/blog/${post.slug}`,
-      lastModified: post.createdAt ? new Date(post.createdAt) : new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-      alternates: { languages: { en: `${baseUrl}/blog/${post.slug}` } },
+      url: `${baseUrl}/pt/${page}/`,
+      lastModified: new Date(),
+      priority: page === 'portfolio' ? 0.9 : (page === 'blog' ? 0.9 : (page === 'about' ? 0.8 : 0.7)),
+      alternates: { languages: { en: `${baseUrl}/en/${page}/` } },
     }
-  ]);
+  ]));
 
-  const staticUrls: MetadataRoute.Sitemap = [
+  // Add inicial page separately
+  const homeUrls = [
     {
       url: `${baseUrl}/`,
       lastModified: new Date(),
@@ -130,58 +142,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       priority: 1.0,
       alternates: { languages: { en: `${baseUrl}/` } },
-    },
-    { 
-      url: `${baseUrl}/en/about/`, 
-      lastModified: new Date(), 
-      priority: 0.8,
-      alternates: { languages: { pt: `${baseUrl}/pt/about/` } },
-    },
-    { 
-      url: `${baseUrl}/pt/about/`, 
-      lastModified: new Date(), 
-      priority: 0.8,
-      alternates: { languages: { en: `${baseUrl}/en/about/` } },
-    },
-    {
-      url: `${baseUrl}/en/portfolio/`,
-      lastModified: new Date(),
-      priority: 0.9,
-      alternates: { languages: { pt: `${baseUrl}/pt/portfolio/` } },
-      images: portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`),
-    },
-    {
-      url: `${baseUrl}/pt/portfolio/`,
-      lastModified: new Date(),
-      priority: 0.9,
-      alternates: { languages: { en: `${baseUrl}/en/portfolio/` } },
-      images: portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`),
-    },
-    { 
-      url: `${baseUrl}/en/contact/`, 
-      lastModified: new Date(), 
-      priority: 0.7,
-      alternates: { languages: { pt: `${baseUrl}/pt/contact/` } },
-    },
-    { 
-      url: `${baseUrl}/pt/contact/`, 
-      lastModified: new Date(), 
-      priority: 0.7,
-      alternates: { languages: { en: `${baseUrl}/en/contact/` } },
-    },
-    { 
-      url: `${baseUrl}/en/blog/`, 
-      lastModified: new Date(), 
-      priority: 0.9,
-      alternates: { languages: { pt: `${baseUrl}/pt/blog/` } },
-    },
-    { 
-      url: `${baseUrl}/pt/blog/`, 
-      lastModified: new Date(), 
-      priority: 0.9,
-      alternates: { languages: { en: `${baseUrl}/en/blog/` } },
-    },    
+    }
   ];
 
-  return [...staticUrls, ...postUrls];
+  return [...homeUrls, ...staticUrls, ...postUrls];
 }
