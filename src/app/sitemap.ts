@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { PostSummary } from '@/types';
 
+// Base names for portfolio images used in the sitemap
 const portfolioImageBases = [
   "london-tower-bridge-tourism-photography-3",
   "south-bank-london-houses-of-parliament-and-big-ben-tourism-photography",
@@ -80,12 +81,18 @@ const portfolioImageBases = [
   "london-professional-portrait-studio-photography"
 ];
 
+//Fetches blog posts from the API to include in the sitemap 
 async function fetchBlogPosts(): Promise<PostSummary[]> {
   try {
+    // Fetch posts from the API with 1-hour cache revalidation
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600 }, // Cache for 1 hour
     });
-    if (!response.ok) { return []; }
+    
+    if (!response.ok) { 
+      return []; 
+    }
+    
     const data = await response.json();
     return data.posts || [];
   } catch (error) {
@@ -94,33 +101,71 @@ async function fetchBlogPosts(): Promise<PostSummary[]> {
   }
 }
 
+
+//Generates the sitemap for the website
+//Includes home pages, static pages, and dynamic blog posts in both languages 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.brunaalvesphoto.com';
 
-  const posts = await fetchBlogPosts();  
+  // Fetch blog posts for dynamic sitemap generation
+  const posts = await fetchBlogPosts();
+  
+  // Create sitemap entries for blog posts in both languages with alternates
   const postUrls = posts.flatMap(post => ([
-    { url: `${baseUrl}/en/blog/${post.slug}`, alternates: { languages: { pt: `${baseUrl}/pt/blog/${post.slug}` } } },
-    { url: `${baseUrl}/pt/blog/${post.slug}`, alternates: { languages: { en: `${baseUrl}/en/blog/${post.slug}` } } },
+    { 
+      url: `${baseUrl}/en/blog/${post.slug}`, 
+      alternates: { languages: { pt: `${baseUrl}/pt/blog/${post.slug}` } } 
+    },
+    { 
+      url: `${baseUrl}/pt/blog/${post.slug}`, 
+      alternates: { languages: { en: `${baseUrl}/en/blog/${post.slug}` } } 
+    },
   ]));
 
-  // List of static pages to include in the sitemap
-  const staticPages = ['about', 'portfolio', 'contact', 'blog'];
-
-  const staticUrls = staticPages.flatMap(page => ([
-    { url: `${baseUrl}/en/${page}/`, alternates: { languages: { pt: `${baseUrl}/pt/${page}/` } } },
-    { url: `${baseUrl}/pt/${page}/`, alternates: { languages: { en: `${baseUrl}/en/${page}/` } } },
-  ]));
-
-  // Add inicial page separately
+  // Home page entries with language alternates and highest priority
   const homeUrls = [
-    { url: `${baseUrl}/`, alternates: { languages: { pt: `${baseUrl}/pt/` } }, priority: 1.0 },
-    { url: `${baseUrl}/pt/`, alternates: { languages: { en: `${baseUrl}/` } }, priority: 1.0 },
+    { 
+      url: `${baseUrl}/`, 
+      alternates: { languages: { pt: `${baseUrl}/pt/` } }, 
+      priority: 1.0 
+    },
+    { 
+      url: `${baseUrl}/pt/`, 
+      alternates: { languages: { en: `${baseUrl}/` } }, 
+      priority: 1.0 
+    },
   ];
+  
+  // Static pages that exist in both languages
+  const staticPages = ['about', 'contact', 'blog', 'portfolio'];
 
-  const portfolioEn = staticUrls.find(url => url.url.includes('/en/portfolio'));
-  if (portfolioEn) {
-    (portfolioEn as any).images = portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`);
-  }
+  // Generate sitemap entries for static pages in both languages
+  const staticUrls = staticPages.flatMap(page => {    
+    // English version of the page
+    const enEntry: MetadataRoute.Sitemap[0] = {
+      url: `${baseUrl}/en/${page}/`,
+      lastModified: new Date(),
+      // Set priority based on page importance
+      priority: page === 'portfolio' || page === 'blog' ? 0.9 : (page === 'about' ? 0.8 : 0.7),
+      alternates: { languages: { pt: `${baseUrl}/pt/${page}/` } },
+    };
+    
+    // Add portfolio images to the portfolio page for better SEO
+    if (page === 'portfolio') {
+      enEntry.images = portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`);
+    }
+    
+    // Portuguese version of the page
+    const ptEntry: MetadataRoute.Sitemap[0] = {
+      url: `${baseUrl}/pt/${page}/`,
+      lastModified: new Date(),
+      priority: page === 'portfolio' || page === 'blog' ? 0.9 : (page === 'about' ? 0.8 : 0.7),
+      alternates: { languages: { en: `${baseUrl}/en/${page}/` } },
+    };
 
+    return [enEntry, ptEntry];
+  });
+  
+  // Combine all URL entries for the final sitemap
   return [...homeUrls, ...staticUrls, ...postUrls];
 }
