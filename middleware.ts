@@ -34,9 +34,18 @@ export function middleware(request: NextRequest) {
   const defaultLocale = 'en';
   const { pathname } = request.nextUrl;
 
-  // Se for a página raiz, deixa o page.tsx lidar com o redirecionamento
+  // If it's the root page, let page.tsx handle the redirection
   if (pathname === '/') {
     return NextResponse.next();
+  }
+
+  
+  // If the URL is /en or /en/, permanently redirect to the root.
+  // This establishes the root (/) as the canonical URL for English.
+  if (pathname === '/en' || pathname === '/en/') {
+    const rootUrl = request.nextUrl.clone();
+    rootUrl.pathname = '/';
+    return NextResponse.redirect(rootUrl, 301);
   }
 
   // Routes that should not have locale prefixes
@@ -49,13 +58,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Verifica se o caminho já tem um prefixo de idioma
+  // Check if the path already has a locale prefix
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
   if (pathnameHasLocale) {
-    return NextResponse.next(); // Se já tem, não faz nada
+    return NextResponse.next(); // If it already has, do nothing
   }
 
   // Special handling for pages that should redirect to localized pages, not anchors
@@ -98,7 +107,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Se não tem locale, redireciona com locale
+  // If it doesn't have a locale, redirect with locale
   const browserLocale = request.headers.get('Accept-Language')?.split(',')[0].toLowerCase();
   const localeToRedirect = browserLocale?.startsWith('pt') ? 'pt' : defaultLocale;
   

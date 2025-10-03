@@ -98,52 +98,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.brunaalvesphoto.com';
 
   const posts = await fetchBlogPosts();  
-  const postUrls = posts.map(post => ({
-    url: `${baseUrl}/en/blog/${post.slug}`,
-    lastModified: post.createdAt ? new Date(post.createdAt) : new Date(),
-    priority: 0.9,
-    alternates: {
-      languages: {
-        pt: `${baseUrl}/pt/blog/${post.slug}`,
-      },
-    },
-  }));
+  const postUrls = posts.flatMap(post => ([
+    { url: `${baseUrl}/en/blog/${post.slug}`, alternates: { languages: { pt: `${baseUrl}/pt/blog/${post.slug}` } } },
+    { url: `${baseUrl}/pt/blog/${post.slug}`, alternates: { languages: { en: `${baseUrl}/en/blog/${post.slug}` } } },
+  ]));
 
   // List of static pages to include in the sitemap
   const staticPages = ['about', 'portfolio', 'contact', 'blog'];
 
   const staticUrls = staticPages.flatMap(page => ([
-    {
-      url: `${baseUrl}/en/${page}/`,
-      lastModified: new Date(),
-      priority: page === 'portfolio' ? 0.9 : (page === 'blog' ? 0.9 : (page === 'about' ? 0.8 : 0.7)),
-      alternates: { languages: { pt: `${baseUrl}/pt/${page}/` } },
-      // Add images for portfolio page to enhance SEO
-      images: page === 'portfolio' ? portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`) : undefined,
-    },
-    {
-      url: `${baseUrl}/pt/${page}/`,
-      lastModified: new Date(),
-      priority: page === 'portfolio' ? 0.9 : (page === 'blog' ? 0.9 : (page === 'about' ? 0.8 : 0.7)),
-      alternates: { languages: { en: `${baseUrl}/en/${page}/` } },
-    }
+    { url: `${baseUrl}/en/${page}/`, alternates: { languages: { pt: `${baseUrl}/pt/${page}/` } } },
+    { url: `${baseUrl}/pt/${page}/`, alternates: { languages: { en: `${baseUrl}/en/${page}/` } } },
   ]));
 
   // Add inicial page separately
   const homeUrls = [
-    {
-      url: `${baseUrl}/`,
-      lastModified: new Date(),
-      priority: 1.0,
-      alternates: { languages: { pt: `${baseUrl}/pt/` } },
-    },
-    {
-      url: `${baseUrl}/pt/`,
-      lastModified: new Date(),
-      priority: 1.0,
-      alternates: { languages: { en: `${baseUrl}/` } },
-    }
+    { url: `${baseUrl}/`, alternates: { languages: { pt: `${baseUrl}/pt/` } }, priority: 1.0 },
+    { url: `${baseUrl}/pt/`, alternates: { languages: { en: `${baseUrl}/` } }, priority: 1.0 },
   ];
+
+  const portfolioEn = staticUrls.find(url => url.url.includes('/en/portfolio'));
+  if (portfolioEn) {
+    (portfolioEn as any).images = portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`);
+  }
 
   return [...homeUrls, ...staticUrls, ...postUrls];
 }
