@@ -1,12 +1,15 @@
 import { TranslationProvider } from "@/context/TranslationContext";
 import type { Metadata } from "next";
+import { notFound } from 'next/navigation';
 
-// Esta função diz ao Next.js que você só suporta 'en' e 'pt'
+const locales = ['en', 'pt'];
+
+// This function tells Next.js that you only support 'en' and 'pt'
 export async function generateStaticParams() {
-  return [{ locale: 'en' }, { locale: 'pt' }];
+  return locales.map((locale) => ({ locale }));
 }
 
-// Gera os metadados dinamicamente com base no idioma
+// Generates metadata dynamically based on the language
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const baseUrl = "https://brunaalvesphoto.com";
@@ -49,7 +52,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     };
   }
 
-  // Padrão para 'en'
+  // Default for 'en'
   return {
     title: "Brazilian Photographer in London",
     description: "Want to turn your moments into unforgettable memories? Whether for your trip, your brand, or a special portrait, I'm here to capture your essence in every click.",
@@ -87,8 +90,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-
-// Este é o layout que envolve as páginas de cada idioma
 export default async function LocaleLayout({
   children,
   params,
@@ -97,8 +98,11 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+   if (!locales.includes(locale)) {
+    notFound();
+  }
   return (
-    // Fornece o contexto de tradução para todas as páginas filhas
+    // Provides the translation context for all child pages
     <TranslationProvider initialLocale={locale}>
       {children}
     </TranslationProvider>

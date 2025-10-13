@@ -5,7 +5,11 @@ import Header from "@/client/_components/Header";
 import Hero from "@/client/_components/Hero";
 import Portfolio from "@/client/_components/Portfolio";
 
-export default function Home() {
+export default async function Home(
+  { params }: { params: Promise<{ locale: string }> }
+) {
+  const { locale } = await params;
+  console.log('>>> HOME PAGE ([locale]/page.tsx) RENDERED FOR LOCALE:', locale);
   return (
     <main>
       <Header />

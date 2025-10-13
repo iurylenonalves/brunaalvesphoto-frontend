@@ -1,11 +1,13 @@
 import About from "@/client/_components/About";
 import Header from "@/client/_components/Header";
 import Footer from "@/client/_components/Footer";
-//import { TranslationProvider } from "@/context/TranslationContext";
 
-export default function AboutPage() {
+export default async function AboutPage(
+  { params }: { params: Promise<{ locale: string }> }
+) {
+  const { locale: _locale } = await params;
+
   return (
-    //<TranslationProvider initialLocale="en">
       <main
         style={{
           paddingTop: "100px",
@@ -21,6 +23,5 @@ export default function AboutPage() {
         </div>
         <Footer />
       </main>
-    //</TranslationProvider>
   );
 }

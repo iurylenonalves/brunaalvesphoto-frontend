@@ -1,11 +1,13 @@
 import Contact from "@/client/_components/Contact";
 import Header from "@/client/_components/Header";
 import Footer from "@/client/_components/Footer";
-//import { TranslationProvider } from "@/context/TranslationContext";
 
-export default function ContactPage() {
+export default async function ContactPage(
+  { params }: { params: Promise<{ locale: string }> }
+) {
+  const { locale: _locale } = await params;
+
   return (
-    //<TranslationProvider initialLocale="en">
       <main
         style={{
           paddingTop: "100px",
@@ -21,6 +23,5 @@ export default function ContactPage() {
         </div>
         <Footer />
       </main>
-    //</TranslationProvider>
   );
 }
