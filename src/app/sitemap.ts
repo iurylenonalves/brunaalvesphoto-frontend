@@ -112,59 +112,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
   // Create sitemap entries for blog posts in both languages with alternates
   const postUrls = posts.flatMap(post => ([
-    { 
-      url: `${baseUrl}/en/blog/${post.slug}`, 
-      alternates: { languages: { pt: `${baseUrl}/pt/blog/${post.slug}` } } 
-    },
-    { 
-      url: `${baseUrl}/pt/blog/${post.slug}`, 
-      alternates: { languages: { en: `${baseUrl}/en/blog/${post.slug}` } } 
-    },
+    { url: `${baseUrl}/en/blog/${post.slug}/`, lastModified: new Date(), alternates: { languages: { pt: `${baseUrl}/pt/blog/${post.slug}/` } } },
+    { url: `${baseUrl}/pt/blog/${post.slug}/`, lastModified: new Date(), alternates: { languages: { en: `${baseUrl}/en/blog/${post.slug}/` } } },
   ]));
 
-  // Home page entries with language alternates and highest priority
-  const homeUrls = [
-    { 
-      url: `${baseUrl}/`, 
-      alternates: { languages: { pt: `${baseUrl}/pt/` } }, 
-      priority: 1.0 
-    },
-    { 
-      url: `${baseUrl}/pt/`, 
-      alternates: { languages: { en: `${baseUrl}/` } }, 
-      priority: 1.0 
-    },
-  ];
   
-  // Static pages that exist in both languages
-  const staticPages = ['about', 'contact', 'blog', 'portfolio'];
-
-  // Generate sitemap entries for static pages in both languages
-  const staticUrls = staticPages.flatMap(page => {    
-    // English version of the page
+  
+  // Static pages with language alternates
+  const staticPages = ['about', 'portfolio', 'contact', 'blog'];
+  const staticUrls = staticPages.flatMap(page => {
     const enEntry: MetadataRoute.Sitemap[0] = {
       url: `${baseUrl}/en/${page}/`,
       lastModified: new Date(),
-      // Set priority based on page importance
-      priority: page === 'portfolio' || page === 'blog' ? 0.9 : (page === 'about' ? 0.8 : 0.7),
+      priority: 0.8,
       alternates: { languages: { pt: `${baseUrl}/pt/${page}/` } },
     };
-    
-    // Add portfolio images to the portfolio page for better SEO
     if (page === 'portfolio') {
       enEntry.images = portfolioImageBases.map(base => `${baseUrl}/images/${base}-large.webp`);
     }
-    
-    // Portuguese version of the page
-    const ptEntry: MetadataRoute.Sitemap[0] = {
+    const ptEntry = {
       url: `${baseUrl}/pt/${page}/`,
       lastModified: new Date(),
-      priority: page === 'portfolio' || page === 'blog' ? 0.9 : (page === 'about' ? 0.8 : 0.7),
+      priority: 0.8,
       alternates: { languages: { en: `${baseUrl}/en/${page}/` } },
     };
-
     return [enEntry, ptEntry];
   });
+
+  // Home page entries with language alternates and highest priority
+  const homeUrls = [
+    { url: `${baseUrl}/en/`, lastModified: new Date(), priority: 1.0, alternates: { languages: { pt: `${baseUrl}/pt/` } } },
+    { url: `${baseUrl}/pt/`, lastModified: new Date(), priority: 1.0, alternates: { languages: { en: `${baseUrl}/en/` } } },
+  ];
   
   // Combine all URL entries for the final sitemap
   return [...homeUrls, ...staticUrls, ...postUrls];
