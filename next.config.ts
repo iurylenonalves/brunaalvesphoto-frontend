@@ -9,13 +9,23 @@ const nextConfig = {
         port: '',
         pathname: '/posts/**',
       },
-    ],   
-    //unoptimized: true, // Allows unoptimized images
-    qualities: [75, 100],    
+    ],
+    qualities: [75, 100],
     deviceSizes: [384, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
   },    
-  trailingSlash: true, // Adds a trailing slash to URLs
-  reactStrictMode: true, // Enables React strict mode
+  trailingSlash: true,
+  reactStrictMode: true,
+
+  async redirects() {
+    return [
+      { source: '/about', destination: '/en/about/', permanent: true },
+      { source: '/contact', destination: '/en/contact/', permanent: true },
+      { source: '/portfolio', destination: '/en/portfolio/', permanent: true },
+      { source: '/blog', destination: '/en/blog/', permanent: true },
+      { source: '/sobre', destination: '/pt/about/', permanent: true },
+      { source: '/contato', destination: '/pt/contact/', permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;
