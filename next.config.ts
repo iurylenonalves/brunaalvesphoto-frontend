@@ -10,11 +10,15 @@ const nextConfig = {
         pathname: '/posts/**',
       },
     ],
-    qualities: [75, 100],
+    formats: ['image/avif', 'image/webp'],
+    qualities: [75, 85],
     deviceSizes: [384, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    minimumCacheTTL: 31536000,
   },    
   trailingSlash: true,
   reactStrictMode: true,
+  compress: true,
+  poweredByHeader: false,
 
   async redirects() {
     return [

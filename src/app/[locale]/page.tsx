@@ -1,11 +1,17 @@
 import dynamic from 'next/dynamic';
-import About from "@/client/_components/About";
-import Footer from "@/client/_components/Footer";
 import Header from "@/client/_components/Header";
 import Hero from "@/client/_components/Hero";
 
-const Portfolio = dynamic(() => import('@/client/_components/Portfolio'));
-const Contact = dynamic(() => import('@/client/_components/Contact'));
+const About = dynamic(() => import('@/client/_components/About'), {
+  loading: () => <div className="min-h-screen" />
+});
+const Portfolio = dynamic(() => import('@/client/_components/Portfolio'), {
+  loading: () => <div className="min-h-screen" />
+});
+const Contact = dynamic(() => import('@/client/_components/Contact'), {
+  loading: () => <div className="min-h-screen" />
+});
+const Footer = dynamic(() => import('@/client/_components/Footer'));
 
 export default async function Home(
   { params }: { params: Promise<{ locale: string }> }
