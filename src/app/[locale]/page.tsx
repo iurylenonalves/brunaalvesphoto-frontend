@@ -1,9 +1,11 @@
+import dynamic from 'next/dynamic';
 import About from "@/client/_components/About";
-import Contact from "@/client/_components/Contact";
 import Footer from "@/client/_components/Footer";
 import Header from "@/client/_components/Header";
 import Hero from "@/client/_components/Hero";
-import Portfolio from "@/client/_components/Portfolio";
+
+const Portfolio = dynamic(() => import('@/client/_components/Portfolio'));
+const Contact = dynamic(() => import('@/client/_components/Contact'));
 
 export default async function Home(
   { params }: { params: Promise<{ locale: string }> }

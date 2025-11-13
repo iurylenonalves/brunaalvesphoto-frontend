@@ -16,6 +16,7 @@ const Hero = () => {
           style={{ objectFit: "cover" }}
           quality={100}
           priority={true}
+          sizes="100vw"
         />
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 flex items-center justify-center h-full text-center text-white px-6">
