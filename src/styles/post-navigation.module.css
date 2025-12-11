@@ -3,7 +3,7 @@
   justify-content: space-between;
   gap: 2rem; /* Adds space between the two links */
   width: 100%;
-  //margin-bottom: 4rem; /* Creates space between navigation and "You Might Also Like" */
+  /* margin-bottom: 4rem; Creates space between navigation and "You Might Also Like" */
 }
 
 .navLinkWrapper {
