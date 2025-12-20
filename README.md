@@ -1,217 +1,143 @@
-# PhotoHub
+# Bruna Alves Photography - Frontend
 
-![Imagem do site](public/images/home-brunaphoto.PNG)
+![Site Preview](public/images/home-brunaphoto.PNG)
 
 ## Overview
-This project is a software solution that began as an MVP (Minimum Viable Product) and is evolving toward a SaaS (Software as a Service) model. This README documents the current state of the project, its architecture, setup instructions, and future development plans.
+This is the frontend application for **Bruna Alves Photography**, a professional photography portfolio and blog platform. Originally started as an MVP, it has evolved into a feature-rich application with a custom content management system (CMS) for blogging.
 
 **Live Site:** [brunaalvesphoto.com](https://brunaalvesphoto.com)
 
 ## Table of Contents
-- [Current Status](#current-status)
 - [Features](#features)
 - [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-  - [Configuration](#configuration)
+  - [Environment Variables](#environment-variables)
 - [Architecture](#architecture)
-- [Screen Flow](#screen-flow)
-- [Architecture Diagram](#architecture-diagram)
-- [API Documentation](#api-documentation)
-- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 
-## Current Status
-The project is currently in MVP phase with core functionality implemented. We're preparing for the transition to a full SaaS solution with multi-tenancy, subscription management, and enhanced features.
-
 ## Features
-### MVP Features (Implemented)
-- Responsive landing page optimized for all device types
-- Professional photography portfolio showcase
-- WhatsApp integration for direct contact and quote requests
-- Internationalization with full support for English and Portuguese languages
-- SEO optimization for better visibility
-- Modern and user-friendly interface
 
-### Planned SaaS Features
-- User registration and secure authentication system
-- Client dashboard for package selection and purchase
-- Interactive photo gallery for clients to select pre-edited photos
-- Option to choose additional photos beyond package limits
-- Shopping cart functionality with specific pricing per additional photo
-- Secure payment gateway integration
-- High-resolution photo download capability for final deliverables
-- Photographer administration area with:
-  - Client management system
-  - Appointment scheduling
-  - Pre-edited photo upload interface
-  - Final edited photo delivery system
-- Automated workflows for photo approval and delivery
-- Usage analytics and reporting
-- Multi-tier subscription model
+### Public Facing
+- **Responsive Design**: Fully optimized for mobile, tablet, and desktop using Tailwind CSS 4.
+- **Portfolio Showcase**: High-quality image galleries to display photography work.
+- **Blog System**: A complete blog with categories, pagination, and rich text content.
+- **Internationalization (i18n)**: Full support for English (en) and Portuguese (pt) with seamless switching.
+- **Contact Integration**: Direct WhatsApp integration and email contact forms.
+- **SEO Optimization**: Dynamic metadata, sitemaps, and structured data (JSON-LD).
+- **Performance**: Image optimization using `sharp` and Next.js optimization features.
+
+### Admin & Management
+- **Secure Authentication**: Google OAuth integration for secure admin access.
+- **Admin Dashboard**: Protected area for content management.
+- **Post Management**: Create, edit, and delete blog posts.
+- **Block Editor**: Custom-built block-based editor for writing blog posts (Text, Images, etc.).
+- **Image Upload**: Integration with backend for handling image uploads.
 
 ## Technology Stack
-- **Frontend**: Next.js, React, Tailwind
-- **Backend**: Node.js, Express
-- **Database**: Prisma, PostgreSQL
-- **Authentication**: NextAuth.js
-- **Validation**: Zod
-- **Hosting/Deployment**: Vercel
-- **CI/CD**: GitHub Actions
+
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **UI Components**: Custom components with [Lucide React](https://lucide.dev/) icons.
+- **Animations**: [AOS](https://michalsnik.github.io/aos/) (Animate On Scroll).
+- **Authentication**: [Google OAuth](https://developers.google.com/identity/gsi/web) + JWT.
+- **State Management**: React Context API (Auth, Translations).
+- **Data Fetching**: Axios.
+- **Image Processing**: Sharp, Browser Image Compression.
+- **Analytics**: Google Analytics, Vercel Analytics.
+
+## Project Structure
+
+```
+brunaalvesphoto-frontend/
+├── public/                 # Static assets (images, robots.txt)
+├── scripts/                # Utility scripts (image optimization)
+├── src/
+│   ├── app/                # Next.js App Router
+│   │   ├── [locale]/       # Public localized pages (about, blog, etc.)
+│   │   ├── admin/          # Admin dashboard pages
+│   │   ├── api/            # Internal API routes (if any)
+│   │   ├── login/          # Login page
+│   │   └── layout.tsx      # Root layout
+│   ├── client/
+│   │   └── _components/    # Reusable UI components
+│   ├── context/            # React Context providers (Auth, Translation)
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # Utility libraries (API client, translations)
+│   ├── schemas/            # Zod validation schemas
+│   ├── styles/             # CSS modules and global styles
+│   ├── types/              # TypeScript type definitions
+│   └── utils/              # Helper functions
+├── next.config.ts          # Next.js configuration
+├── tailwind.config.js      # Tailwind configuration
+└── package.json            # Dependencies and scripts
+```
 
 ## Getting Started
 
 ### Prerequisites
-- Next.js version 15.2.0 or higher
-- Tailwind CSS
-- Node.js version 18.x or higher
-- npm version 9.x or higher
-- Zod (for schema validation)
+- **Node.js**: Version 18.x or higher
+- **npm**: Version 9.x or higher
 
 ### Installation
-```bash
-# Clone the repository
-git clone git@github.com:iurylenonalves/brunaalvesphoto-frontend.git
-cd brunaalvesphoto-frontend
 
-# Install dependencies
-npm install
+1. **Clone the repository**
+   ```bash
+   git clone git@github.com:iurylenonalves/brunaalvesphoto-frontend.git
+   cd brunaalvesphoto-frontend
+   ```
 
-# Setup environment
-cp .env.example .env.local
-# Edit .env.local with your configuration
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Run the development server
-npm run dev
-```
+3. **Environment Variables**
+   Create a `.env.local` file in the root directory and add the following variables:
+
+   ```env
+   # API Configuration
+   NEXT_PUBLIC_API_URL=http://localhost:3001 # URL of your backend API
+
+   # Google OAuth
+   NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
+   
+   # Analytics (Optional)
+   NEXT_PUBLIC_GA_MEASUREMENT_ID=your_ga_id
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Architecture
 
-The project follows a modern architecture separating frontend and backend concerns while facilitating communication between them.
+The project follows a **Client-Server** architecture where this repository serves as the Frontend.
 
-### Frontend Architecture
-The frontend is built with Next.js:
-```bash
-photoapp/
-├── original-photos
-├── public/
-│   └── images/
-│       ├── en.svg
-│       ├── pt.svg
-│       ├── sitemap.xml
-│       └── (other images)
-├── scripts/
-│       ├── optimize-images.js
-│       └── optimize-images.ts
-├── src/
-│   ├── app/
-│   │   │── locales/
-│   │   │   ├── en.json
-│   │   │   └── pt.json
-│   │   │── pt/
-│   │   │   ├── layout.tsx
-│   │   │   └── page.tsx
-│   │   │── favivon.ico
-│   │   │── global.css
-│   │   │── layout.tsx
-│   │   └── page.tsx
-│   ├── client/
-│   │   ├── _components/
-│   │   │   ├── About.tsx
-│   │   │   ├── aos-init.tsx
-│   │   │   ├── CategoryFilter.tsx
-│   │   │   ├── Contact.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   ├── Header.tsx
-│   │   │   ├── Hero.tsx
-│   │   │   ├── Loader.tsx
-│   │   │   ├── Modal.tsx
-│   │   │   ├── Pagination.tsx
-│   │   │   ├── Portfolio.tsx
-│   │   │   ├── PrivacyPolicyModal.tsx
-│   │   │   ├── Testimonial.tsx
-│   │   │   └── ToggleLanguageButton.tsx
-│   ├── context/
-│   │   └── TranslationContext.tsx
-│   ├── hooks/
-│   │   └── useContactForm.ts
-│   ├── lib/
-│   │   │── errors/
-│   │   │   └── HttpsError.ts
-│   │   │── translations/
-│   │   │   ├── getTranslations.ts
-│   │   │   └── translations.ts
-│   │   └── utils.ts
-│   ├── schemas/
-│   │   └── ContactSchema.ts
-│   ├── styles/
-│   │   ├── footer.module.css
-│   │   ├── header.module.css
-│   │   ├── hero.module.css
-│   │   ├── modal.module.css
-│   │   ├── privacypolicymodal.module.css
-│   │   └── toggleLanguageButton.module.css
-├── .gitignore
-├── components.json
-├── eslint.config.mjs
-├── LICENSE.md
-├── next.config.ts
-├── package.json
-├── README.md
-├── tailwind.config.js
-└── tsconfig.json
-```
+- **Frontend**: Handles UI, client-side routing, and user interactions. It communicates with the backend via RESTful APIs.
+- **Backend**: (Separate Repository) Handles database operations, authentication logic, and file storage.
 
-### Backend Architecture
-The backend for this project has been moved to a separate repository. You can find it here:
-
-[Backend Repository - API for Bruna Photo](https://github.com/iurylenonalves/api-brunaphoto-vercel)
-
-
-## Roadmap
-### Phase 1: MVP (Completed)
-- [x] Implement core functionality
-- [x] Minimal viable UI/UX
-- [x] Integration with WhatsApp and Social Media
-- [x] Contact Form
-- [x] Consume backend API hosted on Vercel
-- [x] SEO optimization (metadata, OpenGraph, and sitemap.xml)
-- [x] Initial deployment (Vercel)
-- [x] Domain and hosting setup with Hostinger
-
-### Phase 2: SaaS Transition (In Progress)
-- [ ] Basic authentication
-- [ ] Refactor for multi-tenancy
-- [ ] Authentication
-- [ ] Photo Packages
-- [ ] Bookings
-- [ ] User Admin Photos 
-- [ ] Payments
-- [ ] Implement subscription management
-- [ ] Add usage quotas and rate limiting
-- [ ] Enhance security measures
-
-### Phase 3: SaaS Expansion
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
+### Key Architectural Decisions
+- **App Router**: Uses Next.js 13+ App Router for better performance and server components.
+- **Localization**: URL-based localization (`/[locale]/...`) ensures SEO-friendly multi-language support.
+- **Component-Based**: UI is built with small, reusable components located in `src/client/_components`.
+- **Strict Typing**: TypeScript is used throughout to ensure type safety.
 
 ## Contributing
-We welcome contributions to this project. Please follow these steps:
 
-1. Fork the repository: [brunaalvesphoto-frontend](https://github.com/iurylenonalves/brunaalvesphoto-frontend.git)
-2. Clone your fork:
-   ```bash
-   git clone https://github.com/your-username/brunaalvesphoto-frontend.git
-   cd brunaalvesphoto-frontend
-   ```
-3. Create a feature branch (`git checkout -b feature/amazing-feature`)
-4. Commit your changes (`git commit -m 'Add some amazing feature'`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+Distributed under the MIT License. See `LICENSE.md` for more information.
