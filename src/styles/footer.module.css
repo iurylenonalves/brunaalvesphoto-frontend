@@ -39,6 +39,31 @@
   color: #f39c12;
 }
 
+.credit {
+  display: block; /* Garante que fique em linha separada */
+  margin-top: 0.5rem;
+  font-size: 0.7rem; /* Menor que o texto de copyright */
+  color: #888; /* Cinza para ser discreto */
+  text-decoration: none;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+.credit:hover {
+  color: #fff; /* Fica branco ao passar o mouse para leitura clara */
+  opacity: 1;
+}
+
+.credit span {
+  font-weight: bold;
+  color: #aaa; /* O nome um pouco mais claro que o texto "by" */
+}
+
+.credit:hover span {
+  color: #FFD700; /* O nome fica Laranja (Brand) no hover */
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
 
 @media (min-width: 320px) and (max-width: 426px) {
   .footer {
@@ -59,5 +84,10 @@
 
   .link {
     font-size: 0.875rem;
+  }
+
+  .credit {
+    font-size: 0.65rem;
+    margin-top: 0.75rem;
   }
 }

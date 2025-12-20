@@ -56,7 +56,20 @@ const Footer = () => {
             Instagram
           </a>
         </div>
+
+        {/* Copyright */}
         <p className={footerStyles.text}>&copy; {translations.footerRights}</p>
+
+        {/* Tech Partner Credit */}
+        <a 
+          href="https://iurylenon.com" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className={footerStyles.credit}
+          title="Tech Partner & Digital Infrastructure"
+        >
+          Digital Infrastructure by <span>Iury Lenon</span>
+        </a>
       </div>
 
       {isModalOpen && <PrivacyPolicyModal onClose={handleCloseModal} />}
