@@ -130,7 +130,13 @@ brunaalvesphoto-frontend/
 The project follows a **Client-Server** architecture where this repository serves as the Frontend.
 
 - **Frontend**: Handles UI, client-side routing, and user interactions. It communicates with the backend via RESTful APIs.
-- **Backend**: (Separate Repository) Handles database operations, authentication logic, and file storage.
+- **Backend**: Handles database operations, authentication logic, and file storage.
+
+### Backend Integration (Required)
+This frontend is strictly designed to work with its dedicated backend API. For full functionality (Blog posts, Contact emails, Admin login), you must have the API running locally or accessible via a URL.
+
+- **Backend Repository:** [api-brunaphoto-vercel](../api-brunaphoto-vercel) (If in the same workspace)
+- **Setup:** Follow the instructions in the backend's README to start the server (typically on port 3001).
 
 ### Key Architectural Decisions
 - **App Router**: Uses Next.js 13+ App Router for better performance and server components.
