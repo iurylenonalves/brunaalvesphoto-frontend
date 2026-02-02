@@ -135,7 +135,7 @@ The project follows a **Client-Server** architecture where this repository serve
 ### Backend Integration (Required)
 This frontend is strictly designed to work with its dedicated backend API. For full functionality (Blog posts, Contact emails, Admin login), you must have the API running locally or accessible via a URL.
 
-- **Backend Repository:** [api-brunaphoto-vercel](../api-brunaphoto-vercel) (If in the same workspace)
+- **Backend Repository:** [Bruna Alves Photography API](https://github.com/iurylenonalves/api-brunaphoto-vercel)
 - **Setup:** Follow the instructions in the backend's README to start the server (typically on port 3001).
 
 ### Key Architectural Decisions
