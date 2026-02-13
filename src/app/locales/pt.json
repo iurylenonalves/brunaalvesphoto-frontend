@@ -68,6 +68,22 @@
   "tooManyRequests": "Muitas solicitações. Por favor, tente novamente mais tarde.",
   "loading": "Enviando...",
 
+  "paymentTitle": "Realizar Pagamento",
+  "selectPackage": "Selecione o Serviço / Pacote",
+  "deposit": "Sinal / Reserva",
+  "depositDesc": "Para reservar a data",
+  "remainingBalance": "Saldo Restante",
+  "remainingBalanceDesc": "Pagar no dia",
+  "fullValue": "Valor Total",
+  "fullValueDesc": "Pagar tudo agora",
+  "pay": "Pagar",
+  "securedByStripe": "Pagamento seguro via Stripe. Não armazenamos seus dados.",
+
+  "summaryDepositStart": "Você está pagando a taxa de reserva. O saldo restante ",
+  "summaryDepositEnd": " deve ser pago no dia do ensaio.",
+  "summaryBalance": "Você está pagando o saldo restante do seu ensaio.",
+  "summaryFull": "Você está pagando o valor total do seu ensaio.",
+
 
   "footerAbout": "Sobre",
   "footerContact": "Contato",

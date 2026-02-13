@@ -68,6 +68,22 @@
   "tooManyRequests": "Too many requests. Please try again later.",
   "loading": "Sending...",
 
+  "paymentTitle": "Make a Payment",
+  "selectPackage": "Select Service / Package",
+  "deposit": "Deposit",
+  "depositDesc": "To book date",
+  "remainingBalance": "Remaining Balance",
+  "remainingBalanceDesc": "On the day",
+  "fullValue": "Full Value",
+  "fullValueDesc": "Pay all now",
+  "pay": "Pay",
+  "securedByStripe": "Secured by Stripe. We do not store your card details.",
+  
+  "summaryDepositStart": "You are paying the booking fee. The remaining balance ",
+  "summaryDepositEnd": " is due on the day of the session.",
+  "summaryBalance": "You are paying the remaining balance for your session.",
+  "summaryFull": "You are paying the full amount for your session.",
+
 
   "footerAbout": "About",
   "footerContact": "Contact",
