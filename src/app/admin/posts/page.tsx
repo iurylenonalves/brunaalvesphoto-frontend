@@ -160,7 +160,7 @@ function AdminPostsPageContent() {
         <div className="flex justify-between items-center gap-4 mb-4">
 
           {/* Left Side: Search Field (takes available space) */}
-          <div className="relative flex-grow">
+          <div className="relative grow">
             <label htmlFor="search-posts" className="sr-only">Search posts</label>
             <input
               id="search-posts"
@@ -180,7 +180,7 @@ function AdminPostsPageContent() {
           </div>
 
           {/* Right Side: Language Buttons */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <button onClick={() => handleLocaleChange('en')} className={`px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 ${locale === 'en' ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>English</button>
             <button onClick={() => handleLocaleChange('pt')} className={`px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 ${locale === 'pt' ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>Português</button>
           </div>
@@ -213,7 +213,7 @@ function AdminPostsPageContent() {
               </div>
             </div>
             {/* Container for the Buttons (with alignment and spacing) */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               {/* VIEW */}
               <Link
                 href={post.locale === 'pt' ? `/pt/blog/${post.slug}` : `/en/blog/${post.slug}`}

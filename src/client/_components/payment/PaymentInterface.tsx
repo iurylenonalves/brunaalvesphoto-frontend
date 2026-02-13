@@ -35,7 +35,7 @@ export default function PaymentInterface() {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
         const response = await axios.get(`${apiUrl}/api/packages`);
         setPackages(response.data);
       } catch (err) {
@@ -108,7 +108,7 @@ export default function PaymentInterface() {
         }
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
       
       const response = await axios.post(`${apiUrl}/api/checkout/session`, {
         packageId: selectedPackageId,

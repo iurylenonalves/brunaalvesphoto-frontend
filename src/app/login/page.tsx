@@ -44,7 +44,7 @@ export default function LoginPage() {
         sessionStorage.removeItem("redirectAfterLogin");
         router.push(redirect);
       } else {
-        router.push("/admin/posts");
+        router.push("/admin");
       }
     } catch (err) {
       console.error(err);
