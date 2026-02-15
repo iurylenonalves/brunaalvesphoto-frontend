@@ -5,12 +5,25 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useTranslations } from '@/context/TranslationContext';
 
+function formatDate(dateStr: string, locale: string): string {
+  try {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      return new Intl.DateTimeFormat(locale === 'pt' ? 'pt-BR' : 'en-GB', {
+          dateStyle: 'full',
+          timeStyle: dateStr.includes(':') ? 'short' : undefined
+      }).format(date);
+  } catch (e) {
+      return dateStr;
+  }
+}
+
 interface Package {
   id: string;
   name: string;
-  namePt?: string; // New translation field
+  namePt?: string;
   description: string | null;
-  descriptionPt?: string | null; // New translation field
+  descriptionPt?: string | null;
   totalPrice: string;
   depositPrice: string; 
   active: boolean;
@@ -29,6 +42,9 @@ export default function PaymentInterface() {
   // Form State
   const [selectedPackageId, setSelectedPackageId] = useState<string>('');
   const [paymentType, setPaymentType] = useState<'DEPOSIT' | 'FULL' | 'BALANCE'>('DEPOSIT');
+  const [sessionDate, setSessionDate] = useState<string | null>(null);
+  
+  const isBalanceLink = searchParams.get('type')?.toUpperCase() === 'BALANCE';
 
   // Load Packages
   useEffect(() => {
@@ -53,6 +69,8 @@ export default function PaymentInterface() {
     if (!loading && packages.length > 0) {
       const pkgParam = searchParams.get('pkg');
       const typeParam = searchParams.get('type');
+      const dateParam = searchParams.get('date');
+      const timeParam = searchParams.get('time');
 
       if (pkgParam) {
         // Try to find by ID
@@ -71,6 +89,14 @@ export default function PaymentInterface() {
         if (['DEPOSIT', 'FULL', 'BALANCE'].includes(t)) {
           setPaymentType(t as any);
         }
+      }
+
+      if (dateParam) {
+          if (timeParam) {
+              setSessionDate(`${dateParam} ${timeParam}`);
+          } else {
+              setSessionDate(dateParam);
+          }
       }
     }
   }, [loading, packages, searchParams]);
@@ -94,7 +120,8 @@ export default function PaymentInterface() {
       const response = await axios.post(`${apiUrl}/api/checkout/session`, {
         packageId: selectedPackageId,
         paymentType: paymentType,
-        locale: locale
+        locale: locale,
+        sessionDate: sessionDate // Pass session date if available
       });
 
       if (response.data.url) {
@@ -160,7 +187,8 @@ export default function PaymentInterface() {
 
         {/* Payment Type Selection */}
         {selectedPackageId && (
-            <div className="grid grid-cols-3 gap-3">
+            <div className={`grid gap-3 ${sessionDate ? 'grid-cols-2' : isBalanceLink ? 'grid-cols-1' : 'grid-cols-3'}`}>
+                {!isBalanceLink && (
                 <button
                     onClick={() => setPaymentType('DEPOSIT')}
                     className={`p-3 rounded-lg border text-sm font-medium transition-all ${
@@ -172,6 +200,9 @@ export default function PaymentInterface() {
                     {translations.deposit}
                     <span className="block text-xs opacity-75 mt-1">{translations.depositDesc}</span>
                 </button>
+                )}
+                
+                {(isBalanceLink || !sessionDate) && (
                 <button
                     onClick={() => setPaymentType('BALANCE')}
                     className={`p-3 rounded-lg border text-sm font-medium transition-all ${
@@ -183,6 +214,9 @@ export default function PaymentInterface() {
                     {translations.remainingBalance}
                     <span className="block text-xs opacity-75 mt-1">{translations.remainingBalanceDesc}</span>
                 </button>
+                )}
+
+                {!isBalanceLink && (
                 <button
                     onClick={() => setPaymentType('FULL')}
                     className={`p-3 rounded-lg border text-sm font-medium transition-all ${
@@ -194,6 +228,7 @@ export default function PaymentInterface() {
                     {translations.fullValue}
                     <span className="block text-xs opacity-75 mt-1">{translations.fullValueDesc}</span>
                 </button>
+                )}
             </div>
         )}
 
@@ -206,6 +241,14 @@ export default function PaymentInterface() {
                     </span>
                     <span className="font-bold text-gray-800">{getDisplayPrice()}</span>
                 </div>
+
+                {sessionDate && (
+                    <div className="mb-2 text-sm text-blue-600 font-semibold flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        {formatDate(sessionDate, locale)}
+                    </div>
+                )}
+
                 <div className="text-sm text-gray-500">
                     {paymentType === 'DEPOSIT' && (
                         <>
@@ -242,6 +285,12 @@ export default function PaymentInterface() {
           )}
         </button>
         
+        {translations.installmentNotice && (
+            <p className="text-xs text-center text-gray-500 mt-3 font-medium">
+                {translations.installmentNotice}
+            </p>
+        )}
+
         <p className="text-xs text-center text-gray-400 mt-4">
             {translations.securedByStripe}
         </p>
