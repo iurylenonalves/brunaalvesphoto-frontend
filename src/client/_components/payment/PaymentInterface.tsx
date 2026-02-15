@@ -122,6 +122,10 @@ export default function PaymentInterface() {
         paymentType: paymentType,
         locale: locale,
         sessionDate: sessionDate // Pass session date if available
+      }, {
+        headers: {
+          'Idempotency-Key': crypto.randomUUID() // Prevent double-charge on network retries
+        }
       });
 
       if (response.data.url) {
