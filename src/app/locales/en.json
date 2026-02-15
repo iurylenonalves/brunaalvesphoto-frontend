@@ -139,5 +139,27 @@
   "emptyStateMessage": "New photography sessions and stories from London and beyond will be posted here soon. Come back later to see the latest work!",
   "emptyStateCtaText": "Book Your Session",
 
-  "recommendedPostsTitle": "You Might Also Like"
+  "recommendedPostsTitle": "You Might Also Like",
+
+  "paymentTitle": "Secure Payment",
+  "selectPackage": "Select Your Package",
+  "deposit": "Booking Fee",
+  "depositDesc": "Non-refundable",
+  "remainingBalance": "Remaining Balance",
+  "remainingBalanceDesc": "Pay the rest later",
+  "fullValue": "Full Payment",
+  "fullValueDesc": "Pay everything now",
+  "summaryDepositStart": "Remaining balance of ",
+  "summaryDepositEnd": " will be due later.",
+  "summaryBalance": "Completing your payment.",
+  "summaryFull": "Complete payment.",
+  "pay": "Pay",
+  "securedByStripe": "Payments processed securely by Stripe",
+  
+  "checkoutSuccessTitle": "Payment Successful!",
+  "checkoutSuccessMessage": "Thank you for your payment. A confirmation email has been sent to you.",
+  "checkoutSuccessButton": "Back to Home",
+  "checkoutCancelTitle": "Payment Cancelled",
+  "checkoutCancelMessage": "Your payment has been cancelled. No charges were made.",
+  "checkoutCancelButton": "Detailed Packages"
 }

@@ -139,5 +139,27 @@
   "emptyStateMessage": "Em breve você encontrará aqui novas sessões fotográficas e histórias de Londres e de outros lugares. Volte mais tarde para conferir meus trabalhos mais recentes!",
   "emptyStateCtaText": "Agende sua Sessão",
 
-  "recommendedPostsTitle": "Você Também Pode Gostar"
+  "recommendedPostsTitle": "Você Também Pode Gostar",
+
+  "paymentTitle": "Pagamento Seguro",
+  "selectPackage": "Selecione seu Pacote",
+  "deposit": "Taxa de Reserva",
+  "depositDesc": "Não reembolsável",
+  "remainingBalance": "Saldo Restante",
+  "remainingBalanceDesc": "Pague o restante depois",
+  "fullValue": "Valor Total",
+  "fullValueDesc": "Pague tudo agora",
+  "summaryDepositStart": "Saldo restante de ",
+  "summaryDepositEnd": " será cobrado depois.",
+  "summaryBalance": "Completando seu pagamento.",
+  "summaryFull": "Pagamento completo.",
+  "pay": "Pagar",
+  "securedByStripe": "Pagamentos processados com segurança pelo Stripe",
+
+  "checkoutSuccessTitle": "Pagamento Realizado com Sucesso!",
+  "checkoutSuccessMessage": "Obrigado pelo seu pagamento. Um email de confirmação foi enviado para você.",
+  "checkoutSuccessButton": "Voltar para o Início",
+  "checkoutCancelTitle": "Pagamento Cancelado",
+  "checkoutCancelMessage": "Seu pagamento foi cancelado. Nenhuma cobrança foi efetuada.",
+  "checkoutCancelButton": "Ver Pacotes"
 }

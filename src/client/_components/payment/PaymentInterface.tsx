@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useTranslations } from '@/context/TranslationContext';
-import { PAYMENT_CONFIG } from '@/config/paymentConfig';
 
 interface Package {
   id: string;
@@ -89,30 +88,11 @@ export default function PaymentInterface() {
       const selectedPkg = packages.find(p => p.id === selectedPackageId);
       if (!selectedPkg) throw new Error("Package not found");
 
-      // Determine Price ID
-      let priceId = '';
-
-      if (paymentType === 'DEPOSIT') {
-        priceId = PAYMENT_CONFIG.DEPOSIT_PRICE_ID;
-      } else {
-        // Look up in config (Fallback logic since we don't have it in DB yet)
-        const slug = selectedPkg.name.toLowerCase().replace(/\s+/g, '-'); // Simple slug generation
-        const configPkg = PAYMENT_CONFIG.PACKAGES[slug] || PAYMENT_CONFIG.PACKAGES['default']; // You might want a default fallback
-
-        if (configPkg) {
-            priceId = paymentType === 'FULL' ? configPkg.full : configPkg.balance;
-        } else {
-             console.warn("Pricing configuration not found for package:", slug);
-             // fallback for safety (but will fail on Stripe if invalid)
-             priceId = 'price_simulated_' + paymentType.toLowerCase(); 
-        }
-      }
-
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
       
+      // Send only necessary data to backend (price is calculated dynamically on server)
       const response = await axios.post(`${apiUrl}/api/checkout/session`, {
         packageId: selectedPackageId,
-        priceId: priceId, // Backend requires this!
         paymentType: paymentType,
         locale: locale
       });
