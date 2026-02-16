@@ -39,6 +39,7 @@ export default function PaymentInterface() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [bookingRef, setBookingRef] = useState<string | null>(null);
 
   // Form State
   const [selectedPackageId, setSelectedPackageId] = useState<string>('');
@@ -132,7 +133,7 @@ if (!termsAccepted) {
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-            await axios.post(`${apiUrl}/api/checkout/manual`, {
+            const { data } = await axios.post(`${apiUrl}/api/checkout/manual`, {
                 packageId: selectedPackageId,
                 paymentType: paymentType,
                 locale: locale,
@@ -141,6 +142,7 @@ if (!termsAccepted) {
                 customerEmail
             });
             
+            setBookingRef(data.reference || data.bookingId);
             setProcessing(false);
             setShowBankDetails(true);
             window.scrollTo(0,0);
@@ -212,8 +214,8 @@ if (!termsAccepted) {
                  </h1>
                  <p className="text-gray-600">
                      {locale === 'pt' 
-                        ? 'Obrigado por aceitar os termos. Para finalizar sua reserva, por favor transfira a Taxa de Reserva (£50) usando os detalhes abaixo:' 
-                        : 'Thank you for accepting the terms. To finalize your reservation, please transfer the Booking Fee (£50) using the details below:'}
+                        ? `Obrigado por aceitar os termos. Para prosseguir, por favor transfira o valor de ${getDisplayPrice()} usando os detalhes abaixo:` 
+                        : `Thank you for accepting the terms. To proceed, please transfer the amount of ${getDisplayPrice()} using the details below:`}
                  </p>
              </div>
 
@@ -242,8 +244,7 @@ if (!termsAccepted) {
                      <div className="flex justify-between items-center pt-2 border-t mt-2">
                          <span className="text-gray-500">Reference:</span>
                          <span className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded">
-                             {/* Ideally generate a short ID, for now using surname placeholder or generic */}
-                             PHOTO-{new Date().getDate()}{new Date().getMonth()+1}
+                             {bookingRef || 'PENDING'}
                          </span>
                      </div>
                  </div>

@@ -49,6 +49,26 @@ export interface PostSummary {
   createdAt?: string;
 }
 
+export interface Booking {
+  id: string;
+  customerName?: string;
+  customerEmail: string;
+  amountPaid: number;
+  currency: string;
+  paymentType: string;
+  status: 'pending' | 'paid' | 'failed' | 'refunded';
+  stripeSessionId?: string;
+  sessionDate?: string;
+  termsAccepted: boolean;
+  termsAcceptedAt?: string;
+  clientIp?: string;
+  createdAt: string;
+  locale: string;
+  package?: {
+    name: string;
+  };
+}
+
 // ========================================================================
 // API & PAGE PAYLOADS (Estruturas de Dados para API e Páginas)
 

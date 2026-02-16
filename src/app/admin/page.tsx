@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/client/_components/AuthContext";
-import { FileText, CreditCard, Image as ImageIcon, ExternalLink, LogOut } from 'lucide-react';
+import { FileText, CreditCard, Image as ImageIcon, ExternalLink, LogOut, CalendarCheck } from 'lucide-react';
 import Link from "next/link";
 
 export default function AdminDashboard() {
@@ -43,6 +43,13 @@ export default function AdminDashboard() {
       icon: <CreditCard className="w-8 h-8 text-green-600" />,
       href: "/admin/packages",
       color: "bg-green-50 hover:bg-green-100 border-green-200"
+    },
+    {
+      title: "Bookings",
+      description: "View and manage client bookings and confirm manual payments.",
+      icon: <CalendarCheck className="w-8 h-8 text-purple-600" />,
+      href: "/admin/bookings",
+      color: "bg-purple-50 hover:bg-purple-100 border-purple-200"
     },
     {
       title: "Portfolio",
