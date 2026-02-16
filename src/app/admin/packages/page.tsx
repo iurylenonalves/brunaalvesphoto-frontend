@@ -43,6 +43,8 @@ export default function PackagesAdminPage() {
   const [bookingTime, setBookingTime] = useState("");
   const [selectedBookingPackage, setSelectedBookingPackage] = useState<Package | null>(null);
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
+  // Add state for booking method
+  const [bookingMethod, setBookingMethod] = useState<'card' | 'transfer'>('card');
 
   useEffect(() => {
     if (!loading && !token) {
@@ -73,10 +75,11 @@ export default function PackagesAdminPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleOpenBooking = (pkg: Package) => {
+  const handleOpenBooking = (pkg: Package, method: 'card' | 'transfer' = 'card') => {
     setSelectedBookingPackage(pkg);
     setBookingDate(new Date().toISOString().split('T')[0]);
     setBookingTime("10:00");
+    setBookingMethod(method);
     setGeneratedLink(null);
     setIsBookingModalOpen(true);
   };
@@ -88,7 +91,11 @@ export default function PackagesAdminPage() {
     const dateParam = bookingDate;
     const timeParam = bookingTime;
     
-    const link = `${baseUrl}/${locale}/payment?pkg=${selectedBookingPackage.id}&date=${dateParam}&time=${timeParam}`;
+    let link = `${baseUrl}/${locale}/payment?pkg=${selectedBookingPackage.id}&date=${dateParam}&time=${timeParam}`;
+    if (bookingMethod === 'transfer') {
+        link += '&method=transfer';
+    }
+    
     navigator.clipboard.writeText(link);
     showToast(`Link (${locale.toUpperCase()}) copied!`, "success");
     setGeneratedLink(link);
@@ -271,48 +278,124 @@ export default function PackagesAdminPage() {
               </div>
 
               <div className="bg-gray-50 px-5 py-3 border-t">
-                {/* Standard Links */}
-                <div className="flex gap-2 mb-2">
-                    <button 
-                        onClick={() => copyPaymentLink(pkg.id, 'en')}
-                        className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-blue-700 bg-white py-2 rounded border border-blue-200 hover:bg-blue-50 shadow-sm"
-                        title="Copy All Options Link (English)"
+                
+                {/* CARD PAYMENT Column */}
+                <div className="mb-4">
+                     <div className="flex items-center gap-1 mb-2 font-bold text-gray-700 text-xs uppercase tracking-wide border-b border-gray-200 pb-1">
+                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Card & Stripe
+                    </div>
+                    {/* Standard Links */}
+                    <div className="flex gap-2 mb-2">
+                        <button 
+                            onClick={() => copyPaymentLink(pkg.id, 'en')}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-gray-700 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy All Options Link (English)"
+                        >
+                            🇬🇧 All Options
+                        </button>
+                        <button 
+                            onClick={() => copyPaymentLink(pkg.id, 'pt')}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-gray-700 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy All Options Link (Portuguese)"
+                        >
+                            🇧🇷 All Options
+                        </button>
+                    </div>
+
+                    {/* Balance Links */}
+                    <div className="flex gap-2 mb-2">
+                        <button 
+                            onClick={() => copyBalanceLink(pkg.id, 'en')}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Balance Only Link (English)"
+                        >
+                            🇬🇧 BalanceOnly
+                        </button>
+                        <button 
+                            onClick={() => copyBalanceLink(pkg.id, 'pt')}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Balance Only Link (Portuguese)"
+                        >
+                            🇧🇷 BalanceOnly
+                        </button>
+                    </div>
+                     <button
+                        onClick={() => handleOpenBooking(pkg)}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 font-medium rounded border border-blue-200 hover:bg-blue-100 transition-colors text-xs"
+                        title="Generate Timed Link"
                     >
-                        🇬🇧 All Options
-                    </button>
-                    <button 
-                        onClick={() => copyPaymentLink(pkg.id, 'pt')}
-                        className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-green-700 bg-white py-2 rounded border border-green-200 hover:bg-green-50 shadow-sm"
-                        title="Copy All Options Link (Portuguese)"
-                    >
-                        🇧🇷 All Options
+                        <LinkIcon size={14} />
+                        Create Timed Payment Link (Card)
                     </button>
                 </div>
 
-                {/* Balance Links */}
-                <div className="flex gap-2 mb-2">
-                    <button 
-                        onClick={() => copyBalanceLink(pkg.id, 'en')}
-                        className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-orange-700 bg-orange-50 py-2 rounded border border-orange-200 hover:bg-orange-100 shadow-sm"
-                        title="Copy Balance Only Link (English)"
+                {/* BANK TRANSFER Column */}
+                 <div className="mb-2">
+                     <div className="flex items-center gap-1 mb-2 font-bold text-gray-700 text-xs uppercase tracking-wide border-b border-gray-200 pb-1">
+                        <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                        Bank Transfer
+                    </div>
+                    {/* Standard Links */}
+                    <div className="flex gap-2 mb-2">
+                        <button 
+                            onClick={() => {
+                                const link = `${window.location.origin}/en/payment?pkg=${pkg.id}&method=transfer`;
+                                navigator.clipboard.writeText(link);
+                                showToast("Transfer Link (EN) copied!", "success");
+                            }}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-gray-700 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Transfer Link (English)"
+                        >
+                            🇬🇧 All Options
+                        </button>
+                        <button 
+                            onClick={() => {
+                                const link = `${window.location.origin}/pt/payment?pkg=${pkg.id}&method=transfer`;
+                                navigator.clipboard.writeText(link);
+                                showToast("Transfer Link (PT) copied!", "success");
+                            }}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-gray-700 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Transfer Link (Portuguese)"
+                        >
+                            🇧🇷 All Options
+                        </button>
+                    </div>
+
+                    {/* Balance Links */}
+                    <div className="flex gap-2 mb-2">
+                        <button 
+                            onClick={() => {
+                                const link = `${window.location.origin}/en/payment?pkg=${pkg.id}&type=balance&method=transfer`;
+                                navigator.clipboard.writeText(link);
+                                showToast("Transfer Balance (EN) copied!", "success");
+                            }}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Transfer Balance (English)"
+                        >
+                            🇬🇧 BalanceOnly
+                        </button>
+                        <button 
+                             onClick={() => {
+                                const link = `${window.location.origin}/pt/payment?pkg=${pkg.id}&type=balance&method=transfer`;
+                                navigator.clipboard.writeText(link);
+                                showToast("Transfer Balance (PT) copied!", "success");
+                            }}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Transfer Balance (Portuguese)"
+                        >
+                            🇧🇷 BalanceOnly
+                        </button>
+                    </div>
+                     <button
+                        onClick={() => handleOpenBooking(pkg, 'transfer')}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-orange-50 text-orange-700 font-medium rounded border border-orange-200 hover:bg-orange-100 transition-colors text-xs"
+                        title="Generate Timed Link (Transfer)"
                     >
-                        🇬🇧 Balance
-                    </button>
-                    <button 
-                        onClick={() => copyBalanceLink(pkg.id, 'pt')}
-                        className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-orange-700 bg-orange-50 py-2 rounded border border-orange-200 hover:bg-orange-100 shadow-sm"
-                        title="Copy Balance Only Link (Portuguese)"
-                    >
-                        🇧🇷 Balance
+                        <LinkIcon size={14} />
+                        Create Timed Payment Link (Transfer)
                     </button>
                 </div>
-                
-                <button
-                    onClick={() => handleOpenBooking(pkg)}
-                    className="w-full text-center text-xs text-purple-600 bg-purple-50 hover:bg-purple-100 py-2 rounded border border-purple-200 mb-2 font-medium flex items-center justify-center gap-1 transition-colors"
-                >
-                   <LinkIcon size={14} /> Create Timed Payment Link
-                </button>
                 
                 <div className="flex justify-end gap-2 border-t pt-2 border-gray-200">
                     <button 
@@ -491,26 +574,40 @@ export default function PackagesAdminPage() {
       {/* Booking Link Generator Modal */}
       {isBookingModalOpen && selectedBookingPackage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl p-6 scale-100 animate-in zoom-in-95 duration-200">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold flex items-center gap-2">
-                        <LinkIcon className="text-purple-600"/> 
-                        Generate Booking Link
-                    </h3>
-                    <button onClick={() => setIsBookingModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full text-gray-500">
-                        <X size={20}/>
-                    </button>
+            <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl p-6 scale-100 animate-in zoom-in-95 duration-200 relative">
+                <button 
+                    onClick={() => setIsBookingModalOpen(false)} 
+                    className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-colors"
+                >
+                    <X size={20}/>
+                </button>
+
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b">
+                     <div className={`p-3 rounded-full ${bookingMethod === 'transfer' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
+                        {bookingMethod === 'transfer' ? <CheckCircle size={24} /> : <LinkIcon size={24} />}
+                     </div>
+                     <div>
+                        <h3 className="text-xl font-bold text-gray-900">Generate {bookingMethod === 'transfer' ? 'Transfer' : 'Payment'} Link</h3>
+                        <p className="text-sm text-gray-500">Create a time-locked booking link for your client</p>
+                     </div>
                 </div>
 
-                <div className="space-y-4 mb-6">
-                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
-                        <p className="text-sm text-purple-800 font-medium">Selected Package:</p>
+                <div className="space-y-5">
+                    <div className={`p-4 rounded-lg border ${bookingMethod === 'transfer' ? 'bg-orange-50 border-orange-100' : 'bg-blue-50 border-blue-100'}`}>
+                        <div className="flex justify-between items-start mb-1">
+                            <span className={`text-xs font-bold uppercase tracking-wide ${bookingMethod === 'transfer' ? 'text-orange-600' : 'text-blue-600'}`}>
+                                package
+                            </span>
+                            <span className={`text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded ${bookingMethod === 'transfer' ? 'bg-white text-orange-600' : 'bg-white text-blue-600'}`}>
+                                {bookingMethod === 'transfer' ? 'Bank Transfer' : 'Card Payment'}
+                            </span>
+                        </div>
                         <p className="text-lg font-bold text-gray-900">{selectedBookingPackage.name}</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Session Date</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Session Date</label>
                             <input 
                                 type="date" 
                                 value={bookingDate}
@@ -518,11 +615,11 @@ export default function PackagesAdminPage() {
                                     setBookingDate(e.target.value);
                                     setGeneratedLink(null);
                                 }}
-                                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Session Time</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Session Time</label>
                             <input 
                                 type="time" 
                                 value={bookingTime}
@@ -530,32 +627,50 @@ export default function PackagesAdminPage() {
                                     setBookingTime(e.target.value);
                                     setGeneratedLink(null);
                                 }}
-                                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                             />
                         </div>
                     </div>
 
                     {generatedLink && (
-                        <div className="mt-4 p-3 bg-gray-50 rounded border border-gray-200 break-all text-xs text-gray-600 font-mono">
-                            {generatedLink}
+                        <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                             <p className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">Link Generated:</p>
+                             <div className="flex items-center gap-2 bg-white p-2 rounded border border-gray-200">
+                                <code className="flex-1 text-xs text-gray-600 font-mono break-all line-clamp-2">
+                                    {generatedLink}
+                                </code>
+                                <CheckCircle size={16} className="text-green-500 shrink-0" />
+                             </div>
                         </div>
                     )}
                 </div>
 
-                <div className="flex gap-3 pt-4 border-t">
+                <div className="grid grid-cols-2 gap-3 pt-6 mt-2">
                     <button 
                         onClick={() => generateLink('en')}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium transition-colors"
-                        disabled={!bookingDate || !bookingTime}
+                        className={`group relative flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-white shadow-sm transition-all active:scale-[0.98] ${
+                            !bookingDate 
+                            ? 'bg-gray-300 cursor-not-allowed' 
+                            : bookingMethod === 'transfer' 
+                                ? 'bg-orange-600 hover:bg-orange-700 hover:shadow-orange-200' 
+                                : 'bg-blue-600 hover:bg-blue-700 hover:shadow-blue-200'
+                        }`}
+                        disabled={!bookingDate}
                     >
-                        Copy English Link 🇬🇧
+                        <span>Copy English 🇬🇧</span>
                     </button>
                     <button 
                         onClick={() => generateLink('pt')}
-                        className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg font-medium transition-colors"
-                        disabled={!bookingDate || !bookingTime}
+                         className={`group relative flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-white shadow-sm transition-all active:scale-[0.98] ${
+                            !bookingDate 
+                            ? 'bg-gray-300 cursor-not-allowed' 
+                            : bookingMethod === 'transfer' 
+                                ? 'bg-green-600 hover:bg-green-700 hover:shadow-green-200' 
+                                : 'bg-blue-600 hover:bg-blue-700 hover:shadow-blue-200'
+                        }`}
+                        disabled={!bookingDate}
                     >
-                        Copy Portuguese Link 🇧🇷
+                        <span>Copy Portuguese 🇧🇷</span>
                     </button>
                 </div>
             </div>
