@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link'; // Import Link
 import axios from 'axios';
 import { useTranslations } from '@/context/TranslationContext';
 
@@ -43,6 +44,7 @@ export default function PaymentInterface() {
   const [selectedPackageId, setSelectedPackageId] = useState<string>('');
   const [paymentType, setPaymentType] = useState<'DEPOSIT' | 'FULL' | 'BALANCE'>('DEPOSIT');
   const [sessionDate, setSessionDate] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false); // Add terms state
   
   const isBalanceLink = searchParams.get('type')?.toUpperCase() === 'BALANCE';
 
@@ -106,7 +108,12 @@ export default function PaymentInterface() {
         setError("Please select a package.");
         return;
     }
+if (!termsAccepted) {
+        setError(translations.termsError || "You must agree to the terms to proceed.");
+        return;
+    }
 
+    
     setProcessing(true);
     setError(null);
 
@@ -121,7 +128,8 @@ export default function PaymentInterface() {
         packageId: selectedPackageId,
         paymentType: paymentType,
         locale: locale,
-        sessionDate: sessionDate // Pass session date if available
+        sessionDate: sessionDate, // Pass session date if available
+        termsAccepted: true // Explicitly send acceptance
       }, {
         headers: {
           'Idempotency-Key': crypto.randomUUID() // Prevent double-charge on network retries
@@ -267,11 +275,24 @@ export default function PaymentInterface() {
             </div>
         )}
 
+        <div className="mb-6 flex items-start gap-2">
+            <input 
+                type="checkbox" 
+                id="terms" 
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+            />
+            <label htmlFor="terms" className="text-sm text-gray-600">
+                {translations.termsLabel} <Link href={`/${locale}/terms`} target="_blank" className="underline text-gray-900 hover:text-black">Terms & Conditions</Link>.
+            </label>
+        </div>
+
         <button
           onClick={handleCheckout}
-          disabled={!selectedPackageId || processing}
+          disabled={!selectedPackageId || processing || !termsAccepted}
           className={`w-full py-4 text-white font-bold rounded-lg transition-all ${
-            !selectedPackageId || processing
+            !selectedPackageId || processing || !termsAccepted
               ? 'bg-gray-400 cursor-not-allowed'
               : 'bg-gray-900 hover:bg-black hover:shadow-lg'
           }`}

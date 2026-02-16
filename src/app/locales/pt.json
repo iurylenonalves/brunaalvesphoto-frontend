@@ -27,6 +27,46 @@
   "categoryBusiness": "Corporativo",
   "categoryStudio": "Estúdio",
 
+  "termsLabel": "Li e concordo com os Termos e Condições e Política de Cancelamento.",
+  "termsError": "Você deve concordar com os termos para prosseguir.",
+
+  "termsTitle": "Termos e Condições",
+  "termsSubtitle": "Política de Cancelamento",
+  "termsBookingFeeTitle": "Taxa de Reserva (Não Reembolsável)",
+  "termsBookingFeeText": "Uma taxa de reserva de £50 é necessária para garantir sua data e horário. Esta taxa é <strong>NÃO REEMBOLSÁVEL</strong> em caso de cancelamento pelo cliente.",
+  "termsBookingFeeReason": "Motivo",
+  "termsBookingFeeReasonText": "Esta taxa cobre custos administrativos iniciais, planejamento e compensa o bloqueio da data, impedindo outros agendamentos.",
+  "termsCancellationTitle": "Cancelamento e Reembolsos",
+  "termsCancelMore30": "Mais de 30 dias antes da sessão",
+  "termsCancelMore30Text": "Reembolso total do valor pago, excluindo a taxa de reserva de £50.",
+  "termsCancel15to30": "15 a 30 dias antes da sessão",
+  "termsCancel15to30Text": "Reembolso de 50% do valor pago, excluindo a taxa de reserva de £50.",
+  "termsCancelLess15": "Menos de 15 dias ou Não Comparecimento",
+  "termsCancelLess15Text": "Não reembolsável (100% retido). Contudo, se conseguirmos reagendar sua data e horário específicos com outro cliente, um reembolso poderá ser emitido a nosso critério, descontando a taxa de reserva e custos administrativos.",
+  "termsRescheduleTitle": "Reagendamento",
+  "termsRescheduleText": "Um pedido de reagendamento é permitido sem penalidade se feito com pelo menos <strong>7 dias de antecedência</strong>, sujeito à disponibilidade. Pedidos feitos em menos de 7 dias podem incorrer em taxa administrativa.",
+  
+  "termsPaymentTitle": "Termos de Pagamento",
+  "termsPaymentText": "O saldo restante deve ser pago no dia da sessão. Links de pagamento seguros serão fornecidos para sua conveniência.",
+  "termsPaymentImportant": "Importante: Nenhuma imagem (incluindo prévias ou provas) será editada, processada ou entregue até que o pagamento total tenha sido recebido.",
+
+  "termsArtisticTitle": "Licença Artística e Armazenamento",
+  "termsArtisticText": "O Cliente reconhece o estilo artístico da Fotógrafa. A edição fica a critério da Fotógrafa. Arquivos não editados (RAW) não são fornecidos. A entrega da galeria final é estimada em 15-20 dias úteis.",
+  "termsArtisticNote": "Nota: Pacotes maiores ou solicitações adicionais de imagens podem exigir tempo de processamento estendido.",
+  "termsStorageText": "Armazenamento: As galerias dos clientes permanecem ativas por 6 meses para compras adicionais. Após este período, os arquivos são excluídos.",
+
+  "termsCoolingOffTitle": "Renúncia ao Período de Arrependimento",
+  "termsCoolingOffText": "Ao reservar uma data e horário específicos para serviços de fotografia, você reconhece que está solicitando o início do serviço nessa data e concorda com os termos de cancelamento acima, o que pode limitar seu direito de cancelamento sob os Regulamentos de Contratos do Consumidor (Consumer Contracts Regulations).",
+  
+  "termsLawTitle": "Lei Aplicável e Jurisdição",
+  "termsLawText": "Estes Termos e Condições serão regidos e interpretados de acordo com as leis da Inglaterra e País de Gales. Quaisquer disputas decorrentes destes termos estarão sujeitas à jurisdição exclusiva dos tribunais da Inglaterra e País de Gales.",
+
+  "termsAgreementTitle": "Acordo Integral",
+  "termsAgreementText": "Estes Termos e Condições, juntamente com qualquer confirmação de reserva e fatura fornecida, constituem o acordo integral entre o Cliente e Bruna Alves Photography, substituindo quaisquer discussões, acordos ou entendimentos anteriores, sejam escritos ou orais.",
+  
+  "termsContactTitle": "Dúvidas?",
+  "termsContactText": "Todas as solicitações de cancelamento ou reagendamento devem ser feitas por escrito para:",
+
   "modalArialLabelClose": "Fechar",
   "modalArialLabelPrevious": "Imagem Anterior",
   "modalArialLabelNext": "Próxima Imagem",

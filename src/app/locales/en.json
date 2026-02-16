@@ -27,6 +27,46 @@
   "categoryBusiness": "Business",
   "categoryStudio": "Studio",
 
+  "termsLabel": "I have read and agree to the Terms and Conditions and Cancellation Policy.",
+  "termsError": "You must agree to the terms to proceed.",
+
+  "termsTitle": "Terms & Conditions",
+  "termsSubtitle": "Cancellation Policy",
+  "termsBookingFeeTitle": "Booking Fee (Non-Refundable)",
+  "termsBookingFeeText": "A booking fee of £50 is required to secure your date and time. This fee is <strong>NON-REFUNDABLE</strong> in the event of cancellation by the client.",
+  "termsBookingFeeReason": "Reason",
+  "termsBookingFeeReasonText": "This fee covers initial administrative costs, planning, and compensates for holding the date which prevents other bookings.",
+  "termsCancellationTitle": "Cancellation & Refunds",
+  "termsCancelMore30": "More than 30 days before the session",
+  "termsCancelMore30Text": "Full refund of amount paid, excluding the £50 booking fee.",
+  "termsCancel15to30": "15 to 30 days before the session",
+  "termsCancel15to30Text": "50% refund of amount paid, excluding the £50 booking fee.",
+  "termsCancelLess15": "Less than 15 days or No-Show",
+  "termsCancelLess15Text": "Non-refundable (100% of payment retained). However, if we are successful in re-booking your specific date and time with another client, a refund may be issued at our discretion, deducting the booking fee and administrative costs.",
+  "termsRescheduleTitle": "Rescheduling",
+  "termsRescheduleText": "One rescheduling request is permitted without penalty if made at least <strong>7 days in advance</strong>, subject to availability. Requests made within 7 days may incur an administrative fee.",
+  
+  "termsPaymentTitle": "Payment Terms",
+  "termsPaymentText": "The remaining balance is due on the day of the session. Secure payment links will be provided for your convenience.",
+  "termsPaymentImportant": "Important: No images (including previews or proofs) will be edited, processed, or delivered until the full payment has been received.",
+  
+  "termsArtisticTitle": "Artistic Licence & Storage",
+  "termsArtisticText": "The Client acknowledges the Photographer's artistic style. Editing is at the Photographer's discretion. Unedited (RAW) files are not provided. Final gallery delivery is estimated within 15-20 working days.",
+  "termsArtisticNote": "Note: Larger packages or additional image requests may require extended processing time.",
+  "termsStorageText": "Storage: Client galleries remain active for 6 months for additional purchases. After this period, archives are purged.",
+  
+  "termsCoolingOffTitle": "Cooling-off Period Waiver",
+  "termsCoolingOffText": "By booking a specific date and time for photography services, you acknowledge that you are requesting the service to begin on that date and agree to the cancellation terms above, which may limit your right to cancel under the Consumer Contracts Regulations.",
+  
+  "termsLawTitle": "Governing Law and Jurisdiction",
+  "termsLawText": "These Terms & Conditions shall be governed by and construed in accordance with the laws of England and Wales. Any disputes arising in connection with these terms shall be subject to the exclusive jurisdiction of the courts of England and Wales.",
+
+  "termsAgreementTitle": "Entire Agreement",
+  "termsAgreementText": "These Terms & Conditions, together with any booking confirmation and invoice provided, constitute the entire agreement between the Client and Bruna Alves Photography, superseding any prior discussions, agreements, or understandings, whether written or oral.",
+  
+  "termsContactTitle": "Questions?",
+  "termsContactText": "All cancellation or rescheduling requests must be made in writing to:",
+
   "modalArialLabelClose": "Close",
   "modalArialLabelPrevious": "Previous Image",
   "modalArialLabelNext": "Next Image",
