@@ -3,6 +3,7 @@
 import { useAuth } from '@/client/_components/AuthContext';
 import { Booking } from '@/types';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useEffect, useState, useMemo } from 'react';
 
 // Copied from lib/api.ts logic to avoid circular deps or complicated imports if lib/api.ts is messy
@@ -19,6 +20,10 @@ export default function BookingsPage() {
     // Filters
     const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'paid'>('all');
     const [searchTerm, setSearchTerm] = useState('');
+
+    // Modal State
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [bookingToConfirm, setBookingToConfirm] = useState<Booking | null>(null);
 
     useEffect(() => {
         if (!loading && !token) {
@@ -50,10 +55,18 @@ export default function BookingsPage() {
         }
     }, [token]);
 
-    const handleConfirm = async (id: string, name: string | null, amount: any) => {
-        if (!confirm(`Confirm payment of £${amount} for ${name || 'Client'}? \n\nAn email will be sent immediately.`)) return;
+    const initiateConfirm = (booking: Booking) => {
+        setBookingToConfirm(booking);
+        setShowConfirmModal(true);
+    };
+
+    const handleConfirmPayment = async () => {
+        if (!bookingToConfirm) return;
+        const { id } = bookingToConfirm;
         
+        setShowConfirmModal(false);
         setProcessingId(id);
+        
         try {
             const res = await fetch(`${API_URL}/api/bookings/${id}/confirm`, {
                 method: 'POST',
@@ -67,11 +80,11 @@ export default function BookingsPage() {
 
             // Refresh list
             await loadBookings();
-            alert('Payment confirmed successfully!');
         } catch (err: any) {
-            alert(err.message || 'Error confirming payment');
+            setError(err.message || 'Error confirming payment');
         } finally {
             setProcessingId(null);
+            setBookingToConfirm(null);
         }
     };
 
@@ -95,6 +108,22 @@ export default function BookingsPage() {
         });
     }, [bookings, statusFilter, searchTerm]);
 
+    const getDisplayAmount = (booking: Booking) => {
+        const paid = Number(booking.amountPaid || 0);
+        if (paid > 0) return paid;
+        
+        // Use package price if pending/manual
+        if (booking.package) {
+            const total = Number(booking.package.totalPrice || 0);
+            const deposit = Number(booking.package.depositPrice || 0);
+            const type = (booking.paymentType || '').toUpperCase();
+            if (type === 'DEPOSIT') return deposit;
+            if (type === 'FULL') return total;
+            if (type === 'BALANCE') return total - deposit;
+        }
+        return 0;
+    };
+
     const formatMoney = (amount: any, currency: string) => 
         new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency }).format(amount);
 
@@ -113,7 +142,7 @@ export default function BookingsPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Bookings</h1>
-                    <p className="text-gray-500 text-sm mt-1">Manage payments and sessions</p>
+                    <Link href="/admin" className="text-sm text-gray-500 hover:underline">← Back to Dashboard</Link>
                 </div>
                 <button 
                     onClick={loadBookings}
@@ -200,7 +229,6 @@ export default function BookingsPage() {
                                 <svg className="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 {formatDate(booking.createdAt)}
                             </div>
-
                             <div className="bg-gray-50 -mx-4 px-4 py-3 mt-3 border-t border-gray-100 grid grid-cols-2 gap-4">
                                 <div>
                                     <p className="text-xs text-gray-500 uppercase">Package</p>
@@ -208,14 +236,14 @@ export default function BookingsPage() {
                                 </div>
                                 <div className="text-right">
                                     <p className="text-xs text-gray-500 uppercase">Amount</p>
-                                    <p className="font-medium text-gray-900 text-sm">{formatMoney(booking.amountPaid, booking.currency)}</p>
+                                    <p className="font-medium text-gray-900 text-sm">{formatMoney(getDisplayAmount(booking), booking.currency)}</p>
                                 </div>
                             </div>
 
                              {booking.status === 'pending' && (
                                 <div className="mt-4 pt-3 border-t border-gray-100">
                                     <button
-                                        onClick={() => handleConfirm(booking.id, booking.customerName || null, booking.amountPaid)}
+                                        onClick={() => initiateConfirm(booking)}
                                         disabled={!!processingId}
                                         className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium text-sm rounded-lg transition-colors flex items-center justify-center disabled:opacity-75 disabled:cursor-not-allowed shadow-sm"
                                     >
@@ -268,7 +296,7 @@ export default function BookingsPage() {
                                     <span className="block text-xs text-gray-400 mt-0.5">{booking.paymentType}</span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {formatMoney(booking.amountPaid, booking.currency)}
+                                    {formatMoney(getDisplayAmount(booking), booking.currency)}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">
                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -285,7 +313,7 @@ export default function BookingsPage() {
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     {booking.status === 'pending' && (
                                         <button
-                                            onClick={() => handleConfirm(booking.id, booking.customerName || null, booking.amountPaid)}
+                                            onClick={() => initiateConfirm(booking)}
                                             disabled={!!processingId}
                                             className="text-xs bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md transition-all shadow-sm disabled:opacity-50"
                                         >
@@ -298,6 +326,38 @@ export default function BookingsPage() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Confirmation Modal */}
+             {showConfirmModal && bookingToConfirm && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">Confirm Payment</h3>
+                        <p className="text-gray-600 mb-6">
+                            Are you sure you want to confirm payment of 
+                            <span className="font-semibold text-gray-900 mx-1">
+                                {formatMoney(getDisplayAmount(bookingToConfirm), bookingToConfirm.currency)}
+                            </span>
+                            for {bookingToConfirm.customerName || 'Client'}?
+                            <br/><br/>
+                            <span className="text-sm text-gray-500">This will mark the booking as paid and send a confirmation email immediately.</span>
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setShowConfirmModal(false)}
+                                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConfirmPayment}
+                                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Confirm Payment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -66,6 +66,8 @@ export interface Booking {
   locale: string;
   package?: {
     name: string;
+    totalPrice?: number;
+    depositPrice?: number;
   };
 }
 
