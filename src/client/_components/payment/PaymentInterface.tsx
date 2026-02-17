@@ -161,13 +161,18 @@ if (!termsAccepted) {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
       
       // Send only necessary data to backend (price is calculated dynamically on server)
-      const response = await axios.post(`${apiUrl}/api/checkout/session`, {
+      const payload: any = {
         packageId: selectedPackageId,
         paymentType: paymentType,
         locale: locale,
-        sessionDate: sessionDate, // Pass session date if available
         termsAccepted: true // Explicitly send acceptance
-      }, {
+      };
+
+      if (sessionDate) {
+          payload.sessionDate = sessionDate;
+      }
+
+      const response = await axios.post(`${apiUrl}/api/checkout/session`, payload, {
         headers: {
           'Idempotency-Key': crypto.randomUUID() // Prevent double-charge on network retries
         }
