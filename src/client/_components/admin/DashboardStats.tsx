@@ -150,7 +150,7 @@ export default function DashboardStats() {
                     <div className="flex items-end space-x-4 h-48">
                         {stats.salesHistory.map((item, idx) => (
                             <div key={idx} className="flex-1 flex flex-col items-center justify-end h-full group relative">
-                                <div className="hidden text-xs font-bold text-gray-600 mb-2 opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 w-full text-center">
+                                <div className="text-xs font-bold text-gray-600 mb-2 opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 w-full text-center">
                                     {formatCurrency(item.revenue)}
                                 </div>
                                 <div className="h-full w-full flex items-end justify-center">
