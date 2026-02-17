@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/client/_components/AuthContext";
-import { FileText, CreditCard, Image as ImageIcon, ExternalLink, LogOut, CalendarCheck } from 'lucide-react';
+import { FileText, CreditCard, Image as ImageIcon, ExternalLink, LogOut, CalendarCheck, BarChart3 } from 'lucide-react';
 import Link from "next/link";
+// import DashboardStats from '@/client/_components/admin/DashboardStats'; // Removed direct rendering
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -30,6 +31,13 @@ export default function AdminDashboard() {
   }
 
   const cards = [
+    {
+      title: "Dashboard & Metrics",
+      description: "Analyze revenue trends, booking stats, and customer preferences.",
+      icon: <BarChart3 className="w-8 h-8 text-sky-600" />,
+      href: "/admin/dashboard",
+      color: "bg-sky-50 hover:bg-sky-100 border-sky-200"
+    },
     {
       title: "Posts & Blog",
       description: "Manage your blog posts and articles. Create, edit, or delete content.",
@@ -81,13 +89,14 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 p-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Dashboard</h2>
             <p className="text-gray-600 mt-2">Welcome back! Select a module to manage.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+
             {cards.map((card, index) => (
               <Link 
                 key={index} 
