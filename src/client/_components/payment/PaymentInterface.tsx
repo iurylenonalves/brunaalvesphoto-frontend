@@ -232,19 +232,19 @@ if (!termsAccepted) {
                  <div className="grid grid-cols-1 gap-3 text-sm">
                      <div className="flex justify-between">
                          <span className="text-gray-500">Bank:</span>
-                         <span className="font-medium text-gray-900">Wise</span>
+                         <span className="font-medium text-gray-900">Monzo</span>
                      </div>
                      <div className="flex justify-between">
                          <span className="text-gray-500">Account Name:</span>
-                         <span className="font-medium text-gray-900">Bruna Alves Photography</span>
+                         <span className="font-medium text-gray-900">BRUNA ALVES PHOTOGRAPHY</span>
                      </div>
                      <div className="flex justify-between">
                          <span className="text-gray-500">Sort Code:</span>
-                         <span className="font-mono bg-white px-2 py-0.5 rounded border border-gray-200">04-29-09</span>
+                         <span className="font-mono bg-white px-2 py-0.5 rounded border border-gray-200">04-00-06</span>
                      </div>
                      <div className="flex justify-between">
                          <span className="text-gray-500">Account Number:</span>
-                         <span className="font-mono bg-white px-2 py-0.5 rounded border border-gray-200">93609896</span>
+                         <span className="font-mono bg-white px-2 py-0.5 rounded border border-gray-200">28291921</span>
                      </div>
                      <div className="flex justify-between items-center pt-2 border-t mt-2">
                          <span className="text-gray-500">Reference:</span>
