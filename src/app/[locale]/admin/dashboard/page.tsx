@@ -2,22 +2,24 @@
 
 import DashboardStats from '@/client/_components/admin/DashboardStats';
 import { useAuth } from "@/client/_components/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 export default function DashboardPage() {
     const router = useRouter();
+    const params = useParams();
+    const locale = params?.locale || 'en';
     const { token, loading } = useAuth();
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
         setIsClient(true);
         if (!loading && !token) {
-            router.push("/login");
+            router.push(`/${locale}/login`);
         }
-    }, [loading, token, router]);
+    }, [loading, token, router, locale]);
 
     if (!isClient || loading || !token) {
         return (
@@ -33,7 +35,7 @@ export default function DashboardPage() {
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
             <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex items-center gap-4">
-                <Link href="/admin" className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
+                <Link href={`/${locale}/admin`} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
                     <ArrowLeft size={20} />
                 </Link>
                 <h1 className="text-xl font-bold text-gray-800">Business Dashboard</h1>

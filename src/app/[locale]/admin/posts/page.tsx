@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { getPosts, deletePost } from "@/lib/api";
 import PostEditorForm from "@/client/_components/PostEditorForm";
 import Link from "next/link";
@@ -12,7 +12,8 @@ function AdminPostsPageContent() {
   const { token, logout, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const locale = (searchParams.get("locale") as "en" | "pt") || "en";
+  const params = useParams();
+  const locale = (params?.locale as "en" | "pt") || (searchParams.get("locale") as "en" | "pt") || "en";
 
   const [posts, setPosts] = useState<PostSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +66,7 @@ function AdminPostsPageContent() {
   };
 
   const handleLocaleChange = (newLocale: "en" | "pt") => {
-    router.push(`/admin/posts?locale=${newLocale}`);
+    router.push(`/${newLocale}/admin/posts`);
   };
 
   const handlePublishChanges = async () => {
@@ -225,7 +226,7 @@ function AdminPostsPageContent() {
 
               {/* EDIT */}
               <Link
-                href={`/admin/posts/edit/${post.slug}?locale=${post.locale}`}
+                href={`/${locale}/admin/posts/edit/${post.slug}`}
                 className="px-3 py-1 text-sm font-semibold bg-yellow-500 text-white rounded-md shadow-sm cursor-pointer transition hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
               >
                 Edit

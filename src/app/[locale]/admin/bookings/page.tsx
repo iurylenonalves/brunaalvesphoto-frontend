@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/client/_components/AuthContext';
 import { Booking } from '@/types';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState, useMemo } from 'react';
 
@@ -12,6 +12,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export default function BookingsPage() {
     const { token, loading } = useAuth();
     const router = useRouter();
+    const params = useParams();
+    const locale = params?.locale || "en";
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -142,7 +144,7 @@ export default function BookingsPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Bookings</h1>
-                    <Link href="/admin" className="text-sm text-gray-500 hover:underline">← Back to Dashboard</Link>
+                        <Link href={`/${locale}/admin`} className="text-sm text-gray-500 hover:underline">← Back to Dashboard</Link>
                 </div>
                 <button 
                     onClick={loadBookings}

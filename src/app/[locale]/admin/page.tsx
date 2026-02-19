@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/client/_components/AuthContext";
 import { FileText, CreditCard, Image as ImageIcon, ExternalLink, LogOut, CalendarCheck, BarChart3 } from 'lucide-react';
 import Link from "next/link";
@@ -9,15 +9,17 @@ import Link from "next/link";
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const params = useParams();
+  const locale = params?.locale || "en";
   const { token, loading, logout } = useAuth();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
     if (!loading && !token) {
-      router.push("/login"); // Fixed: was redirection loop if check failed differently, but logic seems sound
+      router.push(`/${locale}/login`); 
     }
-  }, [loading, token, router]);
+  }, [loading, token, router, locale]);
 
   if (!isClient || loading || !token) {
     return (
@@ -35,28 +37,28 @@ export default function AdminDashboard() {
       title: "Dashboard & Metrics",
       description: "Analyze revenue trends, booking stats, and customer preferences.",
       icon: <BarChart3 className="w-8 h-8 text-sky-600" />,
-      href: "/admin/dashboard",
+      href: `/${locale}/admin/dashboard`,
       color: "bg-sky-50 hover:bg-sky-100 border-sky-200"
     },
     {
       title: "Posts & Blog",
       description: "Manage your blog posts and articles. Create, edit, or delete content.",
       icon: <FileText className="w-8 h-8 text-blue-600" />,
-      href: "/admin/posts",
+      href: `/${locale}/admin/posts`,
       color: "bg-blue-50 hover:bg-blue-100 border-blue-200"
     },
     {
       title: "Packages & Payments",
       description: "Manage service packages, prices, and generate payment links for clients.",
       icon: <CreditCard className="w-8 h-8 text-green-600" />,
-      href: "/admin/packages",
+      href: `/${locale}/admin/packages`,
       color: "bg-green-50 hover:bg-green-100 border-green-200"
     },
     {
       title: "Bookings",
       description: "View and manage client bookings and confirm manual payments.",
       icon: <CalendarCheck className="w-8 h-8 text-purple-600" />,
-      href: "/admin/bookings",
+      href: `/${locale}/admin/bookings`,
       color: "bg-purple-50 hover:bg-purple-100 border-purple-200"
     },
     {

@@ -1,7 +1,7 @@
 "use client";
 import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
 import { useAuth } from "@/client/_components/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Header from "@/client/_components/Header";
 import Footer from "@/client/_components/Footer";
 import { useState } from "react";
@@ -9,6 +9,8 @@ import { useState } from "react";
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
+  const params = useParams();
+  const locale = params?.locale || "en";
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   
@@ -44,7 +46,7 @@ export default function LoginPage() {
         sessionStorage.removeItem("redirectAfterLogin");
         router.push(redirect);
       } else {
-        router.push("/admin");
+        router.push(`/${locale}/admin`);
       }
     } catch (err) {
       console.error(err);

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/client/_components/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import { Plus, Edit, Trash2, Link as LinkIcon, X, Globe, CheckCircle, AlertCircle, AlertTriangle, Search } from "lucide-react";
 import Link from "next/link";
@@ -21,6 +21,8 @@ type Package = {
 export default function PackagesAdminPage() {
   const { token, loading } = useAuth();
   const router = useRouter();
+  const params = useParams(); // Add useParams
+  const locale = params?.locale || "en";
   const [packages, setPackages] = useState<Package[]>([]);
   const [fetching, setFetching] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -203,7 +205,7 @@ export default function PackagesAdminPage() {
       <div className="bg-white shadow border-b px-6 py-4 flex flex-col md:flex-row justify-between items-center sticky top-0 z-10 gap-4">
         <div>
             <h1 className="text-2xl font-bold text-gray-800">Packages Management</h1>
-            <Link href="/admin" className="text-sm text-gray-500 hover:underline">← Back to Dashboard</Link>
+            <Link href={`/${locale}/admin`} className="text-sm text-gray-500 hover:underline">← Back to Dashboard</Link>
         </div>
 
         <div className="flex w-full md:w-auto gap-3">

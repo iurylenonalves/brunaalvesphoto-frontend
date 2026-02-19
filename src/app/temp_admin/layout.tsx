@@ -1,4 +1,3 @@
-import { AuthProvider } from "@/client/_components/AuthContext";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,8 +11,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthProvider>
+    <>
       {children}
-    </AuthProvider>
+    </>
   );
 }
