@@ -32,8 +32,11 @@ This is the frontend application for **Bruna Alves Photography**, a professional
 
 ### Admin & Management
 - **Secure Authentication**: Google OAuth integration for secure admin access.
-- **Admin Dashboard**: Protected area for content management.
+- **Admin Dashboard**: Protected area with business KPI overview (revenue, bookings, package performance, payment status).
 - **Post Management**: Create, edit, and delete blog posts.
+- **Package Management**: Create, edit, and delete photography packages from the admin panel.
+- **Payment Link Generation**: Generate dynamic payment links for FULL, DEPOSIT, and BALANCE flows.
+- **Bookings Management**: View and manage client bookings tied to payment sessions.
 - **Block Editor**: Custom-built block-based editor for writing blog posts (Text, Images, etc.).
 - **Image Upload**: Integration with backend for handling image uploads.
 
@@ -55,6 +58,7 @@ This project was engineered with a mobile-first approach, focusing heavily on **
 - **Authentication**: [Google OAuth](https://developers.google.com/identity/gsi/web) + JWT.
 - **State Management**: React Context API (Auth, Translations).
 - **Data Fetching**: Axios.
+- **Payments**: Stripe Checkout integration (dynamic sessions and payment links).
 - **Image Processing**: Sharp, Browser Image Compression.
 - **Analytics**: Google Analytics, Vercel Analytics.
 
@@ -66,10 +70,10 @@ brunaalvesphoto-frontend/
 ├── scripts/                # Utility scripts (image optimization)
 ├── src/
 │   ├── app/                # Next.js App Router
-│   │   ├── [locale]/       # Public localized pages (about, blog, etc.)
-│   │   ├── admin/          # Admin dashboard pages
+│   │   ├── [locale]/       # Localized pages (public + admin + login)
+│   │   │   ├── admin/      # Admin dashboard, packages, bookings, posts
+│   │   │   └── login/      # Localized login route
 │   │   ├── api/            # Internal API routes (if any)
-│   │   ├── login/          # Login page
 │   │   └── layout.tsx      # Root layout
 │   ├── client/
 │   │   └── _components/    # Reusable UI components
@@ -130,7 +134,7 @@ brunaalvesphoto-frontend/
 The project follows a **Client-Server** architecture where this repository serves as the Frontend.
 
 - **Frontend**: Handles UI, client-side routing, and user interactions. It communicates with the backend via RESTful APIs.
-- **Backend**: Handles database operations, authentication logic, and file storage.
+- **Backend**: Handles database operations, authentication logic, payment session generation (Stripe), webhooks, and file storage.
 
 ### Backend Integration (Required)
 This frontend is strictly designed to work with its dedicated backend API. For full functionality (Blog posts, Contact emails, Admin login), you must have the API running locally or accessible via a URL.
