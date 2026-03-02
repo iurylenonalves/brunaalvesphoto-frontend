@@ -47,6 +47,7 @@ export default function PackagesAdminPage() {
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
   // Add state for booking method
   const [bookingMethod, setBookingMethod] = useState<'card' | 'transfer'>('card');
+    const [bookingPaymentType, setBookingPaymentType] = useState<'DEPOSIT' | 'FULL' | 'BALANCE'>('DEPOSIT');
 
   useEffect(() => {
     if (!loading && !token) {
@@ -82,26 +83,69 @@ export default function PackagesAdminPage() {
     setBookingDate(new Date().toISOString().split('T')[0]);
     setBookingTime("10:00");
     setBookingMethod(method);
+        setBookingPaymentType('DEPOSIT');
     setGeneratedLink(null);
     setIsBookingModalOpen(true);
   };
 
-  const generateLink = (locale: string) => {
-    if (!selectedBookingPackage || !bookingDate) return;
-    
-    const baseUrl = window.location.origin;
-    const dateParam = bookingDate;
-    const timeParam = bookingTime;
-    
-    let link = `${baseUrl}/${locale}/payment?pkg=${selectedBookingPackage.id}&date=${dateParam}&time=${timeParam}`;
-    if (bookingMethod === 'transfer') {
-        link += '&method=transfer';
-    }
-    
-    navigator.clipboard.writeText(link);
-    showToast(`Link (${locale.toUpperCase()}) copied!`, "success");
-    setGeneratedLink(link);
-  };
+    const requestLockedLink = async (
+        packageId: string,
+        localeCode: 'en' | 'pt',
+        paymentType: 'DEPOSIT' | 'FULL' | 'BALANCE',
+        paymentMethod: 'CARD' | 'BANK_TRANSFER',
+        sessionDate?: string
+    ) => {
+        if (!token) {
+            showToast('Authentication required', 'error');
+            return null;
+        }
+
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+        const payload: Record<string, string> = {
+            packageId,
+            locale: localeCode,
+            paymentType,
+            paymentMethod,
+        };
+
+        if (sessionDate) {
+            payload.sessionDate = sessionDate;
+        }
+
+        const { data } = await axios.post(
+            `${baseUrl}/api/checkout/link`,
+            payload,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        return data.url as string;
+    };
+
+    const generateLink = async (localeCode: 'en' | 'pt') => {
+        if (!selectedBookingPackage || !bookingDate) return;
+
+        try {
+            const sessionDate = bookingTime ? `${bookingDate} ${bookingTime}` : bookingDate;
+            const link = await requestLockedLink(
+                selectedBookingPackage.id,
+                localeCode,
+                bookingPaymentType,
+                bookingMethod === 'transfer' ? 'BANK_TRANSFER' : 'CARD',
+                sessionDate
+            );
+
+            if (!link) {
+                return;
+            }
+
+            navigator.clipboard.writeText(link);
+            showToast(`Locked link (${localeCode.toUpperCase()}) copied!`, "success");
+            setGeneratedLink(link);
+        } catch (error) {
+            console.error('Failed to generate locked link', error);
+            showToast('Failed to generate payment link', 'error');
+        }
+    };
 
   const confirmDelete = async () => {
     if (!packageToDelete) return;
@@ -183,16 +227,28 @@ export default function PackagesAdminPage() {
     }
   };
 
-  const copyPaymentLink = (pkgId: string, locale: string) => {
-      const link = `${window.location.origin}/${locale}/payment?pkg=${pkgId}`;
-      navigator.clipboard.writeText(link);
-      showToast(`Payment link (${locale.toUpperCase()}) copied!`, "success");
+    const copyPaymentLink = async (pkgId: string, localeCode: 'en' | 'pt', paymentType: 'DEPOSIT' | 'FULL' | 'BALANCE') => {
+            try {
+                const link = await requestLockedLink(pkgId, localeCode, paymentType, 'CARD');
+                if (!link) return;
+                navigator.clipboard.writeText(link);
+                showToast(`Card ${paymentType} link (${localeCode.toUpperCase()}) copied!`, "success");
+            } catch (error) {
+                console.error('Failed to copy card payment link', error);
+                showToast('Failed to generate payment link', 'error');
+            }
   };
 
-  const copyBalanceLink = (pkgId: string, locale: string) => {
-      const link = `${window.location.origin}/${locale}/payment?pkg=${pkgId}&type=BALANCE`;
-      navigator.clipboard.writeText(link);
-      showToast(`Balance Link (${locale.toUpperCase()}) copied!`, "success");
+    const copyTransferLink = async (pkgId: string, localeCode: 'en' | 'pt', paymentType: 'DEPOSIT' | 'FULL' | 'BALANCE') => {
+            try {
+                const link = await requestLockedLink(pkgId, localeCode, paymentType, 'BANK_TRANSFER');
+                if (!link) return;
+                navigator.clipboard.writeText(link);
+                showToast(`Transfer ${paymentType} link (${localeCode.toUpperCase()}) copied!`, "success");
+            } catch (error) {
+                console.error('Failed to copy transfer link', error);
+                showToast('Failed to generate payment link', 'error');
+            }
   };
 
   const filteredPackages = packages.filter(pkg => 
@@ -290,36 +346,53 @@ export default function PackagesAdminPage() {
                     {/* Standard Links */}
                     <div className="flex gap-2 mb-2">
                         <button 
-                            onClick={() => copyPaymentLink(pkg.id, 'en')}
+                            onClick={() => copyPaymentLink(pkg.id, 'en', 'DEPOSIT')}
                             className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-gray-700 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
-                            title="Copy All Options Link (English)"
+                            title="Copy Deposit Link (English)"
                         >
-                            🇬🇧 All Options
+                            🇬🇧 Deposit
                         </button>
                         <button 
-                            onClick={() => copyPaymentLink(pkg.id, 'pt')}
+                            onClick={() => copyPaymentLink(pkg.id, 'pt', 'DEPOSIT')}
                             className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-gray-700 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
-                            title="Copy All Options Link (Portuguese)"
+                            title="Copy Deposit Link (Portuguese)"
                         >
-                            🇧🇷 All Options
+                            🇧🇷 Deposit
                         </button>
                     </div>
 
                     {/* Balance Links */}
                     <div className="flex gap-2 mb-2">
                         <button 
-                            onClick={() => copyBalanceLink(pkg.id, 'en')}
+                            onClick={() => copyPaymentLink(pkg.id, 'en', 'FULL')}
                             className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
-                            title="Copy Balance Only Link (English)"
+                            title="Copy Full Link (English)"
                         >
-                            🇬🇧 BalanceOnly
+                            🇬🇧 Full
                         </button>
                         <button 
-                            onClick={() => copyBalanceLink(pkg.id, 'pt')}
+                            onClick={() => copyPaymentLink(pkg.id, 'pt', 'FULL')}
                             className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
-                            title="Copy Balance Only Link (Portuguese)"
+                            title="Copy Full Link (Portuguese)"
                         >
-                            🇧🇷 BalanceOnly
+                            🇧🇷 Full
+                        </button>
+                    </div>
+
+                    <div className="flex gap-2 mb-2">
+                        <button 
+                            onClick={() => copyPaymentLink(pkg.id, 'en', 'BALANCE')}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Balance Link (English)"
+                        >
+                            🇬🇧 Balance
+                        </button>
+                        <button 
+                            onClick={() => copyPaymentLink(pkg.id, 'pt', 'BALANCE')}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Balance Link (Portuguese)"
+                        >
+                            🇧🇷 Balance
                         </button>
                     </div>
                      <button
@@ -341,52 +414,53 @@ export default function PackagesAdminPage() {
                     {/* Standard Links */}
                     <div className="flex gap-2 mb-2">
                         <button 
-                            onClick={() => {
-                                const link = `${window.location.origin}/en/payment?pkg=${pkg.id}&method=transfer`;
-                                navigator.clipboard.writeText(link);
-                                showToast("Transfer Link (EN) copied!", "success");
-                            }}
+                            onClick={() => copyTransferLink(pkg.id, 'en', 'DEPOSIT')}
                             className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-gray-700 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
-                            title="Copy Transfer Link (English)"
+                            title="Copy Transfer Deposit Link (English)"
                         >
-                            🇬🇧 All Options
+                            🇬🇧 Deposit
                         </button>
                         <button 
-                            onClick={() => {
-                                const link = `${window.location.origin}/pt/payment?pkg=${pkg.id}&method=transfer`;
-                                navigator.clipboard.writeText(link);
-                                showToast("Transfer Link (PT) copied!", "success");
-                            }}
+                            onClick={() => copyTransferLink(pkg.id, 'pt', 'DEPOSIT')}
                             className="flex-1 flex justify-center items-center gap-1.5 text-xs font-medium text-gray-700 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
-                            title="Copy Transfer Link (Portuguese)"
+                            title="Copy Transfer Deposit Link (Portuguese)"
                         >
-                            🇧🇷 All Options
+                            🇧🇷 Deposit
                         </button>
                     </div>
 
                     {/* Balance Links */}
                     <div className="flex gap-2 mb-2">
                         <button 
-                            onClick={() => {
-                                const link = `${window.location.origin}/en/payment?pkg=${pkg.id}&type=balance&method=transfer`;
-                                navigator.clipboard.writeText(link);
-                                showToast("Transfer Balance (EN) copied!", "success");
-                            }}
+                            onClick={() => copyTransferLink(pkg.id, 'en', 'FULL')}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Transfer Full Link (English)"
+                        >
+                            🇬🇧 Full
+                        </button>
+                        <button 
+                             onClick={() => copyTransferLink(pkg.id, 'pt', 'FULL')}
+                            className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            title="Copy Transfer Full Link (Portuguese)"
+                        >
+                            🇧🇷 Full
+                        </button>
+                    </div>
+
+                    <div className="flex gap-2 mb-2">
+                        <button 
+                            onClick={() => copyTransferLink(pkg.id, 'en', 'BALANCE')}
                             className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
                             title="Copy Transfer Balance (English)"
                         >
-                            🇬🇧 BalanceOnly
+                            🇬🇧 Balance
                         </button>
                         <button 
-                             onClick={() => {
-                                const link = `${window.location.origin}/pt/payment?pkg=${pkg.id}&type=balance&method=transfer`;
-                                navigator.clipboard.writeText(link);
-                                showToast("Transfer Balance (PT) copied!", "success");
-                            }}
+                             onClick={() => copyTransferLink(pkg.id, 'pt', 'BALANCE')}
                             className="flex-1 flex justify-center items-center gap-1.5 text-xs text-gray-600 bg-white py-1.5 rounded border border-gray-200 hover:bg-gray-50 shadow-sm"
                             title="Copy Transfer Balance (Portuguese)"
                         >
-                            🇧🇷 BalanceOnly
+                            🇧🇷 Balance
                         </button>
                     </div>
                      <button
@@ -632,6 +706,22 @@ export default function PackagesAdminPage() {
                                 className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                             />
                         </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Payment Type</label>
+                        <select
+                            value={bookingPaymentType}
+                            onChange={(e) => {
+                                setBookingPaymentType(e.target.value as 'DEPOSIT' | 'FULL' | 'BALANCE');
+                                setGeneratedLink(null);
+                            }}
+                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                        >
+                            <option value="DEPOSIT">Deposit</option>
+                            <option value="FULL">Full</option>
+                            <option value="BALANCE">Balance</option>
+                        </select>
                     </div>
 
                     {generatedLink && (

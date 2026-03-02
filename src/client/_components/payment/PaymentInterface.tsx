@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link'; // Import Link
 import axios from 'axios';
 import { useTranslations } from '@/context/TranslationContext';
@@ -30,16 +30,50 @@ interface Package {
   active: boolean;
 }
 
+interface LockedTokenPayload {
+  packageId: string;
+  paymentType: 'DEPOSIT' | 'FULL' | 'BALANCE';
+  paymentMethod: 'CARD' | 'BANK_TRANSFER';
+  locale: 'en' | 'pt';
+  sessionDate?: string;
+  exp?: number;
+}
+
+function decodeLockedToken(token: string): LockedTokenPayload | null {
+  try {
+    const payloadPart = token.split('.')[1];
+    if (!payloadPart) return null;
+
+    const base64 = payloadPart.replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((char) => `%${`00${char.charCodeAt(0).toString(16)}`.slice(-2)}`)
+        .join('')
+    );
+
+    const payload = JSON.parse(json) as LockedTokenPayload;
+    if (!payload.packageId || !payload.paymentType || !payload.paymentMethod || !payload.locale) {
+      return null;
+    }
+
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
 export default function PaymentInterface() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const { translations, locale } = useTranslations();
+  const lockedToken = searchParams.get('token');
   
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [bookingRef, setBookingRef] = useState<string | null>(null);
+  const [lockedConfig, setLockedConfig] = useState<LockedTokenPayload | null>(null);
 
   // Form State
   const [selectedPackageId, setSelectedPackageId] = useState<string>('');
@@ -50,8 +84,7 @@ export default function PaymentInterface() {
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   
-  const isBalanceLink = searchParams.get('type')?.toUpperCase() === 'BALANCE';
-  const isTransferMethod = searchParams.get('method')?.toLowerCase() === 'transfer';
+  const isTransferMethod = lockedConfig?.paymentMethod === 'BANK_TRANSFER';
   const [showBankDetails, setShowBankDetails] = useState(false);
 
   // Load Packages
@@ -72,46 +105,37 @@ export default function PaymentInterface() {
     fetchPackages();
   }, []);
 
-  // Sync with URL Params
+  // Decode locked token from URL
   useEffect(() => {
-    if (!loading && packages.length > 0) {
-      const pkgParam = searchParams.get('pkg');
-      const typeParam = searchParams.get('type');
-      const dateParam = searchParams.get('date');
-      const timeParam = searchParams.get('time');
-
-      if (pkgParam) {
-        // Try to find by ID
-        const foundById = packages.find(p => p.id === pkgParam);
-        if (foundById) {
-            setSelectedPackageId(foundById.id);
-        } else {
-            // Try to find by Name (slug-ish)
-            const foundByName = packages.find(p => p.name.toLowerCase().replace(/\s+/g, '-') === pkgParam.toLowerCase());
-            if (foundByName) setSelectedPackageId(foundByName.id);
-        }
-      }
-
-      if (typeParam) {
-        const t = typeParam.toUpperCase();
-        if (['DEPOSIT', 'FULL', 'BALANCE'].includes(t)) {
-          setPaymentType(t as any);
-        }
-      }
-
-      if (dateParam) {
-          if (timeParam) {
-              setSessionDate(`${dateParam} ${timeParam}`);
-          } else {
-              setSessionDate(dateParam);
-          }
-      }
+    if (!lockedToken) {
+      setError(locale === 'pt' ? 'Link de pagamento inválido. Solicite um novo link.' : 'Invalid payment link. Please request a new one.');
+      return;
     }
-  }, [loading, packages, searchParams]);
+
+    const decoded = decodeLockedToken(lockedToken);
+    if (!decoded) {
+      setError(locale === 'pt' ? 'Link de pagamento inválido. Solicite um novo link.' : 'Invalid payment link. Please request a new one.');
+      return;
+    }
+
+    if (decoded.exp && (decoded.exp * 1000) < Date.now()) {
+      setError(locale === 'pt' ? 'Este link de pagamento expirou. Solicite um novo link.' : 'This payment link has expired. Please request a new one.');
+      return;
+    }
+
+    setLockedConfig(decoded);
+    setSelectedPackageId(decoded.packageId);
+    setPaymentType(decoded.paymentType);
+    setSessionDate(decoded.sessionDate || null);
+  }, [lockedToken, locale]);
 
   const handleCheckout = async () => {
     if (!selectedPackageId) {
-        setError("Please select a package.");
+      setError(locale === 'pt' ? 'Pacote não encontrado no link.' : 'Package not found in link.');
+      return;
+    }
+    if (!lockedToken || !lockedConfig) {
+      setError(locale === 'pt' ? 'Link inválido. Solicite um novo link.' : 'Invalid link. Please request a new one.');
         return;
     }
 if (!termsAccepted) {
@@ -134,12 +158,10 @@ if (!termsAccepted) {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
             const { data } = await axios.post(`${apiUrl}/api/checkout/manual`, {
-                packageId: selectedPackageId,
-                paymentType: paymentType,
-                locale: locale,
-                sessionDate: sessionDate,
+              lockedToken,
                 customerName,
-                customerEmail
+              customerEmail,
+              termsAccepted: true
             });
             
             setBookingRef(data.reference || data.bookingId);
@@ -155,22 +177,13 @@ if (!termsAccepted) {
     }
 
     try {
-      const selectedPkg = packages.find(p => p.id === selectedPackageId);
-      if (!selectedPkg) throw new Error("Package not found");
-
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
       
       // Send only necessary data to backend (price is calculated dynamically on server)
       const payload: any = {
-        packageId: selectedPackageId,
-        paymentType: paymentType,
-        locale: locale,
+        lockedToken,
         termsAccepted: true // Explicitly send acceptance
       };
-
-      if (sessionDate) {
-          payload.sessionDate = sessionDate;
-      }
 
       const response = await axios.post(`${apiUrl}/api/checkout/session`, payload, {
         headers: {
@@ -280,70 +293,30 @@ if (!termsAccepted) {
       )}
 
       <div className="space-y-6">
-        {/* Package Selection */}
+        {/* Locked Package */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
              {translations.selectPackage}
           </label>
-          <select
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 outline-none transition-all"
-            value={selectedPackageId}
-            onChange={(e) => setSelectedPackageId(e.target.value)}
-          >
-            <option value="" disabled>-- {translations.selectPackage || 'Select'} --</option>
-            {packages.map(pkg => (
-              <option key={pkg.id} value={pkg.id}>
-                {locale === 'pt' ? (pkg.namePt || pkg.name) : pkg.name} (£{pkg.totalPrice})
-              </option>
-            ))}
-          </select>
+          <div className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-800">
+            {selectedPkg
+              ? `${locale === 'pt' ? (selectedPkg.namePt || selectedPkg.name) : selectedPkg.name}`
+              : (locale === 'pt' ? 'Carregando pacote...' : 'Loading package...')}
+          </div>
         </div>
 
-        {/* Payment Type Selection */}
+        {/* Locked Payment Type */}
         {selectedPackageId && (
-            <div className={`grid gap-3 ${sessionDate ? 'grid-cols-2' : isBalanceLink ? 'grid-cols-1' : 'grid-cols-3'}`}>
-                {!isBalanceLink && (
-                <button
-                    onClick={() => setPaymentType('DEPOSIT')}
-                    className={`p-3 rounded-lg border text-sm font-medium transition-all ${
-                        paymentType === 'DEPOSIT' 
-                        ? 'bg-gray-900 text-white border-gray-900' 
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
-                    }`}
-                >
-                    {translations.deposit}
-                    <span className="block text-xs opacity-75 mt-1">{translations.depositDesc}</span>
-                </button>
-                )}
-                
-                {(isBalanceLink || !sessionDate) && (
-                <button
-                    onClick={() => setPaymentType('BALANCE')}
-                    className={`p-3 rounded-lg border text-sm font-medium transition-all ${
-                        paymentType === 'BALANCE' 
-                        ? 'bg-gray-900 text-white border-gray-900' 
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
-                    }`}
-                >
-                    {translations.remainingBalance}
-                    <span className="block text-xs opacity-75 mt-1">{translations.remainingBalanceDesc}</span>
-                </button>
-                )}
-
-                {!isBalanceLink && (
-                <button
-                    onClick={() => setPaymentType('FULL')}
-                    className={`p-3 rounded-lg border text-sm font-medium transition-all ${
-                        paymentType === 'FULL' 
-                        ? 'bg-gray-900 text-white border-gray-900' 
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
-                    }`}
-                >
-                    {translations.fullValue}
-                    <span className="block text-xs opacity-75 mt-1">{translations.fullValueDesc}</span>
-                </button>
-                )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {locale === 'pt' ? 'Tipo de Pagamento' : 'Payment Type'}
+            </label>
+            <div className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-800">
+              {paymentType === 'DEPOSIT' && translations.deposit}
+              {paymentType === 'FULL' && translations.fullValue}
+              {paymentType === 'BALANCE' && translations.remainingBalance}
             </div>
+          </div>
         )}
 
         {/* Summary Card */}
@@ -422,9 +395,9 @@ if (!termsAccepted) {
 
         <button
           onClick={handleCheckout}
-          disabled={!selectedPackageId || processing || !termsAccepted}
+          disabled={!selectedPackageId || !lockedConfig || processing || !termsAccepted}
           className={`w-full py-4 text-white font-bold rounded-lg transition-all ${
-            !selectedPackageId || processing || !termsAccepted
+            !selectedPackageId || !lockedConfig || processing || !termsAccepted
               ? 'bg-gray-400 cursor-not-allowed'
               : isTransferMethod 
                  ? 'bg-green-600 hover:bg-green-700 hover:shadow-lg' 
