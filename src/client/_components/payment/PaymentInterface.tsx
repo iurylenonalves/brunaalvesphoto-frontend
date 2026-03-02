@@ -85,6 +85,7 @@ export default function PaymentInterface() {
   const [customerEmail, setCustomerEmail] = useState('');
   
   const isTransferMethod = lockedConfig?.paymentMethod === 'BANK_TRANSFER';
+  const requiresTermsAcceptance = paymentType !== 'BALANCE';
   const [showBankDetails, setShowBankDetails] = useState(false);
 
   // Load Packages
@@ -138,7 +139,7 @@ export default function PaymentInterface() {
       setError(locale === 'pt' ? 'Link inválido. Solicite um novo link.' : 'Invalid link. Please request a new one.');
         return;
     }
-if (!termsAccepted) {
+    if (requiresTermsAcceptance && !termsAccepted) {
         setError(translations.termsError || "You must agree to the terms to proceed.");
         return;
     }
@@ -161,7 +162,7 @@ if (!termsAccepted) {
               lockedToken,
                 customerName,
               customerEmail,
-              termsAccepted: true
+              termsAccepted: requiresTermsAcceptance ? termsAccepted : false
             });
             
             setBookingRef(data.reference || data.bookingId);
@@ -182,7 +183,7 @@ if (!termsAccepted) {
       // Send only necessary data to backend (price is calculated dynamically on server)
       const payload: any = {
         lockedToken,
-        termsAccepted: true // Explicitly send acceptance
+        termsAccepted: requiresTermsAcceptance ? termsAccepted : false
       };
 
       const response = await axios.post(`${apiUrl}/api/checkout/session`, payload, {
@@ -231,9 +232,13 @@ if (!termsAccepted) {
                      {locale === 'pt' ? 'Reserva Confirmada!' : 'Booking Confirmed!'}
                  </h1>
                  <p className="text-gray-600">
-                     {locale === 'pt' 
-                        ? `Obrigado por aceitar os termos. Para prosseguir, por favor transfira o valor de ${getDisplayPrice()} usando os detalhes abaixo:` 
-                        : `Thank you for accepting the terms. To proceed, please transfer the amount of ${getDisplayPrice()} using the details below:`}
+                   {locale === 'pt'
+                    ? (requiresTermsAcceptance
+                      ? `Obrigado por aceitar os termos. Para prosseguir, por favor transfira o valor de ${getDisplayPrice()} usando os detalhes abaixo:`
+                      : `Para prosseguir, por favor transfira o valor de ${getDisplayPrice()} usando os detalhes abaixo:`)
+                    : (requiresTermsAcceptance
+                      ? `Thank you for accepting the terms. To proceed, please transfer the amount of ${getDisplayPrice()} using the details below:`
+                      : `To proceed, please transfer the amount of ${getDisplayPrice()} using the details below:`)}
                  </p>
              </div>
 
@@ -380,6 +385,7 @@ if (!termsAccepted) {
             </div>
         )}
 
+        {requiresTermsAcceptance && (
         <div className="mb-6 flex items-start gap-2">
             <input 
                 type="checkbox" 
@@ -392,12 +398,13 @@ if (!termsAccepted) {
                 {translations.termsLabel} <Link href={`/${locale}/terms`} target="_blank" className="underline text-gray-900 hover:text-black">Terms & Conditions</Link>.
             </label>
         </div>
+        )}
 
         <button
           onClick={handleCheckout}
-          disabled={!selectedPackageId || !lockedConfig || processing || !termsAccepted}
+          disabled={!selectedPackageId || !lockedConfig || processing || (requiresTermsAcceptance && !termsAccepted)}
           className={`w-full py-4 text-white font-bold rounded-lg transition-all ${
-            !selectedPackageId || !lockedConfig || processing || !termsAccepted
+            !selectedPackageId || !lockedConfig || processing || (requiresTermsAcceptance && !termsAccepted)
               ? 'bg-gray-400 cursor-not-allowed'
               : isTransferMethod 
                  ? 'bg-green-600 hover:bg-green-700 hover:shadow-lg' 
