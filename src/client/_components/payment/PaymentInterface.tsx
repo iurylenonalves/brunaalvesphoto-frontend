@@ -236,7 +236,7 @@ if (!termsAccepted) {
                      </div>
                      <div className="flex justify-between">
                          <span className="text-gray-500">Account Name:</span>
-                         <span className="font-medium text-gray-900">BRUNA ALVES PHOTOGRAPHY</span>
+                         <span className="font-medium text-gray-900">BRUNA ALVES</span>
                      </div>
                      <div className="flex justify-between">
                          <span className="text-gray-500">Sort Code:</span>
