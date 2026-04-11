@@ -206,6 +206,9 @@ export default function PaymentInterface() {
   };
 
   const selectedPkg = packages.find(p => p.id === selectedPackageId);
+  const bankTransferTitle = paymentType === 'BALANCE'
+    ? (locale === 'pt' ? 'Pagamento Final Confirmado' : 'Final Payment Confirmed')
+    : (locale === 'pt' ? 'Reserva Confirmada!' : 'Booking Confirmed!');
 
   // Helper to calculate price display
   const getDisplayPrice = () => {
@@ -229,7 +232,7 @@ export default function PaymentInterface() {
                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                  </div>
                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                     {locale === 'pt' ? 'Reserva Confirmada!' : 'Booking Confirmed!'}
+                   {bankTransferTitle}
                  </h1>
                  <p className="text-gray-600">
                    {locale === 'pt'
@@ -244,7 +247,7 @@ export default function PaymentInterface() {
 
              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6 space-y-4">
                  <h3 className="font-bold text-gray-800 text-lg border-b pb-2 mb-3">
-                    Bank Transfer (Faster Payments / Wise)
+                    Bank Transfer (Faster Payments / Monzo)
                  </h3>
                  
                  <div className="grid grid-cols-1 gap-3 text-sm">
