@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { MessageCircle } from "lucide-react";
 import { useTranslations } from "@/context/TranslationContext";
+import { trackEvent } from '@/lib/gtag';
 
 interface AboutProps {
   isStandalonePage?: boolean;
@@ -41,6 +42,7 @@ const About = ({ isStandalonePage = false }: AboutProps) => {
                   href={`https://wa.me/447542554870?text=${encodeURIComponent(translations.whatsappMessage)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackEvent('contact_whatsapp', { source: 'about' })}
                   className="inline-flex items-center gap-2 px-6 py-3 text-white bg-green-700 text-lg font-semibold rounded-md shadow-md hover:bg-green-800 transition"
                 >
                   <MessageCircle size={20} />

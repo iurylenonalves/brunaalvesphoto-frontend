@@ -22,6 +22,7 @@ const nextConfig = {
 
   async redirects() {
     return [
+      { source: '/links', destination: '/?utm_source=instagram&utm_medium=social&utm_campaign=link_bio', permanent: false },
       { source: '/about', destination: '/en/about/', permanent: true },
       { source: '/contact', destination: '/en/contact/', permanent: true },
       { source: '/portfolio', destination: '/en/portfolio/', permanent: true },

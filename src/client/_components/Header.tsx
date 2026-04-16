@@ -7,6 +7,7 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { Menu, X, Instagram, MessageCircle } from 'lucide-react';
 import { useTranslations } from '@/context/TranslationContext';
+import { trackEvent } from '@/lib/gtag';
 
 import ToggleLanguageButton from './ToggleLanguageButton';
 import MobileMenu from './MobileMenu';
@@ -91,6 +92,7 @@ const Header = ({ postSlug, relatedSlug }: HeaderProps) => {
             href={`https://wa.me/447542554870?text=${encodeURIComponent(translations.whatsappMessage)}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('contact_whatsapp', { source: 'header' })}
             className={`${styles.button} ${styles.whatsapp}`}
             aria-label='WhatsApp'
           >

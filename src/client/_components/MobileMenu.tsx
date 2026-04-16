@@ -4,6 +4,7 @@ import styles from '../../styles/header.module.css';
 import Link from 'next/link';
 import { Instagram, MessageCircle } from 'lucide-react';
 import { usePathname } from "next/navigation";
+import { trackEvent } from '@/lib/gtag';
 
 interface MobileMenuProps {
   translations: {
@@ -58,6 +59,7 @@ const MobileMenu = ({ translations, setIsOpen, locale = "en" }: MobileMenuProps)
       href={`https://wa.me/447542554870?text=${encodeURIComponent(translations.whatsappMessage)}`}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => trackEvent('contact_whatsapp', { source: 'mobile_menu' })}
       className={`${styles.button} ${styles.whatsapp}`}
       aria-label="WhatsApp"
     >

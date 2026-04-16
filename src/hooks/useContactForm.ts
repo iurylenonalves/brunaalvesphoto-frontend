@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 import axios from 'axios';
 import { ContactSchema } from '@/schemas/ContactSchema';
+import { trackEvent } from '@/lib/gtag';
 
 interface Translations {
   contactSuccess: string;
@@ -68,6 +69,7 @@ export const useContactForm = (locale: string, translations: Translations) => {
       }
 
       setStatus('success');
+      trackEvent('contact_form_submitted', { locale });
       setFormData({ 
         name: '', 
         email: '', 

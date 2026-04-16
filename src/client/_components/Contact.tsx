@@ -5,6 +5,7 @@ import ContactForm from './ContactForm';
 import { MessageCircle } from 'lucide-react';
 import { useTranslations } from '@/context/TranslationContext';
 import { useContactForm } from '@/hooks/useContactForm';
+import { trackEvent } from '@/lib/gtag';
 
 interface ContactProps {
   isStandalonePage?: boolean;
@@ -50,6 +51,7 @@ const Contact = ({ isStandalonePage = false }: ContactProps) => {
                   href={`https://wa.me/447542554870?text=${encodeURIComponent(translations.whatsappMessage)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackEvent('contact_whatsapp', { source: 'contact' })}
                   className="inline-flex items-center gap-2 px-6 py-3 text-white bg-green-700 text-lg font-semibold rounded-md shadow-md hover:bg-green-800 transition"
                   aria-label={translations.whatsappButton}
                 >
